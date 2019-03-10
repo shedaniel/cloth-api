@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "me.shedaniel.cloth.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinScreen",
+    "MixinClientPlayNetworkHandler",
+    "MixinMinecraftClient",
+    "MixinButtonWidget"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

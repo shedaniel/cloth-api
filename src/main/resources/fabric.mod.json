@@ -1,0 +1,15 @@
+{
+  "id": "cloth",
+  "name": "Cloth API",
+  "description": "An API for events.",
+  "version": "${version}",
+  "side": "universal",
+  "initializers": [
+    "me.shedaniel.cloth.ClothInitializer",
+    "me.shedaniel.cloth.TestClass"
+  ],
+  "mixins": {
+    "client": "cloth.client.json",
+    "common": "cloth.common.json"
+  }
+}

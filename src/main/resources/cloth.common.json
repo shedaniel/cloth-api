@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "package": "me.shedaniel.cloth.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
