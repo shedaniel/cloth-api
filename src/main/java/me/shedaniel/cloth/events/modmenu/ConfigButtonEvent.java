@@ -21,11 +21,7 @@ public class ConfigButtonEvent implements CancelableEvent {
     public void setClickedRunnable(Runnable r) {
         try {
             Class.forName("me.shedaniel.cloth.hooks.ModMenuHooks").getDeclaredField("onButtonClicked").set(null, r);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
