@@ -18,7 +18,7 @@ public class ClothInitializer implements ClientModInitializer {
         ClothModMenuHooks.loadHooks();
         
         Runnable configRunnable = () -> MinecraftClient.getInstance().openScreen(new ErrorScreen("Random", "Good Test"));
-        ClothModMenuHooks.CONFIG_BUTTON_EVENT.registerEvent(event -> {
+        ClothModMenuHooks.CONFIG_BUTTON_EVENT.registerListener(event -> {
             if (event.getModContainer() != null && event.getModContainer().getMetadata().getId().equalsIgnoreCase("cloth")) {
                 event.setEnabled(true);
                 event.setClickedRunnable(configRunnable);
@@ -29,10 +29,10 @@ public class ClothInitializer implements ClientModInitializer {
         // Test codes
         if (true)
             return;
-        ClothHooks.CLIENT_SYNC_RECIPES.registerEvent(event -> {
+        ClothHooks.CLIENT_SYNC_RECIPES.registerListener(event -> {
             System.out.println("HAI");
         });
-        ClothHooks.CLIENT_SYNC_RECIPES.registerEvent(event -> {
+        ClothHooks.CLIENT_SYNC_RECIPES.registerListener(event -> {
             System.out.println("BAD I AM FIRST");
         }, EventPriority.HIGHEST);
     }

@@ -39,16 +39,16 @@ public abstract class EventManager<T> {
         getSortedListeners().forEach(consumer -> consumer.accept(event));
     }
     
-    public void registerEvent(Consumer<T> o, Double p) {
+    public void registerListener(Consumer<T> o, Double p) {
         listeners.add(new Pair<>(o, p));
     }
     
-    public void registerEvent(Consumer<T> o, EventPriority p) {
+    public void registerListener(Consumer<T> o, EventPriority p) {
         listeners.add(new Pair<>(o, p.getPriorityDouble()));
     }
     
-    public void registerEvent(Consumer<T> o) {
-        registerEvent(o, EventPriority.NORMAL.getPriorityDouble());
+    public void registerListener(Consumer<T> o) {
+        registerListener(o, EventPriority.NORMAL.getPriorityDouble());
     }
     
 }

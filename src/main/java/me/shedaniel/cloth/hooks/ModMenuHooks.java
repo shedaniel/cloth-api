@@ -16,7 +16,7 @@ public class ModMenuHooks {
     
     static void registerEvents() {
         AtomicReference<ModContainer> lastContainer = new AtomicReference(null);
-        ClothHooks.CLIENT_PRE_DRAW_SCREEN.registerEvent(post -> {
+        ClothHooks.CLIENT_PRE_DRAW_SCREEN.registerListener(post -> {
             if (post.getScreen() instanceof ModListScreen) {
                 ModListWidget list = ReflectionUtils.getField((ModListScreen) post.getScreen(), ModListWidget.class, 4).orElse(null);
                 ModContainer selectedContainer = list != null && list.selected != null ? list.selected.container : null;
