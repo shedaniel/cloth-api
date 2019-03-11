@@ -44,11 +44,11 @@ public abstract class EventManager<T> {
     }
     
     public void registerListener(Consumer<T> o, EventPriority p) {
-        listeners.add(new Pair<>(o, p.getPriorityDouble()));
+        listeners.add(new Pair<>(o, p.getPriority()));
     }
     
     public void registerListener(Consumer<T> o) {
-        registerListener(o, EventPriority.NORMAL.getPriorityDouble());
+        registerListener(o, EventPriority.NORMAL.getPriority());
     }
     
 }

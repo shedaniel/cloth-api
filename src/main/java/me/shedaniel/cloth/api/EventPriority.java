@@ -11,15 +11,15 @@ public enum EventPriority implements Comparator<EventPriority> {
         this.priority = priority;
     }
     
-    public double getPriorityDouble() {
+    public double getPriority() {
         return priority;
     }
     
     @Override
     public int compare(EventPriority o1, EventPriority o2) {
-        if (o1.getPriorityDouble() == o2.getPriorityDouble())
+        if (o1.getPriority() == o2.getPriority())
             return 0;
-        return o1.getPriorityDouble() > o2.getPriorityDouble() ? 1 : -1;
+        return o1.getPriority() > o2.getPriority() ? 1 : -1;
     }
     
 }
