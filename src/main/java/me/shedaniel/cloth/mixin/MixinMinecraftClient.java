@@ -13,7 +13,7 @@ public class MixinMinecraftClient {
     
     @Inject(method = "handleInputEvents", at = @At("HEAD"))
     private void onHandleInputEvents(CallbackInfo ci) {
-        ClothHooks.CLIENT_HANDLE_INPUT.invoke(new ClientHandleInputEvent(MinecraftClient.getInstance()));
+        ClothHooks.CLIENT_HANDLE_INPUT.invoke(new ClientHandleInputEvent((MinecraftClient) (Object) this));
     }
     
 }

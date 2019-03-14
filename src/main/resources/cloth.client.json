@@ -6,7 +6,7 @@
     "MixinScreen",
     "MixinClientPlayNetworkHandler",
     "MixinMinecraftClient",
-    "MixinButtonWidget"
+    "MixinClass4185"
   ],
   "injectors": {
     "defaultRequire": 1

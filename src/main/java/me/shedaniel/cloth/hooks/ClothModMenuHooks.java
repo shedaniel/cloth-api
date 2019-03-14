@@ -11,7 +11,7 @@ public class ClothModMenuHooks {
     
     public static void loadHooks() {
         isModMenuLoaded = FabricLoader.getInstance().isModLoaded("modmenu");
-        if (isModMenuLoaded)
+        if (false && isModMenuLoaded)
             try {
                 Class.forName("me.shedaniel.cloth.hooks.ModMenuHooks").getDeclaredMethod("registerEvents").invoke(null);
             } catch (Exception e) {

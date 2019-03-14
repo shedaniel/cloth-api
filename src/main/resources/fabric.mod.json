@@ -2,7 +2,7 @@
   "id": "cloth",
   "name": "Cloth API",
   "description": "An API for events.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "side": "universal",
   "initializers": [
     "me.shedaniel.cloth.ClothInitializer"
