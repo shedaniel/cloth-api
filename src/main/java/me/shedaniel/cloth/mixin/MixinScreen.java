@@ -1,10 +1,10 @@
 package me.shedaniel.cloth.mixin;
 
-import me.shedaniel.cloth.hooks.ScreenHooks;
 import me.shedaniel.cloth.events.ClientDrawScreenEvent;
 import me.shedaniel.cloth.events.ClientInitScreenEvent;
 import me.shedaniel.cloth.events.ClientScreenAddButtonEvent;
 import me.shedaniel.cloth.hooks.ClothHooks;
+import me.shedaniel.cloth.hooks.ScreenHooks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.InputListener;
 import net.minecraft.client.gui.Screen;
@@ -23,9 +23,12 @@ import java.util.function.Consumer;
 @Mixin(Screen.class)
 public abstract class MixinScreen implements ScreenHooks {
     
-    @Shadow protected MinecraftClient client;
+    @Shadow
+    protected MinecraftClient client;
     
-    @Shadow @Final protected List<ButtonWidget> buttons;
+    @Shadow
+    @Final
+    protected List<ButtonWidget> buttons;
     
     @Override
     public List<ButtonWidget> cloth_getButtonWidgets() {
@@ -75,7 +78,7 @@ public abstract class MixinScreen implements ScreenHooks {
             ClothHooks.CLIENT_POST_INIT_SCREEN.invoke(new ClientInitScreenEvent.Post(client, (Screen) (Object) this));
     }
     
-    @Inject(method = "addButton", at = @At("HEAD"))
+    @Inject(method = "addButton", at = @At("HEAD"), cancellable = true)
     public void onAddButton(ButtonWidget widget, CallbackInfoReturnable<ButtonWidget> info) {
         if (!info.isCancelled())
             for(Consumer<ClientScreenAddButtonEvent> sortedListener : ClothHooks.CLIENT_SCREEN_ADD_BUTTON.getSortedListeners()) {
