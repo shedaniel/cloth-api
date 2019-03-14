@@ -1,7 +1,6 @@
 package me.shedaniel.cloth.mixin;
 
-import me.shedaniel.cloth.api.Cancelable;
-import me.shedaniel.cloth.api.ScreenHooks;
+import me.shedaniel.cloth.hooks.ScreenHooks;
 import me.shedaniel.cloth.events.ClientDrawScreenEvent;
 import me.shedaniel.cloth.events.ClientInitScreenEvent;
 import me.shedaniel.cloth.events.ClientScreenAddButtonEvent;
@@ -28,25 +27,23 @@ public abstract class MixinScreen implements ScreenHooks {
     
     @Shadow @Final protected List<ButtonWidget> buttons;
     
-    @Shadow public abstract List<? extends InputListener> getInputListeners();
-    
     @Override
-    public List<ButtonWidget> getButtonWidgets() {
+    public List<ButtonWidget> cloth_getButtonWidgets() {
         return buttons;
     }
     
     @Override
-    public List<InputListener> getInputs() {
-        return (List) getInputListeners();
+    public List<InputListener> cloth_getInputListeners() {
+        return (List) ((Screen) (Object) this).getInputListeners();
     }
     
     @Inject(method = "draw(IIF)V", at = @At("HEAD"), cancellable = true)
     public void onPreDraw(int mouseX, int mouseY, float delta, CallbackInfo info) {
         if (!info.isCancelled())
             for(Consumer<ClientDrawScreenEvent.Pre> sortedListener : ClothHooks.CLIENT_PRE_DRAW_SCREEN.getSortedListeners()) {
-                Cancelable cancelable = new Cancelable();
-                sortedListener.accept(new ClientDrawScreenEvent.Pre(client, (Screen) (Object) this, mouseX, mouseY, delta, cancelable));
-                if (cancelable.isCancelled()) {
+                ClientDrawScreenEvent.Pre event;
+                sortedListener.accept(event = new ClientDrawScreenEvent.Pre(client, (Screen) (Object) this, mouseX, mouseY, delta));
+                if (event.isCancelled()) {
                     info.cancel();
                     return;
                 }
@@ -63,9 +60,9 @@ public abstract class MixinScreen implements ScreenHooks {
     public void onPreInit(CallbackInfo info) {
         if (!info.isCancelled())
             for(Consumer<ClientInitScreenEvent.Pre> sortedListener : ClothHooks.CLIENT_PRE_INIT_SCREEN.getSortedListeners()) {
-                Cancelable cancelable = new Cancelable();
-                sortedListener.accept(new ClientInitScreenEvent.Pre(client, (Screen) (Object) this, cancelable));
-                if (cancelable.isCancelled()) {
+                ClientInitScreenEvent.Pre event;
+                sortedListener.accept(event = new ClientInitScreenEvent.Pre(client, (Screen) (Object) this));
+                if (event.isCancelled()) {
                     info.cancel();
                     return;
                 }
@@ -82,9 +79,9 @@ public abstract class MixinScreen implements ScreenHooks {
     public void onAddButton(ButtonWidget widget, CallbackInfoReturnable<ButtonWidget> info) {
         if (!info.isCancelled())
             for(Consumer<ClientScreenAddButtonEvent> sortedListener : ClothHooks.CLIENT_SCREEN_ADD_BUTTON.getSortedListeners()) {
-                Cancelable cancelable = new Cancelable();
-                sortedListener.accept(new ClientScreenAddButtonEvent(client, (Screen) (Object) this, widget, cancelable));
-                if (cancelable.isCancelled()) {
+                ClientScreenAddButtonEvent event;
+                sortedListener.accept(event = new ClientScreenAddButtonEvent(client, (Screen) (Object) this, widget));
+                if (event.isCancelled()) {
                     info.cancel();
                     return;
                 }

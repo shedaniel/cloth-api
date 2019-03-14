@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ClothInitializer implements ClientModInitializer {
     
-    public static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getFormatterLogger("Cloth");
     
     @Override
     public void onInitializeClient() {
@@ -19,7 +19,7 @@ public class ClothInitializer implements ClientModInitializer {
         
         Runnable configRunnable = () -> MinecraftClient.getInstance().openScreen(new ErrorScreen("Random", "Good Test"));
         ClothModMenuHooks.CONFIG_BUTTON_EVENT.registerListener(event -> {
-            if (event.getModContainer() != null && event.getModContainer().getMetadata().getId().equalsIgnoreCase("cloth")) {
+            if (event.getModId().equalsIgnoreCase("cloth")) {
                 event.setEnabled(true);
                 event.setClickedRunnable(configRunnable);
                 event.setCancelled(true);

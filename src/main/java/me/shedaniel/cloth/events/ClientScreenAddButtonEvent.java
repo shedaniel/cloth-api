@@ -1,23 +1,21 @@
 package me.shedaniel.cloth.events;
 
-import me.shedaniel.cloth.api.Cancelable;
-import me.shedaniel.cloth.api.CancelableEvent;
+import me.shedaniel.cloth.api.CancellableEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 
-public class ClientScreenAddButtonEvent implements CancelableEvent {
+public class ClientScreenAddButtonEvent implements CancellableEvent {
     
     private MinecraftClient client;
     private Screen screen;
     private ButtonWidget buttonWidget;
-    private Cancelable cancelable;
+    private boolean cancelled = false;
     
-    public ClientScreenAddButtonEvent(MinecraftClient client, Screen screen, ButtonWidget buttonWidget, Cancelable cancelable) {
+    public ClientScreenAddButtonEvent(MinecraftClient client, Screen screen, ButtonWidget buttonWidget) {
         this.client = client;
         this.screen = screen;
         this.buttonWidget = buttonWidget;
-        this.cancelable = cancelable;
     }
     
     public ButtonWidget getButtonWidget() {
@@ -26,12 +24,12 @@ public class ClientScreenAddButtonEvent implements CancelableEvent {
     
     @Override
     public boolean isCancelled() {
-        return cancelable.isCancelled();
+        return cancelled;
     }
     
     @Override
     public void setCancelled(boolean cancelled) {
-        cancelable.setCancelled(cancelled);
+        this.cancelled = cancelled;
     }
     
     public MinecraftClient getClient() {

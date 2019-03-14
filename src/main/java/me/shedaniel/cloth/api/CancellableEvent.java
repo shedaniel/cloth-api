@@ -1,6 +1,6 @@
 package me.shedaniel.cloth.api;
 
-public interface CancelableEvent {
+public interface CancellableEvent {
     
     void setCancelled(boolean cancelled);
     

@@ -1,4 +1,4 @@
-package me.shedaniel.cloth.api;
+package me.shedaniel.cloth.hooks;
 
 import net.minecraft.client.gui.InputListener;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface ScreenHooks {
     
-    List<ButtonWidget> getButtonWidgets();
+    List<ButtonWidget> cloth_getButtonWidgets();
     
-    List<InputListener> getInputs();
+    List<InputListener> cloth_getInputListeners();
     
 }

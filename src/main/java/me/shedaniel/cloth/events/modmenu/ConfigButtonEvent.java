@@ -1,21 +1,20 @@
 package me.shedaniel.cloth.events.modmenu;
 
-import me.shedaniel.cloth.api.Cancelable;
-import me.shedaniel.cloth.api.CancelableEvent;
+import me.shedaniel.cloth.api.CancellableEvent;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.gui.widget.ButtonWidget;
 
-public class ConfigButtonEvent implements CancelableEvent {
+public class ConfigButtonEvent implements CancellableEvent {
     
     private ModContainer modContainer;
-    private Cancelable cancelable;
+    private boolean cancelled;
     private ButtonWidget widget;
     
     public ConfigButtonEvent(ModContainer modContainer, ButtonWidget widget) {
         this.modContainer = modContainer;
         this.widget = widget;
         this.widget.enabled = false;
-        this.cancelable = new Cancelable();
+        this.cancelled = false;
     }
     
     public void setClickedRunnable(Runnable r) {
@@ -42,14 +41,18 @@ public class ConfigButtonEvent implements CancelableEvent {
         return modContainer;
     }
     
+    public String getModId() {
+        return modContainer != null ? modContainer.getMetadata().getId() : "";
+    }
+    
     @Override
     public boolean isCancelled() {
-        return cancelable.isCancelled();
+        return cancelled;
     }
     
     @Override
     public void setCancelled(boolean cancelled) {
-        cancelable.setCancelled(cancelled);
+        this.cancelled = cancelled;
     }
     
     public boolean isEnabled() {

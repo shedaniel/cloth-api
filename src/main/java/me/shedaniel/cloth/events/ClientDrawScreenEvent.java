@@ -1,8 +1,7 @@
 package me.shedaniel.cloth.events;
 
-import me.shedaniel.cloth.api.Cancelable;
-import me.shedaniel.cloth.api.CancelableEvent;
-import me.shedaniel.cloth.api.ScreenHooks;
+import me.shedaniel.cloth.api.CancellableEvent;
+import me.shedaniel.cloth.hooks.ScreenHooks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.InputListener;
 import net.minecraft.client.gui.Screen;
@@ -34,11 +33,11 @@ public class ClientDrawScreenEvent {
     }
     
     public List<ButtonWidget> getButtonWidgets() {
-        return ((ScreenHooks) screen).getButtonWidgets();
+        return ((ScreenHooks) screen).cloth_getButtonWidgets();
     }
     
     public List<InputListener> getInputListeners() {
-        return ((ScreenHooks) screen).getInputs();
+        return ((ScreenHooks) screen).cloth_getInputListeners();
     }
     
     public int getMouseX() {
@@ -53,22 +52,21 @@ public class ClientDrawScreenEvent {
         return delta;
     }
     
-    public static class Pre extends ClientDrawScreenEvent implements CancelableEvent {
-        private Cancelable cancelable;
+    public static class Pre extends ClientDrawScreenEvent implements CancellableEvent {
+        private boolean cancelled = false;
         
-        public Pre(MinecraftClient client, Screen screen, int mouseX, int mouseY, float delta, Cancelable cancelable) {
+        public Pre(MinecraftClient client, Screen screen, int mouseX, int mouseY, float delta) {
             super(client, screen, mouseX, mouseY, delta);
-            this.cancelable = cancelable;
         }
         
         @Override
         public boolean isCancelled() {
-            return cancelable.isCancelled();
+            return cancelled;
         }
         
         @Override
         public void setCancelled(boolean cancelled) {
-            cancelable.setCancelled(cancelled);
+            this.cancelled = cancelled;
         }
     }
     
