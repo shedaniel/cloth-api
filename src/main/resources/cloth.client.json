@@ -5,8 +5,7 @@
   "mixins": [
     "MixinScreen",
     "MixinClientPlayNetworkHandler",
-    "MixinMinecraftClient",
-    "MixinClass4185"
+    "MixinMinecraftClient"
   ],
   "injectors": {
     "defaultRequire": 1

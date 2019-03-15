@@ -2,27 +2,24 @@ package me.shedaniel.cloth.events.modmenu;
 
 import me.shedaniel.cloth.api.CancellableEvent;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
 
+// To be removed in next snapshot
 public class ConfigButtonEvent implements CancellableEvent {
     
     private ModContainer modContainer;
     private boolean cancelled;
-    private ButtonWidget widget;
+    private AbstractButtonWidget widget;
     
-    public ConfigButtonEvent(ModContainer modContainer, ButtonWidget widget) {
+    public ConfigButtonEvent(ModContainer modContainer, AbstractButtonWidget widget) {
         this.modContainer = modContainer;
-        this.widget = widget;
+        this.widget = new AbstractButtonWidget(0, 0, "") {};
         this.widget.enabled = false;
         this.cancelled = false;
     }
     
     public void setClickedRunnable(Runnable r) {
-        try {
-            Class.forName("me.shedaniel.cloth.hooks.ModMenuHooks").getDeclaredField("onButtonClicked").set(null, r);
-        } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+    
     }
     
     public String getButtonText() {

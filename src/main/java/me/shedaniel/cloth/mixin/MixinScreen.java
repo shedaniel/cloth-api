@@ -8,6 +8,7 @@ import me.shedaniel.cloth.hooks.ScreenHooks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.InputListener;
 import net.minecraft.client.gui.Screen;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,10 +29,10 @@ public abstract class MixinScreen implements ScreenHooks {
     
     @Shadow
     @Final
-    protected List<ButtonWidget> buttons;
+    protected List<AbstractButtonWidget> buttons;
     
     @Override
-    public List<ButtonWidget> cloth_getButtonWidgets() {
+    public List<AbstractButtonWidget> cloth_getButtonWidgets() {
         return buttons;
     }
     
@@ -79,7 +80,7 @@ public abstract class MixinScreen implements ScreenHooks {
     }
     
     @Inject(method = "addButton", at = @At("HEAD"), cancellable = true)
-    public void onAddButton(ButtonWidget widget, CallbackInfoReturnable<ButtonWidget> info) {
+    public void onAddButton(AbstractButtonWidget widget, CallbackInfoReturnable<ButtonWidget> info) {
         if (!info.isCancelled())
             for(Consumer<ClientScreenAddButtonEvent> sortedListener : ClothHooks.CLIENT_SCREEN_ADD_BUTTON.getSortedListeners()) {
                 ClientScreenAddButtonEvent event;

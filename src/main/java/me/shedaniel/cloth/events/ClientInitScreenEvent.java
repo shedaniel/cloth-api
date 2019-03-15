@@ -5,7 +5,7 @@ import me.shedaniel.cloth.hooks.ScreenHooks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.InputListener;
 import net.minecraft.client.gui.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class ClientInitScreenEvent {
         return screen;
     }
     
-    public List<ButtonWidget> getButtonWidgets() {
+    public List<AbstractButtonWidget> getButtonWidgets() {
         return ((ScreenHooks) screen).cloth_getButtonWidgets();
     }
     

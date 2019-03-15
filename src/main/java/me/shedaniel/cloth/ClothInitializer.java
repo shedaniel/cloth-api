@@ -15,17 +15,6 @@ public class ClothInitializer implements ClientModInitializer {
     
     @Override
     public void onInitializeClient() {
-        ClothModMenuHooks.loadHooks();
-        
-        Runnable configRunnable = () -> MinecraftClient.getInstance().openScreen(new ErrorScreen("Random", "Good Test"));
-        ClothModMenuHooks.CONFIG_BUTTON_EVENT.registerListener(event -> {
-            if (event.getModId().equalsIgnoreCase("cloth")) {
-                event.setEnabled(true);
-                event.setClickedRunnable(configRunnable);
-                event.setCancelled(true);
-            }
-        }, EventPriority.LOWEST);
-        
         // Test codes
         if (true)
             return;
