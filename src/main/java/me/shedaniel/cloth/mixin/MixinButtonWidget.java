@@ -4,18 +4,18 @@ import io.github.prospector.modmenu.gui.ModListScreen;
 import me.shedaniel.cloth.hooks.ClothModMenuHooks;
 import me.shedaniel.cloth.hooks.ModMenuHooks;
 import me.shedaniel.cloth.hooks.ScreenHooks;
-import net.minecraft.class_4185;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(class_4185.class)
-public abstract class MixinClass4185 extends ButtonWidget {
+@Mixin(ButtonWidget.class)
+public abstract class MixinButtonWidget extends AbstractButtonWidget {
     
-    public MixinClass4185(int int_1, int int_2, String string_1) {
+    public MixinButtonWidget(int int_1, int int_2, String string_1) {
         super(int_1, int_2, string_1);
     }
     
