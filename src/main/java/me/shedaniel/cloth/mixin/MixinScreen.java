@@ -80,16 +80,16 @@ public abstract class MixinScreen implements ScreenHooks {
     }
     
     @Inject(method = "addButton", at = @At("HEAD"), cancellable = true)
-    public <T extends AbstractButtonWidget> void onAddButton(T widget, CallbackInfoReturnable<T> info) {
-        if (!info.isCancelled())
-            for(Consumer<ClientScreenAddButtonEvent> sortedListener : ClothHooks.CLIENT_SCREEN_ADD_BUTTON.getSortedListeners()) {
-                ClientScreenAddButtonEvent event;
-                sortedListener.accept(event = new ClientScreenAddButtonEvent(client, (Screen) (Object) this, widget));
-                if (event.isCancelled()) {
-                    info.cancel();
-                    return;
-                }
-            }
-    }
+	public <T extends AbstractButtonWidget> void onAddButton(T widget, CallbackInfoReturnable<T> info) {
+		if (!info.isCancelled() && widget instanceof ButtonWidget)
+			for(Consumer<ClientScreenAddButtonEvent> sortedListener : ClothHooks.CLIENT_SCREEN_ADD_BUTTON.getSortedListeners()) {
+				ClientScreenAddButtonEvent event;
+				sortedListener.accept(event = new ClientScreenAddButtonEvent(client, (Screen) (Object) this, (ButtonWidget)widget));
+				if (event.isCancelled()) {
+					info.cancel();
+					return;
+				}
+			}
+	}
     
 }
