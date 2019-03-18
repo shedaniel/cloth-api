@@ -24,7 +24,7 @@ public class MixinClientPlayNetworkHandler {
     private RecipeManager recipeManager;
     
     @Inject(method = "onSynchronizeRecipes", at = @At("RETURN"))
-    private void onUpdateRecipes(SynchronizeRecipesS2CPacket packetIn, CallbackInfo ci) {
+    private void onUpdateRecipes(SynchronizeRecipesS2CPacket packet, CallbackInfo ci) {
         ClothHooks.CLIENT_SYNC_RECIPES.invoke(new ClientSyncRecipesEvent(client, recipeManager));
     }
     

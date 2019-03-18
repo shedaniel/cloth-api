@@ -1,22 +1,21 @@
 package me.shedaniel.cloth;
 
+import me.shedaniel.cloth.api.ClientUtils;
 import me.shedaniel.cloth.api.EventPriority;
 import me.shedaniel.cloth.hooks.ClothHooks;
-import me.shedaniel.cloth.hooks.ClothModMenuHooks;
 import net.fabricmc.api.ClientModInitializer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.menu.ErrorScreen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ClothInitializer implements ClientModInitializer {
     
     public static final Logger LOGGER = LogManager.getFormatterLogger("Cloth");
+    public static ClientUtils clientUtils;
     
     @Override
     public void onInitializeClient() {
-        // Test codes
-        if (true)
+        clientUtils = new me.shedaniel.cloth.utils.ClientUtils();
+        if (true) // Test Codes
             return;
         ClothHooks.CLIENT_SYNC_RECIPES.registerListener(event -> {
             System.out.println("HAI");

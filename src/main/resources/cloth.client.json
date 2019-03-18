@@ -5,7 +5,9 @@
   "mixins": [
     "MixinScreen",
     "MixinClientPlayNetworkHandler",
-    "MixinMinecraftClient"
+    "MixinMinecraftClient",
+    "MixinScreenComponent",
+    "MixinMouse"
   ],
   "injectors": {
     "defaultRequire": 1
