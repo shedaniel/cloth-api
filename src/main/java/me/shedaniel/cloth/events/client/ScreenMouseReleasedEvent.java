@@ -1,22 +1,23 @@
-package me.shedaniel.cloth.events;
+package me.shedaniel.cloth.events.client;
 
 import me.shedaniel.cloth.api.CancellableEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Screen;
 
-public class ClientScreenMouseScrolledEvent implements CancellableEvent {
+public class ScreenMouseReleasedEvent implements CancellableEvent {
     
     private MinecraftClient client;
     private Screen screen;
-    private double mouseX, mouseY, amount;
+    private double mouseX, mouseY;
+    private int button;
     private boolean cancelled = false;
     
-    public ClientScreenMouseScrolledEvent(MinecraftClient client, Screen screen, double mouseX, double mouseY, double amount) {
+    public ScreenMouseReleasedEvent(MinecraftClient client, Screen screen, double mouseX, double mouseY, int button) {
         this.client = client;
         this.screen = screen;
         this.mouseX = mouseX;
         this.mouseY = mouseY;
-        this.amount = amount;
+        this.button = button;
     }
     
     public MinecraftClient getClient() {
@@ -35,8 +36,8 @@ public class ClientScreenMouseScrolledEvent implements CancellableEvent {
         return mouseY;
     }
     
-    public double getAmount() {
-        return amount;
+    public int getButton() {
+        return button;
     }
     
     @Override

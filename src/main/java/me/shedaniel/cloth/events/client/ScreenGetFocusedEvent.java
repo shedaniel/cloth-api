@@ -1,25 +1,21 @@
-package me.shedaniel.cloth.events;
+package me.shedaniel.cloth.events.client;
 
-import me.shedaniel.cloth.api.CancellableEvent;
+import me.shedaniel.cloth.api.ReturnableEvent;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.InputListener;
 import net.minecraft.client.gui.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 
-public class ClientScreenAddButtonEvent implements CancellableEvent {
+public class ScreenGetFocusedEvent implements ReturnableEvent<InputListener> {
     
     private MinecraftClient client;
     private Screen screen;
-    private AbstractButtonWidget buttonWidget;
     private boolean cancelled = false;
+    private InputListener value;
     
-    public ClientScreenAddButtonEvent(MinecraftClient client, Screen screen, AbstractButtonWidget buttonWidget) {
+    public ScreenGetFocusedEvent(MinecraftClient client, Screen screen, InputListener value) {
         this.client = client;
         this.screen = screen;
-        this.buttonWidget = buttonWidget;
-    }
-    
-    public AbstractButtonWidget getButtonWidget() {
-        return buttonWidget;
+        this.value = value;
     }
     
     @Override
@@ -38,6 +34,17 @@ public class ClientScreenAddButtonEvent implements CancellableEvent {
     
     public Screen getScreen() {
         return screen;
+    }
+    
+    @Override
+    public InputListener getReturningValue() {
+        return value;
+    }
+    
+    @Override
+    public void setReturningValue(InputListener value) {
+        this.value = value;
+        setCancelled(true);
     }
     
 }

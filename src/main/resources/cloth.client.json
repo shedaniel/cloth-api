@@ -7,7 +7,9 @@
     "MixinClientPlayNetworkHandler",
     "MixinMinecraftClient",
     "MixinScreenComponent",
-    "MixinMouse"
+    "MixinMouse",
+    "MixinKeyboard",
+    "MixinTextFieldWidget"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,19 +1,19 @@
 package me.shedaniel.cloth.api;
 
-import me.shedaniel.cloth.ClothInitializer;
-
 import java.awt.*;
 
 public interface ClientUtils {
     
     static ClientUtils getInstance() {
-        return ClothInitializer.clientUtils;
+        return me.shedaniel.cloth.utils.ClientUtils.getInstance();
+    }
+    
+    static Point getMouseLocation() {
+        return new Point((int) getInstance().getMouseX(), (int) getInstance().getMouseY());
     }
     
     double getMouseX();
     
     double getMouseY();
-    
-    Point getMouseLocation();
     
 }

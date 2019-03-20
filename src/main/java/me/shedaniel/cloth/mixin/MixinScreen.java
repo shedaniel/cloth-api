@@ -1,9 +1,9 @@
 package me.shedaniel.cloth.mixin;
 
-import me.shedaniel.cloth.events.ClientDrawScreenEvent;
-import me.shedaniel.cloth.events.ClientInitScreenEvent;
-import me.shedaniel.cloth.events.ClientScreenAddButtonEvent;
-import me.shedaniel.cloth.hooks.ClothHooks;
+import me.shedaniel.cloth.events.client.ScreenAddButtonEvent;
+import me.shedaniel.cloth.events.client.ScreenDrawEvent;
+import me.shedaniel.cloth.events.client.ScreenInitEvent;
+import me.shedaniel.cloth.hooks.ClothClientHooks;
 import me.shedaniel.cloth.hooks.ScreenHooks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.InputListener;
@@ -31,6 +31,9 @@ public abstract class MixinScreen implements ScreenHooks {
     @Final
     protected List<AbstractButtonWidget> buttons;
     
+    @Shadow
+    protected abstract <T extends AbstractButtonWidget> T addButton(T abstractButtonWidget_1);
+    
     @Override
     public List<AbstractButtonWidget> cloth_getButtonWidgets() {
         return buttons;
@@ -41,12 +44,18 @@ public abstract class MixinScreen implements ScreenHooks {
         return (List) ((Screen) (Object) this).getInputListeners();
     }
     
+    @Override
+    public AbstractButtonWidget cloth_addButton(AbstractButtonWidget buttonWidget) {
+        addButton(buttonWidget);
+        return buttonWidget;
+    }
+    
     @Inject(method = "draw(IIF)V", at = @At("HEAD"), cancellable = true)
     public void onPreDraw(int mouseX, int mouseY, float delta, CallbackInfo info) {
         if (!info.isCancelled())
-            for(Consumer<ClientDrawScreenEvent.Pre> sortedListener : ClothHooks.CLIENT_PRE_DRAW_SCREEN.getSortedListeners()) {
-                ClientDrawScreenEvent.Pre event;
-                sortedListener.accept(event = new ClientDrawScreenEvent.Pre(client, (Screen) (Object) this, mouseX, mouseY, delta));
+            for(Consumer<ScreenDrawEvent.Pre> sortedListener : ClothClientHooks.SCREEN_DRAW_PRE.getSortedListeners()) {
+                ScreenDrawEvent.Pre event;
+                sortedListener.accept(event = new ScreenDrawEvent.Pre(client, (Screen) (Object) this, mouseX, mouseY, delta));
                 if (event.isCancelled()) {
                     info.cancel();
                     return;
@@ -54,18 +63,18 @@ public abstract class MixinScreen implements ScreenHooks {
             }
     }
     
-    @Inject(method = "draw(IIF)V", at = @At("RETURN"))
+    @Inject(method = "draw(IIF)V", at = @At("TAIL"))
     public void onPostDraw(int mouseX, int mouseY, float delta, CallbackInfo info) {
         if (!info.isCancelled())
-            ClothHooks.CLIENT_POST_DRAW_SCREEN.invoke(new ClientDrawScreenEvent.Post(client, (Screen) (Object) this, mouseX, mouseY, delta));
+            ClothClientHooks.SCREEN_DRAW_POST.invoke(new ScreenDrawEvent.Post(client, (Screen) (Object) this, mouseX, mouseY, delta));
     }
     
-    @Inject(method = "onInitialized()V", at = @At("HEAD"), cancellable = true)
-    public void onPreInit(CallbackInfo info) {
+    @Inject(method = "initialize", at = @At("HEAD"), cancellable = true)
+    public void onPreInit(MinecraftClient minecraftClient_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled())
-            for(Consumer<ClientInitScreenEvent.Pre> sortedListener : ClothHooks.CLIENT_PRE_INIT_SCREEN.getSortedListeners()) {
-                ClientInitScreenEvent.Pre event;
-                sortedListener.accept(event = new ClientInitScreenEvent.Pre(client, (Screen) (Object) this));
+            for(Consumer<ScreenInitEvent.Pre> sortedListener : ClothClientHooks.SCREEN_INIT_PRE.getSortedListeners()) {
+                ScreenInitEvent.Pre event;
+                sortedListener.accept(event = new ScreenInitEvent.Pre(minecraftClient_1, (Screen) (Object) this));
                 if (event.isCancelled()) {
                     info.cancel();
                     return;
@@ -73,18 +82,18 @@ public abstract class MixinScreen implements ScreenHooks {
             }
     }
     
-    @Inject(method = "onInitialized()V", at = @At("RETURN"))
-    public void onPostInit(CallbackInfo info) {
+    @Inject(method = "initialize", at = @At("TAIL"))
+    public void onPostInit(MinecraftClient minecraftClient_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled())
-            ClothHooks.CLIENT_POST_INIT_SCREEN.invoke(new ClientInitScreenEvent.Post(client, (Screen) (Object) this));
+            ClothClientHooks.SCREEN_INIT_POST.invoke(new ScreenInitEvent.Post(minecraftClient_1, (Screen) (Object) this));
     }
     
     @Inject(method = "addButton", at = @At("HEAD"), cancellable = true)
     public void onAddButton(AbstractButtonWidget widget, CallbackInfoReturnable<ButtonWidget> info) {
         if (!info.isCancelled())
-            for(Consumer<ClientScreenAddButtonEvent> sortedListener : ClothHooks.CLIENT_SCREEN_ADD_BUTTON.getSortedListeners()) {
-                ClientScreenAddButtonEvent event;
-                sortedListener.accept(event = new ClientScreenAddButtonEvent(client, (Screen) (Object) this, widget));
+            for(Consumer<ScreenAddButtonEvent> sortedListener : ClothClientHooks.SCREEN_ADD_BUTTON.getSortedListeners()) {
+                ScreenAddButtonEvent event;
+                sortedListener.accept(event = new ScreenAddButtonEvent(client, (Screen) (Object) this, widget));
                 if (event.isCancelled()) {
                     info.cancel();
                     return;

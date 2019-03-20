@@ -1,7 +1,7 @@
 package me.shedaniel.cloth.mixin;
 
-import me.shedaniel.cloth.events.ClientSyncRecipesEvent;
-import me.shedaniel.cloth.hooks.ClothHooks;
+import me.shedaniel.cloth.events.client.SyncRecipesEvent;
+import me.shedaniel.cloth.hooks.ClothClientHooks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.SynchronizeRecipesS2CPacket;
@@ -25,7 +25,7 @@ public class MixinClientPlayNetworkHandler {
     
     @Inject(method = "onSynchronizeRecipes", at = @At("RETURN"))
     private void onUpdateRecipes(SynchronizeRecipesS2CPacket packet, CallbackInfo ci) {
-        ClothHooks.CLIENT_SYNC_RECIPES.invoke(new ClientSyncRecipesEvent(client, recipeManager));
+        ClothClientHooks.SYNC_RECIPES.invoke(new SyncRecipesEvent(client, recipeManager, packet));
     }
     
 }

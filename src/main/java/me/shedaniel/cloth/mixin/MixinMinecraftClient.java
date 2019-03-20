@@ -1,7 +1,7 @@
 package me.shedaniel.cloth.mixin;
 
-import me.shedaniel.cloth.events.ClientHandleInputEvent;
-import me.shedaniel.cloth.hooks.ClothHooks;
+import me.shedaniel.cloth.events.client.HandleInputEvent;
+import me.shedaniel.cloth.hooks.ClothClientHooks;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,7 +13,7 @@ public class MixinMinecraftClient {
     
     @Inject(method = "handleInputEvents", at = @At("HEAD"))
     private void onHandleInputEvents(CallbackInfo ci) {
-        ClothHooks.CLIENT_HANDLE_INPUT.invoke(new ClientHandleInputEvent((MinecraftClient) (Object) this));
+        ClothClientHooks.HANDLE_INPUT.invoke(new HandleInputEvent((MinecraftClient) (Object) this));
     }
     
 }

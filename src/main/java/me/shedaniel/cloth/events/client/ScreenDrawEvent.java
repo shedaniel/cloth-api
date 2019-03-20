@@ -1,4 +1,4 @@
-package me.shedaniel.cloth.events;
+package me.shedaniel.cloth.events.client;
 
 import me.shedaniel.cloth.api.CancellableEvent;
 import me.shedaniel.cloth.hooks.ScreenHooks;
@@ -9,14 +9,14 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 
 import java.util.List;
 
-public class ClientDrawScreenEvent {
+public class ScreenDrawEvent {
     
     private MinecraftClient client;
     private Screen screen;
     private int mouseX, mouseY;
     private float delta;
     
-    protected ClientDrawScreenEvent(MinecraftClient client, Screen screen, int mouseX, int mouseY, float delta) {
+    protected ScreenDrawEvent(MinecraftClient client, Screen screen, int mouseX, int mouseY, float delta) {
         this.client = client;
         this.screen = screen;
         this.mouseX = mouseX;
@@ -52,7 +52,7 @@ public class ClientDrawScreenEvent {
         return delta;
     }
     
-    public static class Pre extends ClientDrawScreenEvent implements CancellableEvent {
+    public static class Pre extends ScreenDrawEvent implements CancellableEvent {
         private boolean cancelled = false;
         
         public Pre(MinecraftClient client, Screen screen, int mouseX, int mouseY, float delta) {
@@ -70,7 +70,7 @@ public class ClientDrawScreenEvent {
         }
     }
     
-    public static class Post extends ClientDrawScreenEvent {
+    public static class Post extends ScreenDrawEvent {
         public Post(MinecraftClient client, Screen screen, int mouseX, int mouseY, float delta) {
             super(client, screen, mouseX, mouseY, delta);
         }

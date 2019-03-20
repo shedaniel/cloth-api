@@ -11,4 +11,6 @@ public interface ScreenHooks {
     
     List<InputListener> cloth_getInputListeners();
     
+    AbstractButtonWidget cloth_addButton(AbstractButtonWidget buttonWidget);
+    
 }

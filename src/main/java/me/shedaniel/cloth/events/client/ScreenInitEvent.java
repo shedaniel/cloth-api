@@ -1,4 +1,4 @@
-package me.shedaniel.cloth.events;
+package me.shedaniel.cloth.events.client;
 
 import me.shedaniel.cloth.api.CancellableEvent;
 import me.shedaniel.cloth.hooks.ScreenHooks;
@@ -9,12 +9,12 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 
 import java.util.List;
 
-public class ClientInitScreenEvent {
+public class ScreenInitEvent {
     
     private MinecraftClient client;
     private Screen screen;
     
-    protected ClientInitScreenEvent(MinecraftClient client, Screen screen) {
+    protected ScreenInitEvent(MinecraftClient client, Screen screen) {
         this.client = client;
         this.screen = screen;
     }
@@ -28,14 +28,18 @@ public class ClientInitScreenEvent {
     }
     
     public List<AbstractButtonWidget> getButtonWidgets() {
-        return ((ScreenHooks) screen).cloth_getButtonWidgets();
+        return ((ScreenHooks) getScreen()).cloth_getButtonWidgets();
+    }
+    
+    public AbstractButtonWidget addButton(AbstractButtonWidget buttonWidget) {
+        return ((ScreenHooks) getScreen()).cloth_addButton(buttonWidget);
     }
     
     public List<InputListener> getInputListeners() {
-        return ((ScreenHooks) screen).cloth_getInputListeners();
+        return ((ScreenHooks) getScreen()).cloth_getInputListeners();
     }
     
-    public static class Pre extends ClientInitScreenEvent implements CancellableEvent {
+    public static class Pre extends ScreenInitEvent implements CancellableEvent {
         private boolean cancelled = false;
         
         public Pre(MinecraftClient client, Screen screen) {
@@ -53,7 +57,7 @@ public class ClientInitScreenEvent {
         }
     }
     
-    public static class Post extends ClientInitScreenEvent {
+    public static class Post extends ScreenInitEvent {
         public Post(MinecraftClient client, Screen screen) {
             super(client, screen);
         }

@@ -2,14 +2,19 @@ package me.shedaniel.cloth.utils;
 
 import net.minecraft.client.MinecraftClient;
 
-import java.awt.*;
-
 public class ClientUtils implements me.shedaniel.cloth.api.ClientUtils {
     
+    private static ClientUtils instance;
     private MinecraftClient client;
     
     public ClientUtils() {
+        ClientUtils.instance = this;
         this.client = MinecraftClient.getInstance();
+    }
+    
+    @Deprecated
+    public static ClientUtils getInstance() {
+        return instance;
     }
     
     @Override
@@ -20,11 +25,6 @@ public class ClientUtils implements me.shedaniel.cloth.api.ClientUtils {
     @Override
     public double getMouseY() {
         return this.client.mouse.getY() * (double) this.client.window.getScaledWidth() / (double) this.client.window.getWidth();
-    }
-    
-    @Override
-    public Point getMouseLocation() {
-        return new Point((int) getMouseX(), (int) getMouseY());
     }
     
 }

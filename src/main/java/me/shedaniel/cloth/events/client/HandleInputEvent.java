@@ -1,12 +1,12 @@
-package me.shedaniel.cloth.events;
+package me.shedaniel.cloth.events.client;
 
 import net.minecraft.client.MinecraftClient;
 
-public class ClientHandleInputEvent {
+public class HandleInputEvent {
     
     private MinecraftClient client;
     
-    public ClientHandleInputEvent(MinecraftClient client) {
+    public HandleInputEvent(MinecraftClient client) {
         this.client = client;
     }
     
