@@ -511,12 +511,12 @@ public abstract class ClothConfigScreen extends Screen {
         }
         
         @Override
-        public void setShouldDisplayErrors(boolean displayErrors) {
-            this.displayErrors = displayErrors;
+        public void setShouldProcessErrors(boolean processErrors) {
+            this.displayErrors = processErrors;
         }
         
         @Override
-        public boolean shouldDisplayErrors() {
+        public boolean shouldProcessErrors() {
             return displayErrors;
         }
         

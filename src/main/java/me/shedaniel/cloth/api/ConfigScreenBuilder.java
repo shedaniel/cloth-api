@@ -52,9 +52,9 @@ public interface ConfigScreenBuilder {
     
     boolean doesConfirmSave();
     
-    void setShouldDisplayErrors(boolean displayErrors);
+    void setShouldProcessErrors(boolean processErrors);
     
-    boolean shouldDisplayErrors();
+    boolean shouldProcessErrors();
     
     @Deprecated
     public Map<String, List<Pair<String, Object>>> getDataMap();
