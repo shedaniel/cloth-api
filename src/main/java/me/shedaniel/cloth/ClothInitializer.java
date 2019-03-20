@@ -19,6 +19,8 @@ public class ClothInitializer implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         new ClientUtils();
+        if (true) // Test Codes
+            return;
         AtomicBoolean test = new AtomicBoolean(false);
         ClothClientHooks.SCREEN_INIT_POST.registerListener(post -> {
             if (post.getScreen() instanceof MainMenuScreen) {
@@ -37,8 +39,6 @@ public class ClothInitializer implements ClientModInitializer {
                 });
             }
         });
-        if (true) // Test Codes
-            return;
         ClothClientHooks.SYNC_RECIPES.registerListener(event -> {
             System.out.println("HAI");
         });
