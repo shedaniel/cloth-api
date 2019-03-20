@@ -2,6 +2,7 @@ package me.shedaniel.cloth;
 
 import me.shedaniel.cloth.api.EventPriority;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
+import me.shedaniel.cloth.gui.entries.IntegerListEntry;
 import me.shedaniel.cloth.hooks.ClothClientHooks;
 import me.shedaniel.cloth.utils.ClientUtils;
 import net.fabricmc.api.ClientModInitializer;
@@ -31,7 +32,7 @@ public class ClothInitializer implements ClientModInitializer {
                         builder.addCategories("Boolean Zone", "Number Zone", "Test Empty 1", "Test Empty 2", "Test Empty 3", "Test Empty 4", "Test Empty 5", "Test Empty 6");
                         builder.addOption("Boolean Zone", "Basic Boolean", test.get());
                         builder.addOption("Boolean Zone", "Boolean 2", true);
-                        builder.addOption("Number Zone", "Integer", 1);
+                        builder.addOption("Number Zone", new IntegerListEntry("Integer", 2).setMaximum(99).setMinimum(2));
                         builder.addOption("Number Zone", "Long", 1l);
                         builder.addOption("Number Zone", "Float", 1f);
                         builder.addOption("Number Zone", "Double", 1d);

@@ -21,9 +21,12 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
         
         return stringBuilder_1.toString();
     };
+    private double minimum, maximum;
     
     public DoubleListEntry(String fieldName, Double value) {
         super(fieldName, value);
+        this.minimum = Double.MIN_VALUE;
+        this.maximum = Double.MAX_VALUE;
         this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 148, 18) {
             @Override
             public void addText(String string_1) {
@@ -33,8 +36,11 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
             @Override
             public void draw(int int_1, int int_2, float float_1) {
                 try {
-                    Double.valueOf(textFieldWidget.getText());
-                    method_1868(14737632);
+                    double i = Double.valueOf(textFieldWidget.getText());
+                    if (i < minimum || i > maximum)
+                        method_1868(16733525);
+                    else
+                        method_1868(14737632);
                 } catch (NumberFormatException ex) {
                     method_1868(16733525);
                 }
@@ -49,6 +55,16 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
         });
     }
     
+    public DoubleListEntry setMinimum(double minimum) {
+        this.minimum = minimum;
+        return this;
+    }
+    
+    public DoubleListEntry setMaximum(double maximum) {
+        this.maximum = maximum;
+        return this;
+    }
+    
     @Override
     public Object getObject() {
         try {
@@ -61,7 +77,11 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
     @Override
     public Optional<String> getError() {
         try {
-            Double.valueOf(textFieldWidget.getText());
+            double i = Double.valueOf(textFieldWidget.getText());
+            if (i > maximum)
+                return Optional.of(I18n.translate("text.cloth.error.too_large", maximum));
+            else if (i < minimum)
+                return Optional.of(I18n.translate("text.cloth.error.too_small", minimum));
         } catch (NumberFormatException ex) {
             return Optional.of(I18n.translate("text.cloth.error.not_valid_number_double"));
         }
