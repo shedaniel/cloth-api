@@ -44,11 +44,17 @@ public interface ConfigScreenBuilder {
     
     void addOption(String category, String key, Object object);
     
+    void addOption(String category, ClothConfigScreen.AbstractListEntry entry);
+    
     List<Pair<String, Object>> getOptions(String category);
     
     void setDoesConfirmSave(boolean confirmSave);
     
     boolean doesConfirmSave();
+    
+    void setShouldDisplayErrors(boolean displayErrors);
+    
+    boolean shouldDisplayErrors();
     
     @Deprecated
     public Map<String, List<Pair<String, Object>>> getDataMap();

@@ -19,8 +19,6 @@ public class ClothInitializer implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         new ClientUtils();
-        if (true) // Test Codes
-            return;
         AtomicBoolean test = new AtomicBoolean(false);
         ClothClientHooks.SCREEN_INIT_POST.registerListener(post -> {
             if (post.getScreen() instanceof MainMenuScreen) {
@@ -28,17 +26,22 @@ public class ClothInitializer implements ClientModInitializer {
                     @Override
                     public void onPressed() {
                         ClothConfigScreen.Builder builder = new ClothConfigScreen.Builder(post.getScreen(), "Test Mod Config", stringListMap -> {
-                            stringListMap.get("General").stream().filter(pair -> pair.getKey().equals("text.dawdawdaw")).findFirst().ifPresent(pair -> test.set((Boolean) pair.getValue()));
+                            stringListMap.get("Boolean Zone").stream().filter(pair -> pair.getKey().equals("Basic Boolean")).findFirst().ifPresent(pair -> test.set((Boolean) pair.getValue()));
                         });
-                        builder.addCategories("General", "Test Empty 1", "Test Empty 2", "Test Empty 3", "Test Empty 4", "Test Empty 5", "Test Empty 6", "Not Sure");
-                        builder.addOption("General", "text.dawdawdaw", test.get());
-                        builder.addOption("General", "dawdwad", "dwajdhawi");
-                        builder.addOption("Not Sure", "text.dawd", "dawd");
+                        builder.addCategories("Boolean Zone", "Number Zone", "Test Empty 1", "Test Empty 2", "Test Empty 3", "Test Empty 4", "Test Empty 5", "Test Empty 6");
+                        builder.addOption("Boolean Zone", "Basic Boolean", test.get());
+                        builder.addOption("Boolean Zone", "Boolean 2", true);
+                        builder.addOption("Number Zone", "Integer", 1);
+                        builder.addOption("Number Zone", "Long", 1l);
+                        builder.addOption("Number Zone", "Float", 1f);
+                        builder.addOption("Number Zone", "Double", 1d);
                         post.getClient().openScreen(builder.build());
                     }
                 });
             }
         });
+        if (true) // Test Codes
+            return;
         ClothClientHooks.SYNC_RECIPES.registerListener(event -> {
             System.out.println("HAI");
         });

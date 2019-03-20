@@ -8,8 +8,7 @@ import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import javafx.util.Pair;
 import me.shedaniel.cloth.api.ConfigScreenBuilder;
-import me.shedaniel.cloth.gui.entries.BooleanListEntry;
-import me.shedaniel.cloth.gui.entries.StringListEntry;
+import me.shedaniel.cloth.gui.entries.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
@@ -26,10 +25,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
-import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -52,13 +49,14 @@ public abstract class ClothConfigScreen extends Screen {
     private String title;
     private double tabsScrollProgress = 0d;
     private double tabsMaximumScrolled = -1d;
+    private boolean displayErrors;
     private List<ClothConfigTabButton> tabButtons;
     
     public ClothConfigScreen(Screen parent, String title, Map<String, List<Pair<String, Object>>> o) {
-        this(parent, title, o, true);
+        this(parent, title, o, true, true);
     }
     
-    public ClothConfigScreen(Screen parent, String title, Map<String, List<Pair<String, Object>>> o, boolean confirmSave) {
+    public ClothConfigScreen(Screen parent, String title, Map<String, List<Pair<String, Object>>> o, boolean confirmSave, boolean displayErrors) {
         this.parent = parent;
         this.title = title;
         this.tabbedEntries = Maps.newLinkedHashMap();
@@ -73,6 +71,14 @@ public abstract class ClothConfigScreen extends Screen {
                     list.add(new BooleanListEntry(pair.getKey(), (boolean) pair.getValue()));
                 } else if (String.class.isAssignableFrom(pair.getValue().getClass())) {
                     list.add(new StringListEntry(pair.getKey(), (String) pair.getValue()));
+                } else if (int.class.isAssignableFrom(pair.getValue().getClass()) || Integer.class.isAssignableFrom(pair.getValue().getClass())) {
+                    list.add(new IntegerListEntry(pair.getKey(), (int) pair.getValue()));
+                } else if (long.class.isAssignableFrom(pair.getValue().getClass()) || Long.class.isAssignableFrom(pair.getValue().getClass())) {
+                    list.add(new LongListEntry(pair.getKey(), (long) pair.getValue()));
+                } else if (float.class.isAssignableFrom(pair.getValue().getClass()) || Float.class.isAssignableFrom(pair.getValue().getClass())) {
+                    list.add(new FloatListEntry(pair.getKey(), (float) pair.getValue()));
+                } else if (double.class.isAssignableFrom(pair.getValue().getClass()) || Double.class.isAssignableFrom(pair.getValue().getClass())) {
+                    list.add(new DoubleListEntry(pair.getKey(), (double) pair.getValue()));
                 } else {
                     throw new IllegalArgumentException("Unsupported Type (" + pair.getKey() + "): " + pair.getValue().getClass().getSimpleName());
                 }
@@ -87,6 +93,7 @@ public abstract class ClothConfigScreen extends Screen {
         this.tabs = tabbedEntries.keySet().stream().map(s -> new Pair<>(s, textRenderer.getStringWidth(s) + 8)).collect(Collectors.toList());
         this.tabsScrollProgress = 0d;
         this.tabButtons = Lists.newArrayList();
+        this.displayErrors = displayErrors;
     }
     
     public boolean isEdited() {
@@ -121,7 +128,7 @@ public abstract class ClothConfigScreen extends Screen {
                     client.openScreen(parent);
             }
         });
-        addButton(buttonSave = new ButtonWidget(screenWidth / 2 + 4, screenHeight - 26, 150, 20, I18n.translate("text.cloth.save_and_done")) {
+        addButton(buttonSave = new ButtonWidget(screenWidth / 2 + 4, screenHeight - 26, 150, 20, "") {
             @Override
             public void onPressed() {
                 Map<String, List<Pair<String, Object>>> map = Maps.newLinkedHashMap();
@@ -131,6 +138,24 @@ public abstract class ClothConfigScreen extends Screen {
                 });
                 onSave(map);
                 ClothConfigScreen.this.client.openScreen(parent);
+            }
+            
+            @Override
+            public void draw(int int_1, int int_2, float float_1) {
+                boolean hasErrors = false;
+                if (displayErrors)
+                    for(List<AbstractListEntry> entries : Lists.newArrayList(tabbedEntries.values())) {
+                        for(AbstractListEntry entry : entries)
+                            if (entry.getError().isPresent()) {
+                                hasErrors = true;
+                                break;
+                            }
+                        if (hasErrors)
+                            break;
+                    }
+                enabled = edited && !hasErrors;
+                setText(displayErrors && hasErrors ? I18n.translate("text.cloth.error_cannot_save") : I18n.translate("text.cloth.save_and_done"));
+                super.draw(int_1, int_2, float_1);
             }
         });
         buttonSave.enabled = edited;
@@ -237,6 +262,23 @@ public abstract class ClothConfigScreen extends Screen {
         drawShades();
         buttonLeftTab.draw(int_1, int_2, float_1);
         buttonRightTab.draw(int_1, int_2, float_1);
+        
+        if (displayErrors) {
+            List<String> errors = Lists.newArrayList();
+            for(List<AbstractListEntry> entries : Lists.newArrayList(tabbedEntries.values()))
+                for(AbstractListEntry entry : entries)
+                    if (entry.getError().isPresent())
+                        errors.add(entry.getError().get());
+            if (errors.size() > 0) {
+                client.getTextureManager().bindTexture(CONFIG_TEX);
+                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                drawTexturedRect(10, 10, 0, 54, 3, 11);
+                if (errors.size() == 1)
+                    drawString(client.textRenderer, "§c" + errors.get(0), 18, 12, -1);
+                else
+                    drawString(client.textRenderer, "§c" + I18n.translate("text.cloth.multi_error"), 18, 12, -1);
+            }
+        }
         super.draw(int_1, int_2, float_1);
     }
     
@@ -337,6 +379,10 @@ public abstract class ClothConfigScreen extends Screen {
         public abstract String getFieldName();
         
         public abstract Object getObject();
+        
+        public Optional<String> getError() {
+            return Optional.empty();
+        }
     }
     
     public static abstract class ListEntry extends AbstractListEntry {
@@ -358,6 +404,7 @@ public abstract class ClothConfigScreen extends Screen {
         private String title;
         private Consumer<Map<String, List<Pair<String, Object>>>> onSave;
         private boolean confirmSave;
+        private boolean displayErrors;
         
         public Builder() {
             this(null, I18n.translate("text.cloth.config"), null);
@@ -369,6 +416,7 @@ public abstract class ClothConfigScreen extends Screen {
             this.dataMap = Maps.newLinkedHashMap();
             this.onSave = onSave;
             this.confirmSave = true;
+            this.displayErrors = true;
         }
         
         @Override
@@ -433,6 +481,13 @@ public abstract class ClothConfigScreen extends Screen {
         }
         
         @Override
+        public void addOption(String category, AbstractListEntry entry) {
+            if (!hasCategory(category))
+                throw new IllegalArgumentException("The category doesn't exist!");
+            dataMap.get(category).add(new Pair<>(entry.getFieldName(), entry));
+        }
+        
+        @Override
         public List<Pair<String, Object>> getOptions(String category) {
             if (!hasCategory(category))
                 throw new IllegalArgumentException("The category doesn't exist!");
@@ -456,8 +511,18 @@ public abstract class ClothConfigScreen extends Screen {
         }
         
         @Override
+        public void setShouldDisplayErrors(boolean displayErrors) {
+            this.displayErrors = displayErrors;
+        }
+        
+        @Override
+        public boolean shouldDisplayErrors() {
+            return displayErrors;
+        }
+        
+        @Override
         public ClothConfigScreen build() {
-            return new ClothConfigScreen(parentScreen, title, dataMap, confirmSave) {
+            return new ClothConfigScreen(parentScreen, title, dataMap, confirmSave, displayErrors) {
                 @Override
                 public void onSave(Map<String, List<Pair<String, Object>>> o) {
                     if (getOnSave() != null)
