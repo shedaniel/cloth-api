@@ -7,6 +7,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import javafx.util.Pair;
+import me.shedaniel.cloth.api.ConfigScreenBuilder;
 import me.shedaniel.cloth.gui.entries.BooleanListEntry;
 import me.shedaniel.cloth.gui.entries.StringListEntry;
 import net.minecraft.client.MinecraftClient;
@@ -25,9 +26,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public abstract class ClothConfigScreen extends Screen {
@@ -346,6 +349,121 @@ public abstract class ClothConfigScreen extends Screen {
         @Override
         public String getFieldName() {
             return fieldName;
+        }
+    }
+    
+    public static class Builder implements ConfigScreenBuilder {
+        private Screen parentScreen;
+        private Map<String, List<Pair<String, Object>>> dataMap;
+        private String title;
+        private Consumer<Map<String, List<Pair<String, Object>>>> onSave;
+        private boolean confirmSave;
+        
+        public Builder() {
+            this(null, I18n.translate("text.cloth.config"), null);
+        }
+        
+        public Builder(Screen parentScreen, String title, Consumer<Map<String, List<Pair<String, Object>>>> onSave) {
+            this.parentScreen = parentScreen;
+            this.title = title;
+            this.dataMap = Maps.newLinkedHashMap();
+            this.onSave = onSave;
+            this.confirmSave = true;
+        }
+        
+        @Override
+        public Screen getParentScreen() {
+            return parentScreen;
+        }
+        
+        @Override
+        public void setParentScreen(Screen parent) {
+            parentScreen = parent;
+        }
+        
+        @Override
+        public String getTitle() {
+            return title;
+        }
+        
+        @Override
+        public void setTitle(String title) {
+            this.title = title == null ? "" : title;
+        }
+        
+        @Override
+        public Consumer<Map<String, List<Pair<String, Object>>>> getOnSave() {
+            return onSave;
+        }
+        
+        @Override
+        public void setOnSave(Consumer<Map<String, List<Pair<String, Object>>>> onSave) {
+            this.onSave = onSave;
+        }
+        
+        @Override
+        public List<String> getCategories() {
+            return Collections.unmodifiableList(Lists.newArrayList(dataMap.keySet()));
+        }
+        
+        @Override
+        public boolean hasCategory(String category) {
+            return getCategories().contains(category);
+        }
+        
+        @Override
+        public void addCategory(String category) {
+            if (hasCategory(category))
+                throw new IllegalArgumentException("The category is already added!");
+            dataMap.put(category, Lists.newLinkedList());
+        }
+        
+        @Override
+        public void removeCategory(String category) {
+            if (!hasCategory(category))
+                throw new IllegalArgumentException("The category doesn't exist!");
+            dataMap.remove(category);
+        }
+        
+        @Override
+        public void addOption(String category, String key, Object object) {
+            if (!hasCategory(category))
+                throw new IllegalArgumentException("The category doesn't exist!");
+            dataMap.get(category).add(new Pair<>(key, object));
+        }
+        
+        @Override
+        public List<Pair<String, Object>> getOptions(String category) {
+            if (!hasCategory(category))
+                throw new IllegalArgumentException("The category doesn't exist!");
+            return Collections.unmodifiableList(dataMap.get(category));
+        }
+        
+        @Override
+        public void setDoesConfirmSave(boolean confirmSave) {
+            this.confirmSave = confirmSave;
+        }
+        
+        @Override
+        public boolean doesConfirmSave() {
+            return confirmSave;
+        }
+        
+        @Deprecated
+        @Override
+        public Map<String, List<Pair<String, Object>>> getDataMap() {
+            return dataMap;
+        }
+        
+        @Override
+        public ClothConfigScreen build() {
+            return new ClothConfigScreen(parentScreen, title, dataMap, confirmSave) {
+                @Override
+                public void onSave(Map<String, List<Pair<String, Object>>> o) {
+                    if (getOnSave() != null)
+                        getOnSave().accept(o);
+                }
+            };
         }
     }
     
