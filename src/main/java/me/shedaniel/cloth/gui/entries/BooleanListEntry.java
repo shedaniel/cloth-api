@@ -41,7 +41,7 @@ public class BooleanListEntry extends ListEntry {
         Window window = MinecraftClient.getInstance().window;
         Point mouse = ClientUtils.getMouseLocation();
         this.buttonWidget.y = getY();
-        this.buttonWidget.setText(getYesNoText(bool.get()));
+        this.buttonWidget.setMessage(getYesNoText(bool.get()));
         if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {
             MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), window.getScaledWidth() - getX() - MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(getFieldName())), getY() + 5, 16777215);
             this.buttonWidget.x = getX();
@@ -49,7 +49,7 @@ public class BooleanListEntry extends ListEntry {
             MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), getX(), getY() + 5, 16777215);
             this.buttonWidget.x = window.getScaledWidth() - getX() - buttonWidget.getWidth();
         }
-        buttonWidget.draw(mouse.x, mouse.y, delta);
+        buttonWidget.render(mouse.x, mouse.y, delta);
     }
     
     public String getYesNoText(boolean bool) {

@@ -25,7 +25,7 @@ public class LongListEntry extends TextFieldListEntry<Long> {
     
     public LongListEntry(String fieldName, Long value) {
         super(fieldName, value);
-        this.minimum = Long.MIN_VALUE;
+        this.minimum = -Long.MAX_VALUE;
         this.maximum = Long.MAX_VALUE;
         this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 148, 18) {
             @Override
@@ -34,7 +34,7 @@ public class LongListEntry extends TextFieldListEntry<Long> {
             }
             
             @Override
-            public void draw(int int_1, int int_2, float float_1) {
+            public void render(int int_1, int int_2, float float_1) {
                 try {
                     long i = Long.valueOf(textFieldWidget.getText());
                     if (i < minimum || i > maximum)
@@ -44,7 +44,7 @@ public class LongListEntry extends TextFieldListEntry<Long> {
                 } catch (NumberFormatException ex) {
                     method_1868(16733525);
                 }
-                super.draw(int_1, int_2, float_1);
+                super.render(int_1, int_2, float_1);
             }
         };
         textFieldWidget.setText(String.valueOf(value));

@@ -6,6 +6,7 @@ import net.minecraft.client.gui.Screen;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public interface ConfigScreenBuilder {
@@ -18,15 +19,17 @@ public interface ConfigScreenBuilder {
     
     void setParentScreen(Screen parent);
     
-    Consumer<Map<String, List<Pair<String, Object>>>> getOnSave();
+    Consumer<SavedConfig> getOnSave();
     
-    void setOnSave(Consumer<Map<String, List<Pair<String, Object>>>> onSave);
+    void setOnSave(Consumer<SavedConfig> onSave);
     
     ClothConfigScreen build();
     
     List<String> getCategories();
     
-    void addCategory(String category);
+    CategoryBuilder addCategory(String category);
+    
+    CategoryBuilder getCategory(String category);
     
     default void addCategories(String... categories) {
         for(String category : categories)
@@ -58,5 +61,45 @@ public interface ConfigScreenBuilder {
     
     @Deprecated
     public Map<String, List<Pair<String, Object>>> getDataMap();
+    
+    public static interface CategoryBuilder {
+        List<Pair<String, Object>> getOptions();
+        
+        CategoryBuilder addOption(ClothConfigScreen.AbstractListEntry entry);
+        
+        CategoryBuilder addOption(String key, Object object);
+        
+        ConfigScreenBuilder removeFromParent();
+        
+        ConfigScreenBuilder parent();
+        
+        String getName();
+        
+        boolean exists();
+    }
+    
+    public static interface SavedConfig {
+        boolean containsCategory(String category);
+        
+        SavedCategory getCategory(String category);
+    }
+    
+    public static interface SavedCategory {
+        boolean exists();
+        
+        String getName();
+        
+        List<Pair<String, Object>> getOptionPairs();
+        
+        List<SavedOption> getOptions();
+        
+        Optional<SavedOption> getOption(String fieldKey);
+    }
+    
+    public static interface SavedOption {
+        String getFieldKey();
+        
+        Object getValue();
+    }
     
 }

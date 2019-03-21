@@ -102,8 +102,8 @@ public abstract class ClothConfigScreen extends Screen {
     
     public void setEdited(boolean edited) {
         this.edited = edited;
-        buttonQuit.setText(edited ? I18n.translate("text.cloth.cancel_discard") : I18n.translate("gui.cancel"));
-        buttonSave.enabled = edited;
+        buttonQuit.setMessage(edited ? I18n.translate("text.cloth.cancel_discard") : I18n.translate("gui.cancel"));
+        buttonSave.active = edited;
     }
     
     @Override
@@ -141,7 +141,7 @@ public abstract class ClothConfigScreen extends Screen {
             }
             
             @Override
-            public void draw(int int_1, int int_2, float float_1) {
+            public void render(int int_1, int int_2, float float_1) {
                 boolean hasErrors = false;
                 if (displayErrors)
                     for(List<AbstractListEntry> entries : Lists.newArrayList(tabbedEntries.values())) {
@@ -153,12 +153,12 @@ public abstract class ClothConfigScreen extends Screen {
                         if (hasErrors)
                             break;
                     }
-                enabled = edited && !hasErrors;
-                setText(displayErrors && hasErrors ? I18n.translate("text.cloth.error_cannot_save") : I18n.translate("text.cloth.save_and_done"));
-                super.draw(int_1, int_2, float_1);
+                active = edited && !hasErrors;
+                setMessage(displayErrors && hasErrors ? I18n.translate("text.cloth.error_cannot_save") : I18n.translate("text.cloth.save_and_done"));
+                super.render(int_1, int_2, float_1);
             }
         });
-        buttonSave.enabled = edited;
+        buttonSave.active = edited;
         tabsBounds = new Rectangle(0, 41, screenWidth, 24);
         tabsLeftBounds = new Rectangle(0, 41, 18, 24);
         tabsRightBounds = new Rectangle(screenWidth - 18, 41, 18, 24);
@@ -170,11 +170,11 @@ public abstract class ClothConfigScreen extends Screen {
             }
             
             @Override
-            public void drawButton(int int_1, int int_2, float float_1) {
+            public void renderButton(int int_1, int int_2, float float_1) {
                 TextRenderer textRenderer_1 = client.textRenderer;
                 client.getTextureManager().bindTexture(CONFIG_TEX);
-                GlStateManager.color4f(1.0F, 1.0F, 1.0F, this.opacity);
-                int int_3 = this.getTextureId(this.isHovered());
+                GlStateManager.color4f(1.0F, 1.0F, 1.0F, this.alpha);
+                int int_3 = this.getYImage(this.isHovered());
                 GlStateManager.enableBlend();
                 GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
                 GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -196,11 +196,11 @@ public abstract class ClothConfigScreen extends Screen {
             }
             
             @Override
-            public void drawButton(int int_1, int int_2, float float_1) {
+            public void renderButton(int int_1, int int_2, float float_1) {
                 TextRenderer textRenderer_1 = client.textRenderer;
                 client.getTextureManager().bindTexture(CONFIG_TEX);
-                GlStateManager.color4f(1.0F, 1.0F, 1.0F, this.opacity);
-                int int_3 = this.getTextureId(this.isHovered());
+                GlStateManager.color4f(1.0F, 1.0F, 1.0F, this.alpha);
+                int int_3 = this.getYImage(this.isHovered());
                 GlStateManager.enableBlend();
                 GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
                 GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -242,26 +242,26 @@ public abstract class ClothConfigScreen extends Screen {
     }
     
     @Override
-    public void draw(int int_1, int int_2, float float_1) {
+    public void render(int int_1, int int_2, float float_1) {
         clampTabsScrolled();
         int xx = 20 - (int) tabsScrollProgress;
         for(ClothConfigTabButton tabButton : tabButtons) {
             tabButton.x = xx;
             xx += tabButton.getWidth() + 2;
         }
-        buttonLeftTab.enabled = tabsScrollProgress > 0d;
-        buttonRightTab.enabled = tabsScrollProgress < getTabsMaximumScrolled() - screenWidth - 16;
+        buttonLeftTab.active = tabsScrollProgress > 0d;
+        buttonRightTab.active = tabsScrollProgress < getTabsMaximumScrolled() - screenWidth - 16;
         drawTextureBackground(0);
-        listWidget.draw(int_1, int_2, float_1);
+        listWidget.render(int_1, int_2, float_1);
         overlayBackground(tabsBounds, 32, 32, 32, 255, 255);
         
         drawStringCentered(client.textRenderer, title, screenWidth / 2, 18, -1);
-        tabButtons.forEach(widget -> widget.draw(int_1, int_2, float_1));
+        tabButtons.forEach(widget -> widget.render(int_1, int_2, float_1));
         overlayBackground(tabsLeftBounds, 64, 64, 64, 255, 255);
         overlayBackground(tabsRightBounds, 64, 64, 64, 255, 255);
         drawShades();
-        buttonLeftTab.draw(int_1, int_2, float_1);
-        buttonRightTab.draw(int_1, int_2, float_1);
+        buttonLeftTab.render(int_1, int_2, float_1);
+        buttonRightTab.render(int_1, int_2, float_1);
         
         if (displayErrors) {
             List<String> errors = Lists.newArrayList();
@@ -279,7 +279,7 @@ public abstract class ClothConfigScreen extends Screen {
                     drawString(client.textRenderer, "§c" + I18n.translate("text.cloth.multi_error"), 18, 12, -1);
             }
         }
-        super.draw(int_1, int_2, float_1);
+        super.render(int_1, int_2, float_1);
     }
     
     private void drawShades() {
@@ -402,7 +402,7 @@ public abstract class ClothConfigScreen extends Screen {
         private Screen parentScreen;
         private Map<String, List<Pair<String, Object>>> dataMap;
         private String title;
-        private Consumer<Map<String, List<Pair<String, Object>>>> onSave;
+        private Consumer<ConfigScreenBuilder.SavedConfig> onSave;
         private boolean confirmSave;
         private boolean displayErrors;
         
@@ -410,7 +410,7 @@ public abstract class ClothConfigScreen extends Screen {
             this(null, I18n.translate("text.cloth.config"), null);
         }
         
-        public Builder(Screen parentScreen, String title, Consumer<Map<String, List<Pair<String, Object>>>> onSave) {
+        public Builder(Screen parentScreen, String title, Consumer<ConfigScreenBuilder.SavedConfig> onSave) {
             this.parentScreen = parentScreen;
             this.title = title;
             this.dataMap = Maps.newLinkedHashMap();
@@ -440,12 +440,12 @@ public abstract class ClothConfigScreen extends Screen {
         }
         
         @Override
-        public Consumer<Map<String, List<Pair<String, Object>>>> getOnSave() {
+        public Consumer<ConfigScreenBuilder.SavedConfig> getOnSave() {
             return onSave;
         }
         
         @Override
-        public void setOnSave(Consumer<Map<String, List<Pair<String, Object>>>> onSave) {
+        public void setOnSave(Consumer<ConfigScreenBuilder.SavedConfig> onSave) {
             this.onSave = onSave;
         }
         
@@ -460,10 +460,18 @@ public abstract class ClothConfigScreen extends Screen {
         }
         
         @Override
-        public void addCategory(String category) {
+        public CategoryBuilder addCategory(String category) {
             if (hasCategory(category))
                 throw new IllegalArgumentException("The category is already added!");
             dataMap.put(category, Lists.newLinkedList());
+            return getCategory(category);
+        }
+        
+        @Override
+        public CategoryBuilder getCategory(String category) {
+            if (!hasCategory(category))
+                throw new IllegalArgumentException("This category doesn't exist!");
+            return new Category(category, this);
         }
         
         @Override
@@ -526,10 +534,135 @@ public abstract class ClothConfigScreen extends Screen {
                 @Override
                 public void onSave(Map<String, List<Pair<String, Object>>> o) {
                     if (getOnSave() != null)
-                        getOnSave().accept(o);
+                        getOnSave().accept(new SavedConfig(o));
                 }
             };
         }
+        
+        public static class Category implements CategoryBuilder {
+            private String category;
+            private ConfigScreenBuilder builder;
+            
+            public Category(String category, ConfigScreenBuilder builder) {
+                this.category = category;
+                this.builder = builder;
+            }
+            
+            @Override
+            public List<Pair<String, Object>> getOptions() {
+                return builder.getOptions(category);
+            }
+            
+            @Override
+            public CategoryBuilder addOption(AbstractListEntry entry) {
+                builder.addOption(category, entry);
+                return this;
+            }
+            
+            @Override
+            public CategoryBuilder addOption(String key, Object object) {
+                builder.addOption(category, key, object);
+                return this;
+            }
+            
+            @Override
+            public ConfigScreenBuilder removeFromParent() {
+                builder.removeCategory(category);
+                return builder;
+            }
+            
+            @Override
+            public ConfigScreenBuilder parent() {
+                return builder;
+            }
+            
+            @Override
+            public String getName() {
+                return category;
+            }
+            
+            @Override
+            public boolean exists() {
+                return builder.hasCategory(category);
+            }
+        }
+        
+        public static class SavedConfig implements ConfigScreenBuilder.SavedConfig {
+            private Map<String, List<Pair<String, Object>>> map;
+            
+            public SavedConfig(Map<String, List<Pair<String, Object>>> map) {
+                this.map = map;
+            }
+            
+            @Override
+            public boolean containsCategory(String category) {
+                return map.containsKey(category);
+            }
+            
+            @Override
+            public ConfigScreenBuilder.SavedCategory getCategory(String category) {
+                return new SavedCategory(this, category);
+            }
+        }
+        
+        public static class SavedCategory implements ConfigScreenBuilder.SavedCategory {
+            private SavedConfig savedConfig;
+            private String category;
+            private List<ConfigScreenBuilder.SavedOption> options;
+            
+            public SavedCategory(SavedConfig savedConfig, String category) {
+                this.savedConfig = savedConfig;
+                this.category = category;
+                this.options = getOptionPairs().stream().map(pair -> new SavedOption(pair.getKey(), pair.getValue())).collect(Collectors.toList());
+            }
+            
+            @Override
+            public boolean exists() {
+                return savedConfig.map.containsKey(category);
+            }
+            
+            @Override
+            public String getName() {
+                return category;
+            }
+            
+            @Override
+            public List<Pair<String, Object>> getOptionPairs() {
+                return savedConfig.map.getOrDefault(category, Collections.emptyList());
+            }
+            
+            @Override
+            public List<ConfigScreenBuilder.SavedOption> getOptions() {
+                return options;
+            }
+            
+            @Override
+            public Optional<ConfigScreenBuilder.SavedOption> getOption(String fieldKey) {
+                return options.stream().filter(savedOption -> savedOption.getFieldKey().equals(fieldKey)).findAny();
+            }
+            
+        }
+        
+        public static class SavedOption implements ConfigScreenBuilder.SavedOption {
+            private String key;
+            private Object value;
+            
+            public SavedOption(String key, Object value) {
+                this.key = key;
+                this.value = value;
+            }
+            
+            @Override
+            public String getFieldKey() {
+                return key;
+            }
+            
+            @Override
+            public Object getValue() {
+                return value;
+            }
+        }
+        
     }
     
 }

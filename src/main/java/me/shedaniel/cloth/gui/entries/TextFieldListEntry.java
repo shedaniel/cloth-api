@@ -43,7 +43,7 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
             MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), getX(), getY() + 5, 16777215);
             this.textFieldWidget.setX(window.getScaledWidth() - getX() - ((TextFieldWidgetHooks) this.textFieldWidget).getWidth() - 1);
         }
-        textFieldWidget.draw(mouse.x, mouse.y, delta);
+        textFieldWidget.render(mouse.x, mouse.y, delta);
     }
     
     public String getYesNoText(boolean bool) {
@@ -76,13 +76,13 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
     }
     
     @Override
-    public void setHasFocus(boolean boolean_1) {
-        textFieldWidget.setHasFocus(boolean_1);
+    public void onFocusChanged(boolean boolean_1) {
+        textFieldWidget.onFocusChanged(boolean_1);
     }
     
     @Override
-    public boolean hasFocus() {
-        return textFieldWidget.hasFocus();
+    public boolean isPartOfFocusCycle() {
+        return textFieldWidget.isPartOfFocusCycle();
     }
     
     @Override

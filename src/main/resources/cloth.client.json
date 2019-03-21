@@ -6,7 +6,6 @@
     "MixinScreen",
     "MixinClientPlayNetworkHandler",
     "MixinMinecraftClient",
-    "MixinScreenComponent",
     "MixinMouse",
     "MixinKeyboard",
     "MixinTextFieldWidget"

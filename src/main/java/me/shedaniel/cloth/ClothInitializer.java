@@ -1,6 +1,6 @@
 package me.shedaniel.cloth;
 
-import me.shedaniel.cloth.api.EventPriority;
+import me.shedaniel.cloth.api.ConfigScreenBuilder;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
 import me.shedaniel.cloth.gui.entries.IntegerListEntry;
 import me.shedaniel.cloth.hooks.ClothClientHooks;
@@ -20,35 +20,32 @@ public class ClothInitializer implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         new ClientUtils();
+        if (true) // Test Codes
+            return;
         AtomicBoolean test = new AtomicBoolean(false);
-        ClothClientHooks.SCREEN_INIT_POST.registerListener(post -> {
-            if (post.getScreen() instanceof MainMenuScreen) {
-                post.addButton(new ButtonWidget(10, 30, 80, 20, "test button gui") {
+        ClothClientHooks.SCREEN_INIT_POST.register((client, screen, screenHooks) -> {
+            if (screen instanceof MainMenuScreen) {
+                screenHooks.cloth_addButton(new ButtonWidget(10, 30, 80, 20, "test button gui") {
                     @Override
                     public void onPressed() {
-                        ClothConfigScreen.Builder builder = new ClothConfigScreen.Builder(post.getScreen(), "Test Mod Config", stringListMap -> {
-                            stringListMap.get("Boolean Zone").stream().filter(pair -> pair.getKey().equals("Basic Boolean")).findFirst().ifPresent(pair -> test.set((Boolean) pair.getValue()));
+                        ClothConfigScreen.Builder builder = new ClothConfigScreen.Builder(screen, "Test Mod Config", savedConfig -> {
+                            savedConfig.getCategory("Boolean Zone").getOption("Basic Boolean").ifPresent(savedOption -> test.set((Boolean) savedOption.getValue()));
                         });
                         builder.addCategories("Boolean Zone", "Number Zone", "Test Empty 1", "Test Empty 2", "Test Empty 3", "Test Empty 4", "Test Empty 5", "Test Empty 6");
-                        builder.addOption("Boolean Zone", "Basic Boolean", test.get());
-                        builder.addOption("Boolean Zone", "Boolean 2", true);
-                        builder.addOption("Number Zone", new IntegerListEntry("Integer", 2).setMaximum(99).setMinimum(2));
-                        builder.addOption("Number Zone", "Long", 1l);
-                        builder.addOption("Number Zone", "Float", 1f);
-                        builder.addOption("Number Zone", "Double", 1d);
-                        post.getClient().openScreen(builder.build());
+                        builder.getCategory("Boolean Zone").addOption("Basic Boolean", test.get()).addOption("Boolean 2", true);
+                        ConfigScreenBuilder.CategoryBuilder numberZone = builder.getCategory("Number Zone");
+                        numberZone.addOption(new IntegerListEntry("Integer", 2).setMaximum(99).setMinimum(2));
+                        numberZone.addOption("Long", 1l);
+                        numberZone.addOption("Float", 1f);
+                        numberZone.addOption("Double", 1d);
+                        client.openScreen(builder.build());
                     }
                 });
             }
         });
-        if (true) // Test Codes
-            return;
-        ClothClientHooks.SYNC_RECIPES.registerListener(event -> {
+        ClothClientHooks.SYNC_RECIPES.register((client, manager, packet) -> {
             System.out.println("HAI");
         });
-        ClothClientHooks.SYNC_RECIPES.registerListener(event -> {
-            System.out.println("BAD I AM FIRST");
-        }, EventPriority.HIGHEST);
     }
     
 }

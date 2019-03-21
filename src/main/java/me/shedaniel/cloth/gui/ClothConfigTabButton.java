@@ -21,15 +21,15 @@ public class ClothConfigTabButton extends ButtonWidget {
     }
     
     @Override
-    public boolean hasFocus() {
+    public boolean isPartOfFocusCycle() {
         return false;
     }
     
     @Override
-    public void draw(int int_1, int int_2, float float_1) {
-        enabled = index != screen.selectedTabIndex;
-        privateHovered = isSelected(int_1, int_2);
-        super.draw(int_1, int_2, float_1);
+    public void render(int int_1, int int_2, float float_1) {
+        active = index != screen.selectedTabIndex;
+        privateHovered = isMouseOver(int_1, int_2);
+        super.render(int_1, int_2, float_1);
     }
     
     @Override
@@ -38,7 +38,7 @@ public class ClothConfigTabButton extends ButtonWidget {
     }
     
     @Override
-    protected boolean isSelected(double double_1, double double_2) {
-        return this.enabled && this.visible && double_1 >= this.x && double_2 >= this.y && double_1 < this.x + this.width && double_2 < this.y + this.height && double_1 >= 20 && double_1 < screen.screenWidth - 20;
+    public boolean isMouseOver(double double_1, double double_2) {
+        return this.active && this.visible && double_1 >= this.x && double_2 >= this.y && double_1 < this.x + this.width && double_2 < this.y + this.height && double_1 >= 20 && double_1 < screen.screenWidth - 20;
     }
 }
