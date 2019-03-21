@@ -68,17 +68,17 @@ public abstract class ClothConfigScreen extends Screen {
                 } else if (pair.getValue() instanceof AbstractListEntry) {
                     throw new IllegalArgumentException("Unsupported Type (" + pair.getKey() + "): AbstractListEntry");
                 } else if (boolean.class.isAssignableFrom(pair.getValue().getClass()) || Boolean.class.isAssignableFrom(pair.getValue().getClass())) {
-                    list.add(new BooleanListEntry(pair.getKey(), (boolean) pair.getValue()));
+                    list.add(new BooleanListEntry(pair.getKey(), (boolean) pair.getValue(), null));
                 } else if (String.class.isAssignableFrom(pair.getValue().getClass())) {
-                    list.add(new StringListEntry(pair.getKey(), (String) pair.getValue()));
+                    list.add(new StringListEntry(pair.getKey(), (String) pair.getValue(), null));
                 } else if (int.class.isAssignableFrom(pair.getValue().getClass()) || Integer.class.isAssignableFrom(pair.getValue().getClass())) {
-                    list.add(new IntegerListEntry(pair.getKey(), (int) pair.getValue()));
+                    list.add(new IntegerListEntry(pair.getKey(), (int) pair.getValue(), null));
                 } else if (long.class.isAssignableFrom(pair.getValue().getClass()) || Long.class.isAssignableFrom(pair.getValue().getClass())) {
-                    list.add(new LongListEntry(pair.getKey(), (long) pair.getValue()));
+                    list.add(new LongListEntry(pair.getKey(), (long) pair.getValue(), null));
                 } else if (float.class.isAssignableFrom(pair.getValue().getClass()) || Float.class.isAssignableFrom(pair.getValue().getClass())) {
-                    list.add(new FloatListEntry(pair.getKey(), (float) pair.getValue()));
+                    list.add(new FloatListEntry(pair.getKey(), (float) pair.getValue(), null));
                 } else if (double.class.isAssignableFrom(pair.getValue().getClass()) || Double.class.isAssignableFrom(pair.getValue().getClass())) {
-                    list.add(new DoubleListEntry(pair.getKey(), (double) pair.getValue()));
+                    list.add(new DoubleListEntry(pair.getKey(), (double) pair.getValue(), null));
                 } else {
                     throw new IllegalArgumentException("Unsupported Type (" + pair.getKey() + "): " + pair.getValue().getClass().getSimpleName());
                 }
@@ -90,7 +90,7 @@ public abstract class ClothConfigScreen extends Screen {
         this.confirmSave = confirmSave;
         this.edited = false;
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        this.tabs = tabbedEntries.keySet().stream().map(s -> new Pair<>(s, textRenderer.getStringWidth(s) + 8)).collect(Collectors.toList());
+        this.tabs = tabbedEntries.keySet().stream().map(s -> new Pair<>(s, textRenderer.getStringWidth(I18n.translate(s)) + 8)).collect(Collectors.toList());
         this.tabsScrollProgress = 0d;
         this.tabButtons = Lists.newArrayList();
         this.displayErrors = displayErrors;
@@ -136,6 +136,9 @@ public abstract class ClothConfigScreen extends Screen {
                     List list = abstractListEntries.stream().map(entry -> new Pair(entry.getFieldName(), entry.getObject())).collect(Collectors.toList());
                     map.put(s, list);
                 });
+                for(List<AbstractListEntry> entries : Lists.newArrayList(tabbedEntries.values()))
+                    for(AbstractListEntry entry : entries)
+                        entry.save();
                 onSave(map);
                 ClothConfigScreen.this.client.openScreen(parent);
             }
@@ -238,7 +241,13 @@ public abstract class ClothConfigScreen extends Screen {
     }
     
     public void clampTabsScrolled() {
-        tabsScrollProgress = MathHelper.clamp(tabsScrollProgress, 0, getTabsMaximumScrolled() - screenWidth + 40);
+        int xx = 0;
+        for(ClothConfigTabButton tabButton : tabButtons)
+            xx += tabButton.getWidth() + 2;
+        if (xx > screenWidth - 40)
+            tabsScrollProgress = MathHelper.clamp(tabsScrollProgress, 0, getTabsMaximumScrolled() - screenWidth + 40);
+        else
+            tabsScrollProgress = 0d;
     }
     
     @Override
@@ -268,7 +277,7 @@ public abstract class ClothConfigScreen extends Screen {
             for(List<AbstractListEntry> entries : Lists.newArrayList(tabbedEntries.values()))
                 for(AbstractListEntry entry : entries)
                     if (entry.getError().isPresent())
-                        errors.add(entry.getError().get());
+                        errors.add((String) entry.getError().get());
             if (errors.size() > 0) {
                 client.getTextureManager().bindTexture(CONFIG_TEX);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -382,6 +391,10 @@ public abstract class ClothConfigScreen extends Screen {
         
         public Optional<String> getError() {
             return Optional.empty();
+        }
+        
+        public void save() {
+        
         }
     }
     
@@ -559,6 +572,7 @@ public abstract class ClothConfigScreen extends Screen {
                 return this;
             }
             
+            @Deprecated
             @Override
             public CategoryBuilder addOption(String key, Object object) {
                 builder.addOption(category, key, object);
@@ -589,19 +603,27 @@ public abstract class ClothConfigScreen extends Screen {
         
         public static class SavedConfig implements ConfigScreenBuilder.SavedConfig {
             private Map<String, List<Pair<String, Object>>> map;
+            private Map<String, SavedCategory> categories;
             
             public SavedConfig(Map<String, List<Pair<String, Object>>> map) {
                 this.map = map;
+                categories = Maps.newLinkedHashMap();
+                map.forEach((s, pairs) -> categories.put(s, new SavedCategory(this, s)));
             }
             
             @Override
             public boolean containsCategory(String category) {
-                return map.containsKey(category);
+                return categories.containsKey(category);
             }
             
             @Override
             public ConfigScreenBuilder.SavedCategory getCategory(String category) {
-                return new SavedCategory(this, category);
+                return categories.getOrDefault(category, new SavedCategory(this, category));
+            }
+            
+            @Override
+            public List<ConfigScreenBuilder.SavedCategory> getCategories() {
+                return Lists.newArrayList(categories.values());
             }
         }
         

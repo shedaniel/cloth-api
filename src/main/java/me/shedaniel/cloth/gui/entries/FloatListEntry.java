@@ -6,6 +6,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class FloatListEntry extends TextFieldListEntry<Float> {
@@ -22,8 +23,9 @@ public class FloatListEntry extends TextFieldListEntry<Float> {
         return stringBuilder_1.toString();
     };
     private float minimum, maximum;
+    private Consumer<Float> saveConsumer;
     
-    public FloatListEntry(String fieldName, Float value) {
+    public FloatListEntry(String fieldName, Float value, Consumer<Float> saveConsumer) {
         super(fieldName, value);
         this.minimum = -Float.MAX_VALUE;
         this.maximum = Float.MAX_VALUE;
@@ -53,6 +55,7 @@ public class FloatListEntry extends TextFieldListEntry<Float> {
             if (!original.equals(s))
                 ((ClothConfigScreen.ListWidget) getParent()).getScreen().setEdited(true);
         });
+        this.saveConsumer = saveConsumer;
     }
     
     public FloatListEntry setMinimum(float minimum) {
@@ -66,7 +69,13 @@ public class FloatListEntry extends TextFieldListEntry<Float> {
     }
     
     @Override
-    public Object getObject() {
+    public void save() {
+        if (saveConsumer != null)
+            saveConsumer.accept(getObject());
+    }
+    
+    @Override
+    public Float getObject() {
         try {
             return Float.valueOf(textFieldWidget.getText());
         } catch (Exception e) {

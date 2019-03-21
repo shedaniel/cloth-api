@@ -67,6 +67,7 @@ public interface ConfigScreenBuilder {
         
         CategoryBuilder addOption(ClothConfigScreen.AbstractListEntry entry);
         
+        @Deprecated
         CategoryBuilder addOption(String key, Object object);
         
         ConfigScreenBuilder removeFromParent();
@@ -82,6 +83,8 @@ public interface ConfigScreenBuilder {
         boolean containsCategory(String category);
         
         SavedCategory getCategory(String category);
+        
+        List<SavedCategory> getCategories();
     }
     
     public static interface SavedCategory {

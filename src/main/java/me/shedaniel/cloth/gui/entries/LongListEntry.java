@@ -6,6 +6,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class LongListEntry extends TextFieldListEntry<Long> {
@@ -22,8 +23,9 @@ public class LongListEntry extends TextFieldListEntry<Long> {
         return stringBuilder_1.toString();
     };
     private long minimum, maximum;
+    private Consumer<Long> saveConsumer;
     
-    public LongListEntry(String fieldName, Long value) {
+    public LongListEntry(String fieldName, Long value, Consumer<Long> saveConsumer) {
         super(fieldName, value);
         this.minimum = -Long.MAX_VALUE;
         this.maximum = Long.MAX_VALUE;
@@ -53,6 +55,13 @@ public class LongListEntry extends TextFieldListEntry<Long> {
             if (!original.equals(s))
                 ((ClothConfigScreen.ListWidget) getParent()).getScreen().setEdited(true);
         });
+        this.saveConsumer = saveConsumer;
+    }
+    
+    @Override
+    public void save() {
+        if (saveConsumer != null)
+            saveConsumer.accept(getObject());
     }
     
     public LongListEntry setMinimum(long minimum) {
@@ -66,7 +75,7 @@ public class LongListEntry extends TextFieldListEntry<Long> {
     }
     
     @Override
-    public Object getObject() {
+    public Long getObject() {
         try {
             return Long.valueOf(textFieldWidget.getText());
         } catch (Exception e) {

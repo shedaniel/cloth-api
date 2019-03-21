@@ -13,13 +13,15 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 public class BooleanListEntry extends ListEntry {
     
     private AtomicBoolean bool;
     private ButtonWidget buttonWidget;
+    private Consumer<Boolean> saveConsumer;
     
-    public BooleanListEntry(String fieldName, boolean bool) {
+    public BooleanListEntry(String fieldName, boolean bool, Consumer<Boolean> saveConsumer) {
         super(fieldName);
         this.bool = new AtomicBoolean(bool);
         this.buttonWidget = new ButtonWidget(0, 0, 150, 20, "") {
@@ -29,10 +31,17 @@ public class BooleanListEntry extends ListEntry {
                 ((ClothConfigScreen.ListWidget) getParent()).getScreen().setEdited(true);
             }
         };
+        this.saveConsumer = saveConsumer;
     }
     
     @Override
-    public Object getObject() {
+    public void save() {
+        if (saveConsumer != null)
+            saveConsumer.accept(getObject());
+    }
+    
+    @Override
+    public Boolean getObject() {
         return bool.get();
     }
     

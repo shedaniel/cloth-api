@@ -6,6 +6,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class DoubleListEntry extends TextFieldListEntry<Double> {
@@ -22,8 +23,9 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
         return stringBuilder_1.toString();
     };
     private double minimum, maximum;
+    private Consumer<Double> saveConsumer;
     
-    public DoubleListEntry(String fieldName, Double value) {
+    public DoubleListEntry(String fieldName, Double value, Consumer<Double> saveConsumer) {
         super(fieldName, value);
         this.minimum = -Double.MAX_VALUE;
         this.maximum = Double.MAX_VALUE;
@@ -47,12 +49,19 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
                 super.render(int_1, int_2, float_1);
             }
         };
+        this.saveConsumer = saveConsumer;
         textFieldWidget.setText(String.valueOf(value));
         textFieldWidget.setMaxLength(999999);
         textFieldWidget.setChangedListener(s -> {
             if (!original.equals(s))
                 ((ClothConfigScreen.ListWidget) getParent()).getScreen().setEdited(true);
         });
+    }
+    
+    @Override
+    public void save() {
+        if (saveConsumer != null)
+            saveConsumer.accept(getObject());
     }
     
     public DoubleListEntry setMinimum(double minimum) {
@@ -66,7 +75,7 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
     }
     
     @Override
-    public Object getObject() {
+    public Double getObject() {
         try {
             return Double.valueOf(textFieldWidget.getText());
         } catch (Exception e) {
