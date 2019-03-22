@@ -32,8 +32,8 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
         this.defaultValue = defaultValue;
         this.original = original;
         this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 148, 18);
-        textFieldWidget.setText(String.valueOf(original));
         textFieldWidget.setMaxLength(999999);
+        textFieldWidget.setText(String.valueOf(original));
         textFieldWidget.setChangedListener(s -> {
             if (!original.equals(s))
                 ((ClothConfigScreen.ListWidget) getParent()).getScreen().setEdited(true);
