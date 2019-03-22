@@ -21,6 +21,8 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.StringTextComponent;
+import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
@@ -57,6 +59,7 @@ public abstract class ClothConfigScreen extends Screen {
     }
     
     public ClothConfigScreen(Screen parent, String title, Map<String, List<Pair<String, Object>>> o, boolean confirmSave, boolean displayErrors) {
+        super(new StringTextComponent(""));
         this.parent = parent;
         this.title = title;
         this.tabbedEntries = Maps.newLinkedHashMap();
@@ -119,30 +122,24 @@ public abstract class ClothConfigScreen extends Screen {
             Lists.newArrayList(tabbedEntries.values()).get(selectedTabIndex).forEach(entry -> listWidget.getInputListeners().add(entry));
         }
         clampTabsScrolled();
-        addButton(buttonQuit = new ButtonWidget(screenWidth / 2 - 154, screenHeight - 26, 150, 20, edited ? I18n.translate("text.cloth.cancel_discard") : I18n.translate("gui.cancel")) {
-            @Override
-            public void onPressed() {
-                if (confirmSave && edited)
-                    client.openScreen(new YesNoScreen(ClothConfigScreen.this, I18n.translate("text.cloth.quit_config"), I18n.translate("text.cloth.quit_config_sure"), I18n.translate("text.cloth.quit_discard"), I18n.translate("gui.cancel"), 812748710));
-                else
-                    client.openScreen(parent);
-            }
-        });
-        addButton(buttonSave = new ButtonWidget(screenWidth / 2 + 4, screenHeight - 26, 150, 20, "") {
-            @Override
-            public void onPressed() {
-                Map<String, List<Pair<String, Object>>> map = Maps.newLinkedHashMap();
-                tabbedEntries.forEach((s, abstractListEntries) -> {
-                    List list = abstractListEntries.stream().map(entry -> new Pair(entry.getFieldName(), entry.getObject())).collect(Collectors.toList());
-                    map.put(s, list);
-                });
-                for(List<AbstractListEntry> entries : Lists.newArrayList(tabbedEntries.values()))
-                    for(AbstractListEntry entry : entries)
-                        entry.save();
-                onSave(map);
-                ClothConfigScreen.this.client.openScreen(parent);
-            }
-            
+        addButton(buttonQuit = new ButtonWidget(screenWidth / 2 - 154, screenHeight - 26, 150, 20, edited ? I18n.translate("text.cloth.cancel_discard") : I18n.translate("gui.cancel"), widget -> {
+            if (confirmSave && edited)
+                client.openScreen(new YesNoScreen(ClothConfigScreen.this, new TranslatableTextComponent("text.cloth.quit_config"), new TranslatableTextComponent("text.cloth.quit_config_sure"), I18n.translate("text.cloth.quit_discard"), I18n.translate("gui.cancel"), 812748710));
+            else
+                client.openScreen(parent);
+        }));
+        addButton(buttonSave = new ButtonWidget(screenWidth / 2 + 4, screenHeight - 26, 150, 20, "", widget -> {
+            Map<String, List<Pair<String, Object>>> map = Maps.newLinkedHashMap();
+            tabbedEntries.forEach((s, abstractListEntries) -> {
+                List list = abstractListEntries.stream().map(entry -> new Pair(entry.getFieldName(), entry.getObject())).collect(Collectors.toList());
+                map.put(s, list);
+            });
+            for(List<AbstractListEntry> entries : Lists.newArrayList(tabbedEntries.values()))
+                for(AbstractListEntry entry : entries)
+                    entry.save();
+            onSave(map);
+            ClothConfigScreen.this.client.openScreen(parent);
+        }) {
             @Override
             public void render(int int_1, int int_2, float float_1) {
                 boolean hasErrors = false;
@@ -165,13 +162,10 @@ public abstract class ClothConfigScreen extends Screen {
         tabsBounds = new Rectangle(0, 41, screenWidth, 24);
         tabsLeftBounds = new Rectangle(0, 41, 18, 24);
         tabsRightBounds = new Rectangle(screenWidth - 18, 41, 18, 24);
-        listeners.add(buttonLeftTab = new ButtonWidget(4, 44, 12, 18, "") {
-            @Override
-            public void onPressed() {
-                tabsScrollProgress = Integer.MIN_VALUE;
-                clampTabsScrolled();
-            }
-            
+        listeners.add(buttonLeftTab = new ButtonWidget(4, 44, 12, 18, "", widget -> {
+            tabsScrollProgress = Integer.MIN_VALUE;
+            clampTabsScrolled();
+        }) {
             @Override
             public void renderButton(int int_1, int int_2, float float_1) {
                 TextRenderer textRenderer_1 = client.textRenderer;
@@ -187,17 +181,14 @@ public abstract class ClothConfigScreen extends Screen {
         int j = 0;
         int xx = 20 - (int) tabsScrollProgress;
         for(Pair<String, Integer> tab : tabs) {
-            tabButtons.add(new ClothConfigTabButton(this, j, -100, 43, tab.getValue(), 20, tab.getKey()));
+            tabButtons.add(new ClothConfigTabButton(this, j, -100, 43, tab.getValue(), 20, I18n.translate(tab.getKey())));
             j++;
         }
         tabButtons.forEach(listeners::add);
-        listeners.add(buttonRightTab = new ButtonWidget(screenWidth - 16, 44, 12, 18, "") {
-            @Override
-            public void onPressed() {
-                tabsScrollProgress = Integer.MAX_VALUE;
-                clampTabsScrolled();
-            }
-            
+        listeners.add(buttonRightTab = new ButtonWidget(screenWidth - 16, 44, 12, 18, "", widget -> {
+            tabsScrollProgress = Integer.MAX_VALUE;
+            clampTabsScrolled();
+        }) {
             @Override
             public void renderButton(int int_1, int int_2, float float_1) {
                 TextRenderer textRenderer_1 = client.textRenderer;
@@ -335,7 +326,7 @@ public abstract class ClothConfigScreen extends Screen {
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.doesEscapeKeyClose()) {
             if (confirmSave && edited)
-                client.openScreen(new YesNoScreen(this, I18n.translate("text.cloth.quit_config"), I18n.translate("text.cloth.quit_config_sure"), I18n.translate("text.cloth.quit_discard"), I18n.translate("gui.cancel"), 812748710));
+                client.openScreen(new YesNoScreen(this, new TranslatableTextComponent("text.cloth.quit_config"), new TranslatableTextComponent("text.cloth.quit_config_sure"), I18n.translate("text.cloth.quit_discard"), I18n.translate("gui.cancel"), 812748710));
             else
                 client.openScreen(parent);
             return true;
@@ -393,6 +384,8 @@ public abstract class ClothConfigScreen extends Screen {
             return Optional.empty();
         }
         
+        public abstract Optional<Object> getDefaultValue();
+        
         public void save() {
         
         }
@@ -420,12 +413,12 @@ public abstract class ClothConfigScreen extends Screen {
         private boolean displayErrors;
         
         public Builder() {
-            this(null, I18n.translate("text.cloth.config"), null);
+            this(null, "text.cloth.config", null);
         }
         
         public Builder(Screen parentScreen, String title, Consumer<ConfigScreenBuilder.SavedConfig> onSave) {
             this.parentScreen = parentScreen;
-            this.title = title;
+            this.title = I18n.translate(title);
             this.dataMap = Maps.newLinkedHashMap();
             this.onSave = onSave;
             this.confirmSave = true;

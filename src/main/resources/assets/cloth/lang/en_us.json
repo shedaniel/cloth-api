@@ -12,5 +12,6 @@
   "text.cloth.error.not_valid_number_double": "Not a valid number! (Double)",
   "text.cloth.error.too_large": "Too Large! (Maximum: %d)",
   "text.cloth.error.too_small": "Too Small! (Minimum: %d)",
-  "text.cloth.error_cannot_save": "Error!"
+  "text.cloth.error_cannot_save": "Error!",
+  "text.cloth.reset_value": "Reset"
 }

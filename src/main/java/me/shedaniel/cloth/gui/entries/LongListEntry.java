@@ -1,5 +1,6 @@
 package me.shedaniel.cloth.gui.entries;
 
+import com.google.common.collect.Lists;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -8,6 +9,7 @@ import net.minecraft.client.resource.language.I18n;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class LongListEntry extends TextFieldListEntry<Long> {
     
@@ -26,7 +28,11 @@ public class LongListEntry extends TextFieldListEntry<Long> {
     private Consumer<Long> saveConsumer;
     
     public LongListEntry(String fieldName, Long value, Consumer<Long> saveConsumer) {
-        super(fieldName, value);
+        this(fieldName, value, "text.cloth.reset_value", null, saveConsumer);
+    }
+    
+    public LongListEntry(String fieldName, Long value, String resetButtonKey, Supplier<Long> defaultValue, Consumer<Long> saveConsumer) {
+        super(fieldName, value, resetButtonKey, defaultValue);
         this.minimum = -Long.MAX_VALUE;
         this.maximum = Long.MAX_VALUE;
         this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 148, 18) {
@@ -56,12 +62,18 @@ public class LongListEntry extends TextFieldListEntry<Long> {
                 ((ClothConfigScreen.ListWidget) getParent()).getScreen().setEdited(true);
         });
         this.saveConsumer = saveConsumer;
+        this.widgets = Lists.newArrayList(textFieldWidget, resetButton);
     }
     
     @Override
     public void save() {
         if (saveConsumer != null)
             saveConsumer.accept(getObject());
+    }
+    
+    @Override
+    protected boolean isMatchDefault(String text) {
+        return getDefaultValue().isPresent() ? text.equals(defaultValue.get().toString()) : false;
     }
     
     public LongListEntry setMinimum(long minimum) {

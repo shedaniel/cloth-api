@@ -8,16 +8,13 @@ public class ClothConfigTabButton extends ButtonWidget {
     private ClothConfigScreen screen;
     
     public ClothConfigTabButton(ClothConfigScreen screen, int index, int int_1, int int_2, int int_3, int int_4, String string_1) {
-        super(int_1, int_2, int_3, int_4, string_1);
+        super(int_1, int_2, int_3, int_4, string_1, widget -> {
+            if (index != -1)
+                screen.nextTabIndex = index;
+            screen.onInitialized();
+        });
         this.index = index;
         this.screen = screen;
-    }
-    
-    @Override
-    public void onPressed() {
-        if (index != -1)
-            screen.nextTabIndex = index;
-        screen.onInitialized();
     }
     
     @Override

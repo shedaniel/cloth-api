@@ -2,8 +2,8 @@ package me.shedaniel.cloth.hooks;
 
 public interface TextFieldWidgetHooks {
     
-    void setY(int y);
+    void cloth_setY(int y);
     
-    int getWidth();
+    int cloth_getWidth();
     
 }

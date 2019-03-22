@@ -40,7 +40,7 @@ public class MixinMouse {
         double x = ClientUtils.getInstance().getMouseX(), y = ClientUtils.getInstance().getMouseY();
         double amount = double_2 * this.client.options.mouseWheelSensitivity;
         if (long_1 == MinecraftClient.getInstance().window.getHandle()) {
-            if (this.client.field_18175 == null)
+            if (this.client.overlay == null)
                 if (this.client.currentScreen != null) {
                     if (!info.isCancelled()) {
                         ActionResult result = ClothClientHooks.SCREEN_MOUSE_SCROLLED.invoker().mouseScrolled(client, client.currentScreen, x, y, amount);

@@ -17,12 +17,12 @@ public class MixinTextFieldWidget implements TextFieldWidgetHooks {
     private int width;
     
     @Override
-    public void setY(int y) {
+    public void cloth_setY(int y) {
         this.y = y;
     }
     
     @Override
-    public int getWidth() {
+    public int cloth_getWidth() {
         return width;
     }
     

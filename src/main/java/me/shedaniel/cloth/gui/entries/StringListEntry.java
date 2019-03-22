@@ -1,13 +1,18 @@
 package me.shedaniel.cloth.gui.entries;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class StringListEntry extends TextFieldListEntry<String> {
     
     private Consumer<String> saveConsumer;
     
     public StringListEntry(String fieldName, String value, Consumer<String> saveConsumer) {
-        super(fieldName, value);
+        this(fieldName, value, "text.cloth.reset_value", null, saveConsumer);
+    }
+    
+    public StringListEntry(String fieldName, String value, String resetButtonKey, Supplier<String> defaultValue, Consumer<String> saveConsumer) {
+        super(fieldName, value, resetButtonKey, defaultValue);
         this.saveConsumer = saveConsumer;
     }
     
@@ -20,6 +25,11 @@ public class StringListEntry extends TextFieldListEntry<String> {
     public void save() {
         if (saveConsumer != null)
             saveConsumer.accept(getObject());
+    }
+    
+    @Override
+    protected boolean isMatchDefault(String text) {
+        return getDefaultValue().isPresent() ? text.equals(getDefaultValue().get()) : false;
     }
     
 }
