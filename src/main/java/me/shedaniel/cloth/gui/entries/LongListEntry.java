@@ -59,7 +59,7 @@ public class LongListEntry extends TextFieldListEntry<Long> {
         textFieldWidget.setMaxLength(999999);
         textFieldWidget.setChangedListener(s -> {
             if (!original.equals(s))
-                ((ClothConfigScreen.ListWidget) getParent()).getScreen().setEdited(true);
+                ((ClothConfigScreen.ListWidget) parent).getScreen().setEdited(true);
         });
         this.saveConsumer = saveConsumer;
         this.widgets = Lists.newArrayList(textFieldWidget, resetButton);

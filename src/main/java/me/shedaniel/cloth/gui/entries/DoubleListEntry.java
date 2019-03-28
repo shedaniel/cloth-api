@@ -60,7 +60,7 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
         textFieldWidget.setMaxLength(999999);
         textFieldWidget.setChangedListener(s -> {
             if (!original.equals(s))
-                ((ClothConfigScreen.ListWidget) getParent()).getScreen().setEdited(true);
+                ((ClothConfigScreen.ListWidget) parent).getScreen().setEdited(true);
         });
         this.widgets = Lists.newArrayList(textFieldWidget, resetButton);
     }

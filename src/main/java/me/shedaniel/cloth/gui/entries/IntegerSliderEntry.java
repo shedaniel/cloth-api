@@ -45,8 +45,8 @@ public class IntegerSliderEntry extends ListEntry {
         this.sliderWidget = new Slider(0, 0, 152, 20, ((double) this.value.get() - minimum) / Math.abs(maximum - minimum));
         this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(resetButtonKey)) + 6, 20, I18n.translate(resetButtonKey), widget -> {
             sliderWidget.setProgress((MathHelper.clamp(this.defaultValue.get(), minimum, maximum) - minimum) / (double) Math.abs(maximum - minimum));
-            sliderWidget.onProgressChanged();
-            sliderWidget.updateText();
+            sliderWidget.applyValue();
+            sliderWidget.updateMessage();
         });
         this.sliderWidget.setMessage(textGetter.apply(IntegerSliderEntry.this.value.get()));
         this.widgets = Lists.newArrayList(sliderWidget, resetButton);
@@ -72,7 +72,7 @@ public class IntegerSliderEntry extends ListEntry {
     }
     
     @Override
-    public List<? extends InputListener> getInputListeners() {
+    public List<? extends InputListener> children() {
         return widgets;
     }
     
@@ -87,12 +87,12 @@ public class IntegerSliderEntry extends ListEntry {
     }
     
     @Override
-    public boolean isActive() {
+    public boolean isDragging() {
         return sliderWidget.isHovered() || resetButton.isHovered();
     }
     
     @Override
-    public void setActive(boolean b) {
+    public void setDragging(boolean b) {
     
     }
     
@@ -107,8 +107,8 @@ public class IntegerSliderEntry extends ListEntry {
     }
     
     @Override
-    public void onFocusChanged(boolean boolean_1) {
-        sliderWidget.onFocusChanged(boolean_1);
+    public void onFocusChanged(boolean boolean_1, boolean boolean_2) {
+        sliderWidget.onFocusChanged(boolean_1, boolean_2);
     }
     
     @Override
@@ -117,25 +117,25 @@ public class IntegerSliderEntry extends ListEntry {
     }
     
     @Override
-    public void draw(int i, int i1, int i2, int i3, boolean b, float v) {
+    public void draw(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         Window window = MinecraftClient.getInstance().window;
         Point mouse = ClientUtils.getMouseLocation();
         this.resetButton.active = getDefaultValue().isPresent() && defaultValue.get().intValue() != value.get();
-        this.resetButton.y = getY();
-        this.sliderWidget.y = getY();
+        this.resetButton.y = y;
+        this.sliderWidget.y = y;
         if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {
-            MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), window.getScaledWidth() - getX() - MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(getFieldName())), getY() + 5, 16777215);
-            this.resetButton.x = getX();
-            this.sliderWidget.x = getX() + resetButton.getWidth() + 1;
+            MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), window.getScaledWidth() - x - MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(getFieldName())), y + 5, 16777215);
+            this.resetButton.x = x;
+            this.sliderWidget.x = x + resetButton.getWidth() + 1;
             this.sliderWidget.setWidth(150 - resetButton.getWidth() - 2);
         } else {
-            MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), getX(), getY() + 5, 16777215);
-            this.resetButton.x = window.getScaledWidth() - getX() - resetButton.getWidth();
-            this.sliderWidget.x = window.getScaledWidth() - getX() - 150;
+            MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), x, y + 5, 16777215);
+            this.resetButton.x = window.getScaledWidth() - x - resetButton.getWidth();
+            this.sliderWidget.x = window.getScaledWidth() - x - 150;
             this.sliderWidget.setWidth(150 - resetButton.getWidth() - 2);
         }
-        resetButton.render(mouse.x, mouse.y, v);
-        sliderWidget.render(mouse.x, mouse.y, v);
+        resetButton.render(mouse.x, mouse.y, delta);
+        sliderWidget.render(mouse.x, mouse.y, delta);
     }
     
     @Override
@@ -160,22 +160,22 @@ public class IntegerSliderEntry extends ListEntry {
         }
         
         @Override
-        public void updateText() {
+        public void updateMessage() {
             setMessage(textGetter.apply(IntegerSliderEntry.this.value.get()));
         }
         
         @Override
-        protected void onProgressChanged() {
-            IntegerSliderEntry.this.value.set((int) (minimum + Math.abs(maximum - minimum) * progress));
-            ((ClothConfigScreen.ListWidget) getParent()).getScreen().setEdited(true);
+        protected void applyValue() {
+            IntegerSliderEntry.this.value.set((int) (minimum + Math.abs(maximum - minimum) * value));
+            ((ClothConfigScreen.ListWidget) parent).getScreen().setEdited(true);
         }
         
         public double getProgress() {
-            return progress;
+            return value;
         }
         
         public void setProgress(double integer) {
-            this.progress = integer;
+            this.value = integer;
         }
     }
 }

@@ -11,7 +11,7 @@ public class ClothConfigTabButton extends ButtonWidget {
         super(int_1, int_2, int_3, int_4, string_1, widget -> {
             if (index != -1)
                 screen.nextTabIndex = index;
-            screen.onInitialized();
+            screen.init();
         });
         this.index = index;
         this.screen = screen;
@@ -36,6 +36,6 @@ public class ClothConfigTabButton extends ButtonWidget {
     
     @Override
     public boolean isMouseOver(double double_1, double double_2) {
-        return this.active && this.visible && double_1 >= this.x && double_2 >= this.y && double_1 < this.x + this.width && double_2 < this.y + this.height && double_1 >= 20 && double_1 < screen.screenWidth - 20;
+        return this.active && this.visible && double_1 >= this.x && double_2 >= this.y && double_1 < this.x + this.width && double_2 < this.y + this.height && double_1 >= 20 && double_1 < screen.width - 20;
     }
 }

@@ -110,25 +110,25 @@ public abstract class ClothConfigScreen extends Screen {
     }
     
     @Override
-    protected void onInitialized() {
-        super.onInitialized();
-        this.listeners.clear();
+    protected void init() {
+        super.init();
+        this.children.clear();
         this.tabButtons.clear();
         if (listWidget != null)
-            tabbedEntries.put(tabs.get(selectedTabIndex).getKey(), listWidget.getInputListeners());
+            tabbedEntries.put(tabs.get(selectedTabIndex).getKey(), listWidget.children());
         selectedTabIndex = nextTabIndex;
-        listeners.add(listWidget = new ListWidget(this, client, screenWidth, screenHeight, 70, screenHeight - 32, 24));
+        children.add(listWidget = new ListWidget(this, minecraft, width, height, 70, height - 32, 24));
         if (tabbedEntries.size() > selectedTabIndex) {
-            Lists.newArrayList(tabbedEntries.values()).get(selectedTabIndex).forEach(entry -> listWidget.getInputListeners().add(entry));
+            Lists.newArrayList(tabbedEntries.values()).get(selectedTabIndex).forEach(entry -> listWidget.children().add(entry));
         }
         clampTabsScrolled();
-        addButton(buttonQuit = new ButtonWidget(screenWidth / 2 - 154, screenHeight - 26, 150, 20, edited ? I18n.translate("text.cloth.cancel_discard") : I18n.translate("gui.cancel"), widget -> {
+        addButton(buttonQuit = new ButtonWidget(width / 2 - 154, height - 26, 150, 20, edited ? I18n.translate("text.cloth.cancel_discard") : I18n.translate("gui.cancel"), widget -> {
             if (confirmSave && edited)
-                client.openScreen(new YesNoScreen(ClothConfigScreen.this, new TranslatableTextComponent("text.cloth.quit_config"), new TranslatableTextComponent("text.cloth.quit_config_sure"), I18n.translate("text.cloth.quit_discard"), I18n.translate("gui.cancel"), 812748710));
+                minecraft.openScreen(new YesNoScreen(ClothConfigScreen.this, new TranslatableTextComponent("text.cloth.quit_config"), new TranslatableTextComponent("text.cloth.quit_config_sure"), I18n.translate("text.cloth.quit_discard"), I18n.translate("gui.cancel"), 812748710));
             else
-                client.openScreen(parent);
+                minecraft.openScreen(parent);
         }));
-        addButton(buttonSave = new ButtonWidget(screenWidth / 2 + 4, screenHeight - 26, 150, 20, "", widget -> {
+        addButton(buttonSave = new ButtonWidget(width / 2 + 4, height - 26, 150, 20, "", widget -> {
             Map<String, List<Pair<String, Object>>> map = Maps.newLinkedHashMap();
             tabbedEntries.forEach((s, abstractListEntries) -> {
                 List list = abstractListEntries.stream().map(entry -> new Pair(entry.getFieldName(), entry.getObject())).collect(Collectors.toList());
@@ -138,7 +138,7 @@ public abstract class ClothConfigScreen extends Screen {
                 for(AbstractListEntry entry : entries)
                     entry.save();
             onSave(map);
-            ClothConfigScreen.this.client.openScreen(parent);
+            ClothConfigScreen.this.minecraft.openScreen(parent);
         }) {
             @Override
             public void render(int int_1, int int_2, float float_1) {
@@ -159,23 +159,23 @@ public abstract class ClothConfigScreen extends Screen {
             }
         });
         buttonSave.active = edited;
-        tabsBounds = new Rectangle(0, 41, screenWidth, 24);
+        tabsBounds = new Rectangle(0, 41, width, 24);
         tabsLeftBounds = new Rectangle(0, 41, 18, 24);
-        tabsRightBounds = new Rectangle(screenWidth - 18, 41, 18, 24);
-        listeners.add(buttonLeftTab = new ButtonWidget(4, 44, 12, 18, "", widget -> {
+        tabsRightBounds = new Rectangle(width - 18, 41, 18, 24);
+        children.add(buttonLeftTab = new ButtonWidget(4, 44, 12, 18, "", widget -> {
             tabsScrollProgress = Integer.MIN_VALUE;
             clampTabsScrolled();
         }) {
             @Override
             public void renderButton(int int_1, int int_2, float float_1) {
-                TextRenderer textRenderer_1 = client.textRenderer;
-                client.getTextureManager().bindTexture(CONFIG_TEX);
+                TextRenderer textRenderer = minecraft.textRenderer;
+                minecraft.getTextureManager().bindTexture(CONFIG_TEX);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, this.alpha);
                 int int_3 = this.getYImage(this.isHovered());
                 GlStateManager.enableBlend();
                 GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
                 GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-                this.drawTexturedRect(x, y, 12, 18 * int_3, width, height);
+                this.blit(x, y, 12, 18 * int_3, width, height);
             }
         });
         int j = 0;
@@ -184,21 +184,21 @@ public abstract class ClothConfigScreen extends Screen {
             tabButtons.add(new ClothConfigTabButton(this, j, -100, 43, tab.getValue(), 20, I18n.translate(tab.getKey())));
             j++;
         }
-        tabButtons.forEach(listeners::add);
-        listeners.add(buttonRightTab = new ButtonWidget(screenWidth - 16, 44, 12, 18, "", widget -> {
+        tabButtons.forEach(children::add);
+        children.add(buttonRightTab = new ButtonWidget(width - 16, 44, 12, 18, "", widget -> {
             tabsScrollProgress = Integer.MAX_VALUE;
             clampTabsScrolled();
         }) {
             @Override
             public void renderButton(int int_1, int int_2, float float_1) {
-                TextRenderer textRenderer_1 = client.textRenderer;
-                client.getTextureManager().bindTexture(CONFIG_TEX);
+                TextRenderer textRenderer = minecraft.textRenderer;
+                minecraft.getTextureManager().bindTexture(CONFIG_TEX);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, this.alpha);
                 int int_3 = this.getYImage(this.isHovered());
                 GlStateManager.enableBlend();
                 GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
                 GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-                this.drawTexturedRect(x, y, 0, 18 * int_3, width, height);
+                this.blit(x, y, 0, 18 * int_3, width, height);
             }
         });
     }
@@ -235,8 +235,8 @@ public abstract class ClothConfigScreen extends Screen {
         int xx = 0;
         for(ClothConfigTabButton tabButton : tabButtons)
             xx += tabButton.getWidth() + 2;
-        if (xx > screenWidth - 40)
-            tabsScrollProgress = MathHelper.clamp(tabsScrollProgress, 0, getTabsMaximumScrolled() - screenWidth + 40);
+        if (xx > width - 40)
+            tabsScrollProgress = MathHelper.clamp(tabsScrollProgress, 0, getTabsMaximumScrolled() - width + 40);
         else
             tabsScrollProgress = 0d;
     }
@@ -250,12 +250,12 @@ public abstract class ClothConfigScreen extends Screen {
             xx += tabButton.getWidth() + 2;
         }
         buttonLeftTab.active = tabsScrollProgress > 0d;
-        buttonRightTab.active = tabsScrollProgress < getTabsMaximumScrolled() - screenWidth - 16;
-        drawTextureBackground(0);
+        buttonRightTab.active = tabsScrollProgress < getTabsMaximumScrolled() - width - 16;
+        renderDirtBackground(0);
         listWidget.render(int_1, int_2, float_1);
         overlayBackground(tabsBounds, 32, 32, 32, 255, 255);
         
-        drawStringCentered(client.textRenderer, title, screenWidth / 2, 18, -1);
+        drawCenteredString(minecraft.textRenderer, title, width / 2, 18, -1);
         tabButtons.forEach(widget -> widget.render(int_1, int_2, float_1));
         overlayBackground(tabsLeftBounds, 64, 64, 64, 255, 255);
         overlayBackground(tabsRightBounds, 64, 64, 64, 255, 255);
@@ -270,13 +270,13 @@ public abstract class ClothConfigScreen extends Screen {
                     if (entry.getError().isPresent())
                         errors.add((String) entry.getError().get());
             if (errors.size() > 0) {
-                client.getTextureManager().bindTexture(CONFIG_TEX);
+                minecraft.getTextureManager().bindTexture(CONFIG_TEX);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                drawTexturedRect(10, 10, 0, 54, 3, 11);
+                blit(10, 10, 0, 54, 3, 11);
                 if (errors.size() == 1)
-                    drawString(client.textRenderer, "§c" + errors.get(0), 18, 12, -1);
+                    drawString(minecraft.textRenderer, "§c" + errors.get(0), 18, 12, -1);
                 else
-                    drawString(client.textRenderer, "§c" + I18n.translate("text.cloth.multi_error"), 18, 12, -1);
+                    drawString(minecraft.textRenderer, "§c" + I18n.translate("text.cloth.multi_error"), 18, 12, -1);
             }
         }
         super.render(int_1, int_2, float_1);
@@ -311,7 +311,7 @@ public abstract class ClothConfigScreen extends Screen {
     protected void overlayBackground(Rectangle rect, int red, int green, int blue, int startAlpha, int endAlpha) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBufferBuilder();
-        client.getTextureManager().bindTexture(DrawableHelper.OPTIONS_BG);
+        minecraft.getTextureManager().bindTexture(DrawableHelper.BACKGROUND_LOCATION);
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         float f = 32.0F;
         buffer.begin(7, VertexFormats.POSITION_UV_COLOR);
@@ -324,11 +324,11 @@ public abstract class ClothConfigScreen extends Screen {
     
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
-        if (int_1 == 256 && this.doesEscapeKeyClose()) {
+        if (int_1 == 256 && this.shouldCloseOnEsc()) {
             if (confirmSave && edited)
-                client.openScreen(new YesNoScreen(this, new TranslatableTextComponent("text.cloth.quit_config"), new TranslatableTextComponent("text.cloth.quit_config_sure"), I18n.translate("text.cloth.quit_discard"), I18n.translate("gui.cancel"), 812748710));
+                minecraft.openScreen(new YesNoScreen(this, new TranslatableTextComponent("text.cloth.quit_config"), new TranslatableTextComponent("text.cloth.quit_config_sure"), I18n.translate("text.cloth.quit_discard"), I18n.translate("gui.cancel"), 812748710));
             else
-                client.openScreen(parent);
+                minecraft.openScreen(parent);
             return true;
         }
         return super.keyPressed(int_1, int_2, int_3);
@@ -338,9 +338,9 @@ public abstract class ClothConfigScreen extends Screen {
     public void confirmResult(boolean boolean_1, int int_1) {
         if (int_1 == 812748710) {
             if (!boolean_1)
-                this.client.openScreen(this);
+                this.minecraft.openScreen(this);
             else
-                this.client.openScreen(parent);
+                this.minecraft.openScreen(parent);
             return;
         }
         super.confirmResult(boolean_1, int_1);
@@ -354,11 +354,13 @@ public abstract class ClothConfigScreen extends Screen {
         public ListWidget(ClothConfigScreen screen, MinecraftClient client, int int_1, int int_2, int int_3, int int_4, int int_5) {
             super(client, int_1, int_2, int_3, int_4, int_5);
             this.screen = screen;
+            field_19091 = false;
         }
         
         @Override
-        public int getEntryWidth() {
-            return width - 80;
+        // getRowWidth
+        public int method_20053() {
+            return field_19083 - 80; // width
         }
         
         public ClothConfigScreen getScreen() {
@@ -366,8 +368,9 @@ public abstract class ClothConfigScreen extends Screen {
         }
         
         @Override
-        protected int getScrollbarPosition() {
-            return width - 36;
+        // getScrollbarPosition
+        protected int method_20078() {
+            return field_19083 - 36;
         }
         
         protected final void clearStuff() {

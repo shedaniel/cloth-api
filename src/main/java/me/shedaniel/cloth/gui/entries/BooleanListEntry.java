@@ -35,11 +35,11 @@ public class BooleanListEntry extends ListEntry {
         this.bool = new AtomicBoolean(bool);
         this.buttonWidget = new ButtonWidget(0, 0, 150, 20, "", widget -> {
             BooleanListEntry.this.bool.set(!BooleanListEntry.this.bool.get());
-            ((ClothConfigScreen.ListWidget) getParent()).getScreen().setEdited(true);
+            ((ClothConfigScreen.ListWidget) parent).getScreen().setEdited(true);
         });
         this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(resetButtonKey)) + 6, 20, I18n.translate(resetButtonKey), widget -> {
             BooleanListEntry.this.bool.set(defaultValue.get());
-            ((ClothConfigScreen.ListWidget) getParent()).getScreen().setEdited(true);
+            ((ClothConfigScreen.ListWidget) parent).getScreen().setEdited(true);
         });
         this.saveConsumer = saveConsumer;
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
@@ -62,22 +62,22 @@ public class BooleanListEntry extends ListEntry {
     }
     
     @Override
-    public void draw(int entryWidth, int height, int i3, int i4, boolean isSelected, float delta) {
+    public void draw(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         Window window = MinecraftClient.getInstance().window;
         Point mouse = ClientUtils.getMouseLocation();
         this.resetButton.active = getDefaultValue().isPresent() && defaultValue.get().booleanValue() != bool.get();
-        this.resetButton.y = getY();
-        this.buttonWidget.y = getY();
+        this.resetButton.y = y;
+        this.buttonWidget.y = y;
         this.buttonWidget.setMessage(getYesNoText(bool.get()));
         if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {
-            MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), window.getScaledWidth() - getX() - MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(getFieldName())), getY() + 5, 16777215);
-            this.resetButton.x = getX();
-            this.buttonWidget.x = getX() + resetButton.getWidth() + 2;
+            MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), window.getScaledWidth() - x - MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(getFieldName())), y + 5, 16777215);
+            this.resetButton.x = x;
+            this.buttonWidget.x = x + resetButton.getWidth() + 2;
             this.buttonWidget.setWidth(150 - resetButton.getWidth() - 2);
         } else {
-            MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), getX(), getY() + 5, 16777215);
-            this.resetButton.x = window.getScaledWidth() - getX() - resetButton.getWidth();
-            this.buttonWidget.x = window.getScaledWidth() - getX() - 150;
+            MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), x, y + 5, 16777215);
+            this.resetButton.x = window.getScaledWidth() - x - resetButton.getWidth();
+            this.buttonWidget.x = window.getScaledWidth() - x - 150;
             this.buttonWidget.setWidth(150 - resetButton.getWidth() - 2);
         }
         resetButton.render(mouse.x, mouse.y, delta);
@@ -89,17 +89,17 @@ public class BooleanListEntry extends ListEntry {
     }
     
     @Override
-    public List<? extends InputListener> getInputListeners() {
+    public List<? extends InputListener> children() {
         return widgets;
     }
     
     @Override
-    public boolean isActive() {
+    public boolean isDragging() {
         return buttonWidget.isHovered() || resetButton.isHovered();
     }
     
     @Override
-    public void setActive(boolean b) {
+    public void setDragging(boolean b) {
     
     }
     

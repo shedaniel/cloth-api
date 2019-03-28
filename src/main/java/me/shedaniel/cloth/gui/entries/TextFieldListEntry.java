@@ -1,7 +1,6 @@
 package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.cloth.api.ClientUtils;
 import me.shedaniel.cloth.api.ReflectionUtils;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
 import me.shedaniel.cloth.gui.ClothConfigScreen.ListEntry;
@@ -13,7 +12,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.Window;
 
-import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -36,11 +34,11 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
         textFieldWidget.setText(String.valueOf(original));
         textFieldWidget.setChangedListener(s -> {
             if (!original.equals(s))
-                ((ClothConfigScreen.ListWidget) getParent()).getScreen().setEdited(true);
+                ((ClothConfigScreen.ListWidget) parent).getScreen().setEdited(true);
         });
         this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(resetButtonKey)) + 6, 20, I18n.translate(resetButtonKey), widget -> {
             TextFieldListEntry.this.textFieldWidget.setText(String.valueOf(defaultValue.get()));
-            ((ClothConfigScreen.ListWidget) getParent()).getScreen().setEdited(true);
+            ((ClothConfigScreen.ListWidget) parent).getScreen().setEdited(true);
         });
         this.widgets = Lists.newArrayList(textFieldWidget, resetButton);
     }
@@ -50,25 +48,24 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
     }
     
     @Override
-    public void draw(int entryWidth, int height, int i3, int i4, boolean isSelected, float delta) {
+    public void draw(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         Window window = MinecraftClient.getInstance().window;
-        Point mouse = ClientUtils.getMouseLocation();
         this.resetButton.active = getDefaultValue().isPresent() && !isMatchDefault(textFieldWidget.getText());
-        this.resetButton.y = getY();
-        ((TextFieldWidgetHooks) this.textFieldWidget).cloth_setY(getY() + 1);
+        this.resetButton.y = y;
+        ((TextFieldWidgetHooks) this.textFieldWidget).cloth_setY(y + 1);
         if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {
-            MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), window.getScaledWidth() - getX() - MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(getFieldName())), getY() + 5, 16777215);
-            this.resetButton.x = getX();
-            this.textFieldWidget.setX(getX() + resetButton.getWidth() + 2);
+            MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), window.getScaledWidth() - x - MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(getFieldName())), y + 5, 16777215);
+            this.resetButton.x = x;
+            this.textFieldWidget.setX(x + resetButton.getWidth() + 2);
             setTextFieldWidth(textFieldWidget, 150 - resetButton.getWidth() - 4);
         } else {
-            MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), getX(), getY() + 5, 16777215);
-            this.resetButton.x = window.getScaledWidth() - getX() - resetButton.getWidth();
-            this.textFieldWidget.setX(window.getScaledWidth() - getX() - 150);
+            MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), x, y + 5, 16777215);
+            this.resetButton.x = window.getScaledWidth() - x - resetButton.getWidth();
+            this.textFieldWidget.setX(window.getScaledWidth() - x - 150);
             setTextFieldWidth(textFieldWidget, 150 - resetButton.getWidth() - 4);
         }
-        resetButton.render(mouse.x, mouse.y, delta);
-        textFieldWidget.render(mouse.x, mouse.y, delta);
+        resetButton.render(mouseX, mouseY, delta);
+        textFieldWidget.render(mouseX, mouseY, delta);
     }
     
     protected abstract boolean isMatchDefault(String text);
@@ -83,17 +80,17 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
     }
     
     @Override
-    public List<? extends InputListener> getInputListeners() {
+    public List<? extends InputListener> children() {
         return Collections.singletonList(textFieldWidget);
     }
     
     @Override
-    public boolean isActive() {
+    public boolean isDragging() {
         return textFieldWidget.isFocused();
     }
     
     @Override
-    public void setActive(boolean b) {
+    public void setDragging(boolean b) {
     
     }
     
@@ -108,8 +105,8 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
     }
     
     @Override
-    public void onFocusChanged(boolean boolean_1) {
-        textFieldWidget.onFocusChanged(boolean_1);
+    public void onFocusChanged(boolean boolean_1, boolean boolean_2) {
+        textFieldWidget.onFocusChanged(boolean_1, boolean_2);
     }
     
     @Override
