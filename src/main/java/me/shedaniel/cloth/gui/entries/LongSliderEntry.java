@@ -5,7 +5,7 @@ import me.shedaniel.cloth.api.ClientUtils;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
 import me.shedaniel.cloth.gui.ClothConfigScreen.ListEntry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.InputListener;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.resource.language.I18n;
@@ -25,17 +25,17 @@ public class LongSliderEntry extends ListEntry {
     protected Slider sliderWidget;
     protected ButtonWidget resetButton;
     protected AtomicLong value;
-    private int minimum, maximum;
+    private long minimum, maximum;
     private Consumer<Long> saveConsumer;
     private Supplier<Long> defaultValue;
     private Function<Long, String> textGetter = value -> String.format("Value: %d", value);
-    private List<InputListener> widgets;
+    private List<Element> widgets;
     
-    public LongSliderEntry(String fieldName, int minimum, int maximum, int value, Consumer<Long> saveConsumer) {
+    public LongSliderEntry(String fieldName, long minimum, long maximum, long value, Consumer<Long> saveConsumer) {
         this(fieldName, minimum, maximum, value, saveConsumer, "text.cloth.reset_value", null);
     }
     
-    public LongSliderEntry(String fieldName, int minimum, int maximum, int value, Consumer<Long> saveConsumer, String resetButtonKey, Supplier<Long> defaultValue) {
+    public LongSliderEntry(String fieldName, long minimum, long maximum, long value, Consumer<Long> saveConsumer, String resetButtonKey, Supplier<Long> defaultValue) {
         super(fieldName);
         this.defaultValue = defaultValue;
         this.value = new AtomicLong(value);
@@ -72,16 +72,16 @@ public class LongSliderEntry extends ListEntry {
     }
     
     @Override
-    public List<? extends InputListener> children() {
+    public List<? extends Element> children() {
         return widgets;
     }
     
-    public LongSliderEntry setMaximum(int maximum) {
+    public LongSliderEntry setMaximum(long maximum) {
         this.maximum = maximum;
         return this;
     }
     
-    public LongSliderEntry setMinimum(int minimum) {
+    public LongSliderEntry setMinimum(long minimum) {
         this.minimum = minimum;
         return this;
     }
@@ -97,12 +97,12 @@ public class LongSliderEntry extends ListEntry {
     }
     
     @Override
-    public InputListener getFocused() {
+    public Element getFocused() {
         return null;
     }
     
     @Override
-    public void setFocused(InputListener inputListener) {
+    public void setFocused(Element inputListener) {
     
     }
     
@@ -117,7 +117,7 @@ public class LongSliderEntry extends ListEntry {
     }
     
     @Override
-    public void draw(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+    public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         Window window = MinecraftClient.getInstance().window;
         Point mouse = ClientUtils.getMouseLocation();
         this.resetButton.active = getDefaultValue().isPresent() && defaultValue.get().longValue() != value.get();

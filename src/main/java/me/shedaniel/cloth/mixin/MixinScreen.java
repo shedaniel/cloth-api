@@ -3,7 +3,7 @@ package me.shedaniel.cloth.mixin;
 import me.shedaniel.cloth.hooks.ClothClientHooks;
 import me.shedaniel.cloth.hooks.ScreenHooks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.InputListener;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -21,14 +21,14 @@ import java.util.List;
 @Mixin(Screen.class)
 public abstract class MixinScreen implements ScreenHooks {
     
-    @Shadow(remap = false)
+    @Shadow
     @Final
     protected List<AbstractButtonWidget> buttons;
     
-    @Shadow(remap = false)
+    @Shadow
     protected MinecraftClient minecraft;
     
-    @Shadow(remap = false)
+    @Shadow
     protected abstract <T extends AbstractButtonWidget> T addButton(T abstractButtonWidget_1);
     
     @Override
@@ -37,7 +37,7 @@ public abstract class MixinScreen implements ScreenHooks {
     }
     
     @Override
-    public List<InputListener> cloth_getInputListeners() {
+    public List<Element> cloth_getInputListeners() {
         return (List) ((Screen) (Object) this).children();
     }
     
@@ -47,7 +47,7 @@ public abstract class MixinScreen implements ScreenHooks {
         return buttonWidget;
     }
     
-    @Inject(method = "render(IIF)V", at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = "render(IIF)V", at = @At("HEAD"), cancellable = true)
     public void onPreDraw(int mouseX, int mouseY, float delta, CallbackInfo info) {
         if (!info.isCancelled()) {
             ActionResult result = ClothClientHooks.SCREEN_RENDER_PRE.invoker().render(minecraft, (Screen) (Object) this, mouseX, mouseY, delta);
@@ -62,7 +62,7 @@ public abstract class MixinScreen implements ScreenHooks {
             ClothClientHooks.SCREEN_RENDER_POST.invoker().render(minecraft, (Screen) (Object) this, mouseX, mouseY, delta);
     }
     
-    @Inject(method = "init", at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = "init", at = @At("HEAD"), cancellable = true)
     public void onPreInit(MinecraftClient minecraftClient_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled()) {
             ActionResult result = ClothClientHooks.SCREEN_INIT_PRE.invoker().init(minecraftClient_1, (Screen) (Object) this, (ScreenHooks) (Screen) (Object) this);
@@ -77,7 +77,7 @@ public abstract class MixinScreen implements ScreenHooks {
             ClothClientHooks.SCREEN_INIT_POST.invoker().init(minecraftClient_1, (Screen) (Object) this, (ScreenHooks) (Screen) (Object) this);
     }
     
-    @Inject(method = "addButton", at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = "addButton", at = @At("HEAD"), cancellable = true)
     public void onAddButton(AbstractButtonWidget widget, CallbackInfoReturnable<ButtonWidget> info) {
         if (!info.isCancelled()) {
             ActionResult result = ClothClientHooks.SCREEN_ADD_BUTTON.invoker().addButton(minecraft, (Screen) (Object) this, widget);

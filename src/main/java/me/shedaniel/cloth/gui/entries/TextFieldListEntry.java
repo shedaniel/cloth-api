@@ -6,7 +6,7 @@ import me.shedaniel.cloth.gui.ClothConfigScreen;
 import me.shedaniel.cloth.gui.ClothConfigScreen.ListEntry;
 import me.shedaniel.cloth.hooks.TextFieldWidgetHooks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.InputListener;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
@@ -23,7 +23,7 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
     protected ButtonWidget resetButton;
     protected Supplier<T> defaultValue;
     protected T original;
-    protected List<InputListener> widgets;
+    protected List<Element> widgets;
     
     protected TextFieldListEntry(String fieldName, T original, String resetButtonKey, Supplier<T> defaultValue) {
         super(fieldName);
@@ -48,7 +48,7 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
     }
     
     @Override
-    public void draw(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+    public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         Window window = MinecraftClient.getInstance().window;
         this.resetButton.active = getDefaultValue().isPresent() && !isMatchDefault(textFieldWidget.getText());
         this.resetButton.y = y;
@@ -80,7 +80,7 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
     }
     
     @Override
-    public List<? extends InputListener> children() {
+    public List<? extends Element> children() {
         return Collections.singletonList(textFieldWidget);
     }
     
@@ -95,12 +95,12 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
     }
     
     @Override
-    public InputListener getFocused() {
+    public Element getFocused() {
         return null;
     }
     
     @Override
-    public void setFocused(InputListener inputListener) {
+    public void setFocused(Element inputListener) {
     
     }
     

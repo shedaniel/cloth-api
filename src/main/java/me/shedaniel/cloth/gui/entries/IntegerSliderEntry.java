@@ -5,7 +5,7 @@ import me.shedaniel.cloth.api.ClientUtils;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
 import me.shedaniel.cloth.gui.ClothConfigScreen.ListEntry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.InputListener;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.resource.language.I18n;
@@ -29,7 +29,7 @@ public class IntegerSliderEntry extends ListEntry {
     private Consumer<Integer> saveConsumer;
     private Supplier<Integer> defaultValue;
     private Function<Integer, String> textGetter = integer -> String.format("Value: %d", integer);
-    private List<InputListener> widgets;
+    private List<Element> widgets;
     
     public IntegerSliderEntry(String fieldName, int minimum, int maximum, int value, Consumer<Integer> saveConsumer) {
         this(fieldName, minimum, maximum, value, "text.cloth.reset_value", null, saveConsumer);
@@ -72,7 +72,7 @@ public class IntegerSliderEntry extends ListEntry {
     }
     
     @Override
-    public List<? extends InputListener> children() {
+    public List<? extends Element> children() {
         return widgets;
     }
     
@@ -97,12 +97,12 @@ public class IntegerSliderEntry extends ListEntry {
     }
     
     @Override
-    public InputListener getFocused() {
+    public Element getFocused() {
         return null;
     }
     
     @Override
-    public void setFocused(InputListener inputListener) {
+    public void setFocused(Element inputListener) {
     
     }
     
@@ -117,7 +117,7 @@ public class IntegerSliderEntry extends ListEntry {
     }
     
     @Override
-    public void draw(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+    public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         Window window = MinecraftClient.getInstance().window;
         Point mouse = ClientUtils.getMouseLocation();
         this.resetButton.active = getDefaultValue().isPresent() && defaultValue.get().intValue() != value.get();

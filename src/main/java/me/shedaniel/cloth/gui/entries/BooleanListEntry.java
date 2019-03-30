@@ -5,7 +5,7 @@ import me.shedaniel.cloth.api.ClientUtils;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
 import me.shedaniel.cloth.gui.ClothConfigScreen.ListEntry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.InputListener;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.Window;
@@ -23,7 +23,7 @@ public class BooleanListEntry extends ListEntry {
     private ButtonWidget buttonWidget, resetButton;
     private Consumer<Boolean> saveConsumer;
     private Supplier<Boolean> defaultValue;
-    private List<InputListener> widgets;
+    private List<Element> widgets;
     
     public BooleanListEntry(String fieldName, boolean bool, Consumer<Boolean> saveConsumer) {
         this(fieldName, bool, "text.cloth.reset_value", null, saveConsumer);
@@ -62,7 +62,7 @@ public class BooleanListEntry extends ListEntry {
     }
     
     @Override
-    public void draw(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+    public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         Window window = MinecraftClient.getInstance().window;
         Point mouse = ClientUtils.getMouseLocation();
         this.resetButton.active = getDefaultValue().isPresent() && defaultValue.get().booleanValue() != bool.get();
@@ -89,7 +89,7 @@ public class BooleanListEntry extends ListEntry {
     }
     
     @Override
-    public List<? extends InputListener> children() {
+    public List<? extends Element> children() {
         return widgets;
     }
     
@@ -104,12 +104,12 @@ public class BooleanListEntry extends ListEntry {
     }
     
     @Override
-    public InputListener getFocused() {
+    public Element getFocused() {
         return null;
     }
     
     @Override
-    public void setFocused(InputListener inputListener) {
+    public void setFocused(Element inputListener) {
     
     }
     

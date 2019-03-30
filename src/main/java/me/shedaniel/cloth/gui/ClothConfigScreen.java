@@ -12,11 +12,11 @@ import me.shedaniel.cloth.gui.entries.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.MultiInputListener;
+import net.minecraft.client.gui.ParentElement;
 import net.minecraft.client.gui.Screen;
 import net.minecraft.client.gui.menu.YesNoScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.client.gui.widget.ItemListWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
@@ -348,19 +348,18 @@ public abstract class ClothConfigScreen extends Screen {
     
     public abstract void onSave(Map<String, List<Pair<String, Object>>> o);
     
-    public static class ListWidget extends EntryListWidget {
+    public static class ListWidget extends ItemListWidget {
         private ClothConfigScreen screen;
         
         public ListWidget(ClothConfigScreen screen, MinecraftClient client, int int_1, int int_2, int int_3, int int_4, int int_5) {
             super(client, int_1, int_2, int_3, int_4, int_5);
             this.screen = screen;
-            field_19091 = false;
+            visible = false;
         }
         
         @Override
-        // getRowWidth
-        public int method_20053() {
-            return field_19083 - 80; // width
+        public int getItemWidth() {
+            return width - 80;
         }
         
         public ClothConfigScreen getScreen() {
@@ -368,17 +367,16 @@ public abstract class ClothConfigScreen extends Screen {
         }
         
         @Override
-        // getScrollbarPosition
-        protected int method_20078() {
-            return field_19083 - 36;
+        protected int getScrollbarPosition() {
+            return width - 36;
         }
         
         protected final void clearStuff() {
-            this.clearEntries();
+            this.clearItems();
         }
     }
     
-    public static abstract class AbstractListEntry extends EntryListWidget.Entry<AbstractListEntry> implements MultiInputListener {
+    public static abstract class AbstractListEntry extends ItemListWidget.Item<AbstractListEntry> implements ParentElement {
         public abstract String getFieldName();
         
         public abstract Object getObject();

@@ -22,8 +22,6 @@ public class MixinMouse {
     @Shadow
     private int activeButton;
     
-    // TODO: Find Ways to inject this, might be a mixin bug
-    /*
     @Inject(method = "onMouseScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Screen;mouseScrolled(DDD)Z", ordinal = 0), cancellable = true)
     public void onMouseScrolled(long long_1, double double_1, double double_2, CallbackInfo info) {
         double x = ClientUtils.getInstance().getMouseX(), y = ClientUtils.getInstance().getMouseY();
@@ -33,25 +31,8 @@ public class MixinMouse {
             if (result != ActionResult.PASS)
                 info.cancel();
         }
-    }*/
-    
-    @Inject(method = "onMouseScroll", at = @At(value = "HEAD"), cancellable = true)
-    public void onMouseScrolled2(long long_1, double double_1, double double_2, CallbackInfo info) {
-        double x = ClientUtils.getInstance().getMouseX(), y = ClientUtils.getInstance().getMouseY();
-        double amount = double_2 * this.client.options.mouseWheelSensitivity;
-        if (long_1 == MinecraftClient.getInstance().window.getHandle()) {
-            if (this.client.overlay == null)
-                if (this.client.currentScreen != null) {
-                    if (!info.isCancelled()) {
-                        ActionResult result = ClothClientHooks.SCREEN_MOUSE_SCROLLED.invoker().mouseScrolled(client, client.currentScreen, x, y, amount);
-                        if (result != ActionResult.PASS)
-                            info.cancel();
-                    }
-                }
-        }
     }
-
-    /*
+    
     @Inject(method = "onMouseButton", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V", ordinal = 0), cancellable = true)
     public void onMouseClicked(long long_1, int int_1, int int_2, int int_3, CallbackInfo info) {
         double x = ClientUtils.getInstance().getMouseX(), y = ClientUtils.getInstance().getMouseY();
@@ -70,6 +51,6 @@ public class MixinMouse {
             if (result != ActionResult.PASS)
                 info.cancel();
         }
-    }*/
+    }
     
 }

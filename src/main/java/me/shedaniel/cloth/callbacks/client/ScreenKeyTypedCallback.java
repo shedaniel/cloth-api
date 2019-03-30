@@ -6,6 +6,6 @@ import net.minecraft.util.ActionResult;
 
 public interface ScreenKeyTypedCallback {
     
-    ActionResult keyTyped(MinecraftClient client, Screen screen, char character, int keyCode);
+    ActionResult charTyped(MinecraftClient client, Screen screen, char character, int keyCode);
     
 }
