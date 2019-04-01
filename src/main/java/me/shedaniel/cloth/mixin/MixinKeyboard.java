@@ -18,7 +18,7 @@ public class MixinKeyboard {
     @Final
     private MinecraftClient client;
     
-    @Inject(method = "onChar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V", ordinal = 0), cancellable = true)
+    @Inject(method = "method_20247", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V", ordinal = 0), cancellable = true)
     public void onCharFirst(long long_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled()) {
             ActionResult result = ClothClientHooks.SCREEN_CHAR_TYPED.invoker().charTyped(client, client.currentScreen, (char) int_1, int_2);
@@ -27,7 +27,7 @@ public class MixinKeyboard {
         }
     }
     
-    @Inject(method = "onChar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V", ordinal = 1), cancellable = true)
+    @Inject(method = "method_20247", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V", ordinal = 1), cancellable = true)
     public void onCharSecond(long long_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled()) {
             ActionResult result = ClothClientHooks.SCREEN_CHAR_TYPED.invoker().charTyped(client, client.currentScreen, (char) int_1, int_2);
