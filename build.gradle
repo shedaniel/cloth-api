@@ -28,6 +28,7 @@ configurations {
 }
 
 shadowJar {
+    classifier = null
     configurations = [project.configurations.contained]
 }
 

@@ -35,6 +35,12 @@ public class ClothClientHooks {
                 listener.render(client, screen, mouseX, mouseY, delta);
         };
     });
+    public static final Event<ScreenRenderCallback.Post> SCREEN_LATE_RENDER = EventFactory.createArrayBacked(ScreenRenderCallback.Post.class, listeners -> {
+        return (client, screen, mouseX, mouseY, delta) -> {
+            for(ScreenRenderCallback.Post listener : listeners)
+                listener.render(client, screen, mouseX, mouseY, delta);
+        };
+    });
     public static final Event<ScreenInitCallback.Pre> SCREEN_INIT_PRE = EventFactory.createArrayBacked(ScreenInitCallback.Pre.class, listeners -> {
         return (client, screen, hooks) -> {
             for(ScreenInitCallback.Pre listener : listeners) {
@@ -95,6 +101,26 @@ public class ClothClientHooks {
         return (client, screen, character, keyCode) -> {
             for(ScreenKeyTypedCallback listener : listeners) {
                 ActionResult result = listener.charTyped(client, screen, character, keyCode);
+                if (result != ActionResult.PASS)
+                    return result;
+            }
+            return ActionResult.PASS;
+        };
+    });
+    public static final Event<ScreenKeyPressedCallback> SCREEN_KEY_PRESSED = EventFactory.createArrayBacked(ScreenKeyPressedCallback.class, listeners -> {
+        return (client, screen, keyCode, scanCode, modifiers) -> {
+            for(ScreenKeyPressedCallback listener : listeners) {
+                ActionResult result = listener.keyPressed(client, screen, keyCode, scanCode, modifiers);
+                if (result != ActionResult.PASS)
+                    return result;
+            }
+            return ActionResult.PASS;
+        };
+    });
+    public static final Event<ScreenKeyReleasedCallback> SCREEN_KEY_RELEASED = EventFactory.createArrayBacked(ScreenKeyReleasedCallback.class, listeners -> {
+        return (client, screen, keyCode, scanCode, modifiers) -> {
+            for(ScreenKeyReleasedCallback listener : listeners) {
+                ActionResult result = listener.keyReleased(client, screen, keyCode, scanCode, modifiers);
                 if (result != ActionResult.PASS)
                     return result;
             }

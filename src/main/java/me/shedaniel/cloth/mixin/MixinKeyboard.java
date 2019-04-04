@@ -18,7 +18,10 @@ public class MixinKeyboard {
     @Final
     private MinecraftClient client;
     
-    @Inject(method = "method_20247", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V", ordinal = 0), cancellable = true)
+    @Shadow
+    private boolean repeatEvents;
+    
+    @Inject(method = "onChar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V", ordinal = 0), cancellable = true)
     public void onCharFirst(long long_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled()) {
             ActionResult result = ClothClientHooks.SCREEN_CHAR_TYPED.invoker().charTyped(client, client.currentScreen, (char) int_1, int_2);
@@ -27,12 +30,27 @@ public class MixinKeyboard {
         }
     }
     
-    @Inject(method = "method_20247", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V", ordinal = 1), cancellable = true)
+    @Inject(method = "onChar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V", ordinal = 1), cancellable = true)
     public void onCharSecond(long long_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled()) {
             ActionResult result = ClothClientHooks.SCREEN_CHAR_TYPED.invoker().charTyped(client, client.currentScreen, (char) int_1, int_2);
             if (result != ActionResult.PASS)
                 info.cancel();
+        }
+    }
+    
+    @Inject(method = "onKey", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V", ordinal = 0), cancellable = true)
+    public void onKey(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info) {
+        if (!info.isCancelled()) {
+            if (int_3 != 1 && (int_3 != 2 || !this.repeatEvents)) {
+                ActionResult result = ClothClientHooks.SCREEN_KEY_RELEASED.invoker().keyReleased(client, client.currentScreen, int_1, int_2, int_4);
+                if (result != ActionResult.PASS)
+                    info.cancel();
+            } else {
+                ActionResult result = ClothClientHooks.SCREEN_KEY_PRESSED.invoker().keyPressed(client, client.currentScreen, int_1, int_2, int_4);
+                if (result != ActionResult.PASS)
+                    info.cancel();
+            }
         }
     }
     
