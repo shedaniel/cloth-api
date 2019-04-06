@@ -2,7 +2,6 @@ package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
 import me.shedaniel.cloth.api.ClientUtils;
-import me.shedaniel.cloth.gui.ClothConfigScreen;
 import me.shedaniel.cloth.gui.ClothConfigScreen.ListEntry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
@@ -87,36 +86,6 @@ public class LongSliderEntry extends ListEntry {
     }
     
     @Override
-    public boolean isDragging() {
-        return sliderWidget.isHovered() || resetButton.isHovered();
-    }
-    
-    @Override
-    public void setDragging(boolean b) {
-        
-    }
-    
-    @Override
-    public Element getFocused() {
-        return null;
-    }
-    
-    @Override
-    public void setFocused(Element inputListener) {
-    
-    }
-    
-    @Override
-    public void onFocusChanged(boolean boolean_1, boolean boolean_2) {
-        sliderWidget.onFocusChanged(boolean_1, boolean_2);
-    }
-    
-    @Override
-    public boolean isPartOfFocusCycle() {
-        return sliderWidget.isPartOfFocusCycle();
-    }
-    
-    @Override
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         Window window = MinecraftClient.getInstance().window;
         Point mouse = ClientUtils.getMouseLocation();
@@ -138,22 +107,6 @@ public class LongSliderEntry extends ListEntry {
         sliderWidget.render(mouse.x, mouse.y, delta);
     }
     
-    @Override
-    public boolean mouseClicked(double double_1, double double_2, int int_1) {
-        if (sliderWidget.mouseClicked(double_1, double_2, int_1))
-            return true;
-        if (resetButton.mouseClicked(double_1, double_2, int_1))
-            return true;
-        return false;
-    }
-    
-    @Override
-    public boolean mouseDragged(double double_1, double double_2, int int_1, double double_3, double double_4) {
-        if (sliderWidget.mouseDragged(double_1, double_2, int_1, double_3, double_4))
-            return true;
-        return false;
-    }
-    
     private class Slider extends SliderWidget {
         
         protected Slider(int int_1, int int_2, int int_3, int int_4, double double_1) {
@@ -168,7 +121,7 @@ public class LongSliderEntry extends ListEntry {
         @Override
         protected void applyValue() {
             LongSliderEntry.this.value.set((long) (minimum + Math.abs(maximum - minimum) * value));
-            ((ClothConfigScreen.ListWidget) parent).getScreen().setEdited(true);
+            getScreen().setEdited(true);
         }
         
         public double getValue() {

@@ -1,37 +1,34 @@
 package me.shedaniel.cloth.gui;
 
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
 
-public class ClothConfigTabButton extends ButtonWidget {
-    private boolean privateHovered;
+public class ClothConfigTabButton extends AbstractPressableButtonWidget {
+    
     private int index = -1;
     private ClothConfigScreen screen;
     
     public ClothConfigTabButton(ClothConfigScreen screen, int index, int int_1, int int_2, int int_3, int int_4, String string_1) {
-        super(int_1, int_2, int_3, int_4, string_1, widget -> {
-            if (index != -1)
-                screen.nextTabIndex = index;
-            screen.init();
-        });
+        super(int_1, int_2, int_3, int_4, string_1);
         this.index = index;
         this.screen = screen;
     }
     
     @Override
-    public boolean isPartOfFocusCycle() {
-        return false;
+    public void onPress() {
+        if (index != -1)
+            screen.nextTabIndex = index;
+        screen.init();
     }
     
     @Override
     public void render(int int_1, int int_2, float float_1) {
         active = index != screen.selectedTabIndex;
-        privateHovered = isMouseOver(int_1, int_2);
         super.render(int_1, int_2, float_1);
     }
     
     @Override
-    public boolean isHovered() {
-        return this.privateHovered;
+    protected boolean clicked(double double_1, double double_2) {
+        return visible && active && isMouseOver(double_1, double_2);
     }
     
     @Override

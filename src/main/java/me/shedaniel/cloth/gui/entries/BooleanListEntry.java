@@ -2,7 +2,6 @@ package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
 import me.shedaniel.cloth.api.ClientUtils;
-import me.shedaniel.cloth.gui.ClothConfigScreen;
 import me.shedaniel.cloth.gui.ClothConfigScreen.ListEntry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
@@ -35,11 +34,11 @@ public class BooleanListEntry extends ListEntry {
         this.bool = new AtomicBoolean(bool);
         this.buttonWidget = new ButtonWidget(0, 0, 150, 20, "", widget -> {
             BooleanListEntry.this.bool.set(!BooleanListEntry.this.bool.get());
-            ((ClothConfigScreen.ListWidget) parent).getScreen().setEdited(true);
+            getScreen().setEdited(true);
         });
         this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(resetButtonKey)) + 6, 20, I18n.translate(resetButtonKey), widget -> {
             BooleanListEntry.this.bool.set(defaultValue.get());
-            ((ClothConfigScreen.ListWidget) parent).getScreen().setEdited(true);
+            getScreen().setEdited(true);
         });
         this.saveConsumer = saveConsumer;
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
@@ -91,35 +90,6 @@ public class BooleanListEntry extends ListEntry {
     @Override
     public List<? extends Element> children() {
         return widgets;
-    }
-    
-    @Override
-    public boolean isDragging() {
-        return buttonWidget.isHovered() || resetButton.isHovered();
-    }
-    
-    @Override
-    public void setDragging(boolean b) {
-    
-    }
-    
-    @Override
-    public Element getFocused() {
-        return null;
-    }
-    
-    @Override
-    public void setFocused(Element inputListener) {
-    
-    }
-    
-    @Override
-    public boolean mouseClicked(double double_1, double double_2, int int_1) {
-        if (buttonWidget.mouseClicked(double_1, double_2, int_1))
-            return true;
-        if (resetButton.mouseClicked(double_1, double_2, int_1))
-            return true;
-        return false;
     }
     
 }

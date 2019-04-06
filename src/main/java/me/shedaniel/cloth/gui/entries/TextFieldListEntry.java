@@ -2,7 +2,6 @@ package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
 import me.shedaniel.cloth.api.ReflectionUtils;
-import me.shedaniel.cloth.gui.ClothConfigScreen;
 import me.shedaniel.cloth.gui.ClothConfigScreen.ListEntry;
 import me.shedaniel.cloth.hooks.TextFieldWidgetHooks;
 import net.minecraft.client.MinecraftClient;
@@ -34,17 +33,17 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
         textFieldWidget.setText(String.valueOf(original));
         textFieldWidget.setChangedListener(s -> {
             if (!original.equals(s))
-                ((ClothConfigScreen.ListWidget) parent).getScreen().setEdited(true);
+                getScreen().setEdited(true);
         });
         this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(resetButtonKey)) + 6, 20, I18n.translate(resetButtonKey), widget -> {
             TextFieldListEntry.this.textFieldWidget.setText(String.valueOf(defaultValue.get()));
-            ((ClothConfigScreen.ListWidget) parent).getScreen().setEdited(true);
+            getScreen().setEdited(true);
         });
         this.widgets = Lists.newArrayList(textFieldWidget, resetButton);
     }
     
     protected static void setTextFieldWidth(TextFieldWidget widget, int width) {
-        ReflectionUtils.setField(widget, TextFieldWidget.class, width, 3);
+        ReflectionUtils.setField(widget, TextFieldWidget.class, width, "width");
     }
     
     @Override
@@ -82,59 +81,6 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
     @Override
     public List<? extends Element> children() {
         return Collections.singletonList(textFieldWidget);
-    }
-    
-    @Override
-    public boolean isDragging() {
-        return textFieldWidget.isFocused();
-    }
-    
-    @Override
-    public void setDragging(boolean b) {
-    
-    }
-    
-    @Override
-    public Element getFocused() {
-        return null;
-    }
-    
-    @Override
-    public void setFocused(Element inputListener) {
-    
-    }
-    
-    @Override
-    public void onFocusChanged(boolean boolean_1, boolean boolean_2) {
-        textFieldWidget.onFocusChanged(boolean_1, boolean_2);
-    }
-    
-    @Override
-    public boolean isPartOfFocusCycle() {
-        return textFieldWidget.isPartOfFocusCycle();
-    }
-    
-    @Override
-    public boolean mouseClicked(double double_1, double double_2, int int_1) {
-        if (textFieldWidget.mouseClicked(double_1, double_2, int_1))
-            return true;
-        if (resetButton.mouseClicked(double_1, double_2, int_1))
-            return true;
-        return false;
-    }
-    
-    @Override
-    public boolean charTyped(char char_1, int int_1) {
-        if (textFieldWidget.charTyped(char_1, int_1))
-            return true;
-        return false;
-    }
-    
-    @Override
-    public boolean keyPressed(int int_1, int int_2, int int_3) {
-        if (textFieldWidget.keyPressed(int_1, int_2, int_3))
-            return true;
-        return false;
     }
     
 }

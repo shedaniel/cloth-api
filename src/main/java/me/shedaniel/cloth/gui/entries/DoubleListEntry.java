@@ -1,7 +1,6 @@
 package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
@@ -60,7 +59,7 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
         textFieldWidget.setMaxLength(999999);
         textFieldWidget.setChangedListener(s -> {
             if (!original.equals(s))
-                ((ClothConfigScreen.ListWidget) parent).getScreen().setEdited(true);
+                getScreen().setEdited(true);
         });
         this.widgets = Lists.newArrayList(textFieldWidget, resetButton);
     }

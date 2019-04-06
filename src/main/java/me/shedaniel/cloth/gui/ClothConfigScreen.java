@@ -12,11 +12,12 @@ import me.shedaniel.cloth.gui.entries.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.ParentElement;
 import net.minecraft.client.gui.Screen;
 import net.minecraft.client.gui.menu.YesNoScreen;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ItemListWidget;
+import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
@@ -43,10 +44,10 @@ public abstract class ClothConfigScreen extends Screen {
     private List<Pair<String, Integer>> tabs;
     private boolean edited;
     private boolean confirmSave;
-    private ButtonWidget buttonQuit;
-    private ButtonWidget buttonSave;
-    private ButtonWidget buttonLeftTab;
-    private ButtonWidget buttonRightTab;
+    private AbstractButtonWidget buttonQuit;
+    private AbstractButtonWidget buttonSave;
+    private AbstractButtonWidget buttonLeftTab;
+    private AbstractButtonWidget buttonRightTab;
     private Rectangle tabsBounds, tabsLeftBounds, tabsRightBounds;
     private String title;
     private double tabsScrollProgress = 0d;
@@ -86,6 +87,7 @@ public abstract class ClothConfigScreen extends Screen {
                     throw new IllegalArgumentException("Unsupported Type (" + pair.getKey() + "): " + pair.getValue().getClass().getSimpleName());
                 }
             }
+            list.forEach(entry -> entry.screen = this);
             tabbedEntries.put(tab, list);
         });
         this.nextTabIndex = 0;
@@ -117,10 +119,9 @@ public abstract class ClothConfigScreen extends Screen {
         if (listWidget != null)
             tabbedEntries.put(tabs.get(selectedTabIndex).getKey(), listWidget.children());
         selectedTabIndex = nextTabIndex;
-        children.add(listWidget = new ListWidget(this, minecraft, width, height, 70, height - 32, 24));
-        if (tabbedEntries.size() > selectedTabIndex) {
+        children.add(listWidget = new ListWidget(minecraft, width, height, 70, height - 32, 24));
+        if (tabbedEntries.size() > selectedTabIndex)
             Lists.newArrayList(tabbedEntries.values()).get(selectedTabIndex).forEach(entry -> listWidget.children().add(entry));
-        }
         clampTabsScrolled();
         addButton(buttonQuit = new ButtonWidget(width / 2 - 154, height - 26, 150, 20, edited ? I18n.translate("text.cloth.cancel_discard") : I18n.translate("gui.cancel"), widget -> {
             if (confirmSave && edited)
@@ -128,18 +129,21 @@ public abstract class ClothConfigScreen extends Screen {
             else
                 minecraft.openScreen(parent);
         }));
-        addButton(buttonSave = new ButtonWidget(width / 2 + 4, height - 26, 150, 20, "", widget -> {
-            Map<String, List<Pair<String, Object>>> map = Maps.newLinkedHashMap();
-            tabbedEntries.forEach((s, abstractListEntries) -> {
-                List list = abstractListEntries.stream().map(entry -> new Pair(entry.getFieldName(), entry.getObject())).collect(Collectors.toList());
-                map.put(s, list);
-            });
-            for(List<AbstractListEntry> entries : Lists.newArrayList(tabbedEntries.values()))
-                for(AbstractListEntry entry : entries)
-                    entry.save();
-            onSave(map);
-            ClothConfigScreen.this.minecraft.openScreen(parent);
-        }) {
+        addButton(buttonSave = new AbstractPressableButtonWidget(width / 2 + 4, height - 26, 150, 20, "") {
+            @Override
+            public void onPress() {
+                Map<String, List<Pair<String, Object>>> map = Maps.newLinkedHashMap();
+                tabbedEntries.forEach((s, abstractListEntries) -> {
+                    List list = abstractListEntries.stream().map(entry -> new Pair(entry.getFieldName(), entry.getObject())).collect(Collectors.toList());
+                    map.put(s, list);
+                });
+                for(List<AbstractListEntry> entries : Lists.newArrayList(tabbedEntries.values()))
+                    for(AbstractListEntry entry : entries)
+                        entry.save();
+                onSave(map);
+                ClothConfigScreen.this.minecraft.openScreen(parent);
+            }
+            
             @Override
             public void render(int int_1, int int_2, float float_1) {
                 boolean hasErrors = false;
@@ -162,10 +166,13 @@ public abstract class ClothConfigScreen extends Screen {
         tabsBounds = new Rectangle(0, 41, width, 24);
         tabsLeftBounds = new Rectangle(0, 41, 18, 24);
         tabsRightBounds = new Rectangle(width - 18, 41, 18, 24);
-        children.add(buttonLeftTab = new ButtonWidget(4, 44, 12, 18, "", widget -> {
-            tabsScrollProgress = Integer.MIN_VALUE;
-            clampTabsScrolled();
-        }) {
+        children.add(buttonLeftTab = new AbstractPressableButtonWidget(4, 44, 12, 18, "") {
+            @Override
+            public void onPress() {
+                tabsScrollProgress = Integer.MIN_VALUE;
+                clampTabsScrolled();
+            }
+            
             @Override
             public void renderButton(int int_1, int int_2, float float_1) {
                 TextRenderer textRenderer = minecraft.textRenderer;
@@ -185,10 +192,13 @@ public abstract class ClothConfigScreen extends Screen {
             j++;
         }
         tabButtons.forEach(children::add);
-        children.add(buttonRightTab = new ButtonWidget(width - 16, 44, 12, 18, "", widget -> {
-            tabsScrollProgress = Integer.MAX_VALUE;
-            clampTabsScrolled();
-        }) {
+        children.add(buttonRightTab = new AbstractPressableButtonWidget(width - 16, 44, 12, 18, "") {
+            @Override
+            public void onPress() {
+                tabsScrollProgress = Integer.MAX_VALUE;
+                clampTabsScrolled();
+            }
+            
             @Override
             public void renderButton(int int_1, int int_2, float float_1) {
                 TextRenderer textRenderer = minecraft.textRenderer;
@@ -347,63 +357,6 @@ public abstract class ClothConfigScreen extends Screen {
     }
     
     public abstract void onSave(Map<String, List<Pair<String, Object>>> o);
-    
-    public static class ListWidget extends ItemListWidget {
-        private ClothConfigScreen screen;
-        
-        public ListWidget(ClothConfigScreen screen, MinecraftClient client, int int_1, int int_2, int int_3, int int_4, int int_5) {
-            super(client, int_1, int_2, int_3, int_4, int_5);
-            this.screen = screen;
-            visible = false;
-        }
-        
-        @Override
-        public int getItemWidth() {
-            return width - 80;
-        }
-        
-        public ClothConfigScreen getScreen() {
-            return screen;
-        }
-        
-        @Override
-        protected int getScrollbarPosition() {
-            return width - 36;
-        }
-        
-        protected final void clearStuff() {
-            this.clearItems();
-        }
-    }
-    
-    public static abstract class AbstractListEntry extends ItemListWidget.Item<AbstractListEntry> implements ParentElement {
-        public abstract String getFieldName();
-        
-        public abstract Object getObject();
-        
-        public Optional<String> getError() {
-            return Optional.empty();
-        }
-        
-        public abstract Optional<Object> getDefaultValue();
-        
-        public void save() {
-        
-        }
-    }
-    
-    public static abstract class ListEntry extends AbstractListEntry {
-        private String fieldName;
-        
-        public ListEntry(String fieldName) {
-            this.fieldName = fieldName;
-        }
-        
-        @Override
-        public String getFieldName() {
-            return fieldName;
-        }
-    }
     
     public static class Builder implements ConfigScreenBuilder {
         private Screen parentScreen;
@@ -679,6 +632,71 @@ public abstract class ClothConfigScreen extends Screen {
             }
         }
         
+    }
+    
+    public static abstract class ListEntry extends AbstractListEntry {
+        private String fieldName;
+        
+        public ListEntry(String fieldName) {
+            this.fieldName = fieldName;
+        }
+        
+        @Override
+        public String getFieldName() {
+            return fieldName;
+        }
+    }
+    
+    public static abstract class AbstractListEntry extends ElementListWidget.ElementItem<AbstractListEntry> {
+        private ClothConfigScreen screen;
+        
+        public abstract String getFieldName();
+        
+        public abstract Object getObject();
+        
+        public Optional<String> getError() {
+            return Optional.empty();
+        }
+        
+        public abstract Optional<Object> getDefaultValue();
+        
+        public final ListWidget getParent() {
+            return screen.listWidget;
+        }
+        
+        public final ClothConfigScreen getScreen() {
+            return screen;
+        }
+        
+        public void save() {
+        
+        }
+    }
+    
+    public class ListWidget extends ElementListWidget {
+        
+        public ListWidget(MinecraftClient client, int int_1, int int_2, int int_3, int int_4, int int_5) {
+            super(client, int_1, int_2, int_3, int_4, int_5);
+            visible = false;
+        }
+        
+        @Override
+        public int getItemWidth() {
+            return width - 80;
+        }
+        
+        public ClothConfigScreen getScreen() {
+            return ClothConfigScreen.this;
+        }
+        
+        @Override
+        protected int getScrollbarPosition() {
+            return width - 36;
+        }
+        
+        protected final void clearStuff() {
+            this.clearItems();
+        }
     }
     
 }
