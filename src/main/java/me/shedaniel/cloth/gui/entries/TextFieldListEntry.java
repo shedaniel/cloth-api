@@ -1,7 +1,6 @@
 package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.cloth.api.ReflectionUtils;
 import me.shedaniel.cloth.gui.ClothConfigScreen.ListEntry;
 import me.shedaniel.cloth.hooks.TextFieldWidgetHooks;
 import net.minecraft.client.MinecraftClient;
@@ -11,7 +10,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.Window;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -43,7 +41,7 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
     }
     
     protected static void setTextFieldWidth(TextFieldWidget widget, int width) {
-        ReflectionUtils.setField(widget, TextFieldWidget.class, width, "width");
+        ((TextFieldWidgetHooks) widget).cloth_setWidth(width);
     }
     
     @Override
@@ -80,7 +78,7 @@ public abstract class TextFieldListEntry<T> extends ListEntry {
     
     @Override
     public List<? extends Element> children() {
-        return Collections.singletonList(textFieldWidget);
+        return widgets;
     }
     
 }

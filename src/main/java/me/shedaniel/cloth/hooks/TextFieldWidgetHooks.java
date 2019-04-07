@@ -6,4 +6,6 @@ public interface TextFieldWidgetHooks {
     
     int cloth_getWidth();
     
+    void cloth_setWidth(int width);
+    
 }

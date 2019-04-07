@@ -6,7 +6,6 @@ import com.google.common.util.concurrent.AtomicDouble;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import javafx.util.Pair;
 import me.shedaniel.cloth.api.ConfigScreenBuilder;
 import me.shedaniel.cloth.gui.entries.*;
 import net.minecraft.client.MinecraftClient;
@@ -25,6 +24,7 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.StringTextComponent;
 import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
@@ -67,24 +67,24 @@ public abstract class ClothConfigScreen extends Screen {
         o.forEach((tab, pairs) -> {
             List<AbstractListEntry> list = Lists.newArrayList();
             for(Pair<String, Object> pair : pairs) {
-                if (pair.getValue() instanceof ListEntry) {
-                    list.add((ListEntry) pair.getValue());
-                } else if (pair.getValue() instanceof AbstractListEntry) {
-                    throw new IllegalArgumentException("Unsupported Type (" + pair.getKey() + "): AbstractListEntry");
-                } else if (boolean.class.isAssignableFrom(pair.getValue().getClass()) || Boolean.class.isAssignableFrom(pair.getValue().getClass())) {
-                    list.add(new BooleanListEntry(pair.getKey(), (boolean) pair.getValue(), null));
-                } else if (String.class.isAssignableFrom(pair.getValue().getClass())) {
-                    list.add(new StringListEntry(pair.getKey(), (String) pair.getValue(), null));
-                } else if (int.class.isAssignableFrom(pair.getValue().getClass()) || Integer.class.isAssignableFrom(pair.getValue().getClass())) {
-                    list.add(new IntegerListEntry(pair.getKey(), (int) pair.getValue(), null));
-                } else if (long.class.isAssignableFrom(pair.getValue().getClass()) || Long.class.isAssignableFrom(pair.getValue().getClass())) {
-                    list.add(new LongListEntry(pair.getKey(), (long) pair.getValue(), null));
-                } else if (float.class.isAssignableFrom(pair.getValue().getClass()) || Float.class.isAssignableFrom(pair.getValue().getClass())) {
-                    list.add(new FloatListEntry(pair.getKey(), (float) pair.getValue(), null));
-                } else if (double.class.isAssignableFrom(pair.getValue().getClass()) || Double.class.isAssignableFrom(pair.getValue().getClass())) {
-                    list.add(new DoubleListEntry(pair.getKey(), (double) pair.getValue(), null));
+                if (pair.getRight() instanceof ListEntry) {
+                    list.add((ListEntry) pair.getRight());
+                } else if (pair.getRight() instanceof AbstractListEntry) {
+                    throw new IllegalArgumentException("Unsupported Type (" + pair.getLeft() + "): AbstractListEntry");
+                } else if (boolean.class.isAssignableFrom(pair.getRight().getClass()) || Boolean.class.isAssignableFrom(pair.getRight().getClass())) {
+                    list.add(new BooleanListEntry(pair.getLeft(), (boolean) pair.getRight(), null));
+                } else if (String.class.isAssignableFrom(pair.getRight().getClass())) {
+                    list.add(new StringListEntry(pair.getLeft(), (String) pair.getRight(), null));
+                } else if (int.class.isAssignableFrom(pair.getRight().getClass()) || Integer.class.isAssignableFrom(pair.getRight().getClass())) {
+                    list.add(new IntegerListEntry(pair.getLeft(), (int) pair.getRight(), null));
+                } else if (long.class.isAssignableFrom(pair.getRight().getClass()) || Long.class.isAssignableFrom(pair.getRight().getClass())) {
+                    list.add(new LongListEntry(pair.getLeft(), (long) pair.getRight(), null));
+                } else if (float.class.isAssignableFrom(pair.getRight().getClass()) || Float.class.isAssignableFrom(pair.getRight().getClass())) {
+                    list.add(new FloatListEntry(pair.getLeft(), (float) pair.getRight(), null));
+                } else if (double.class.isAssignableFrom(pair.getRight().getClass()) || Double.class.isAssignableFrom(pair.getRight().getClass())) {
+                    list.add(new DoubleListEntry(pair.getLeft(), (double) pair.getRight(), null));
                 } else {
-                    throw new IllegalArgumentException("Unsupported Type (" + pair.getKey() + "): " + pair.getValue().getClass().getSimpleName());
+                    throw new IllegalArgumentException("Unsupported Type (" + pair.getLeft() + "): " + pair.getRight().getClass().getSimpleName());
                 }
             }
             list.forEach(entry -> entry.screen = this);
@@ -117,7 +117,7 @@ public abstract class ClothConfigScreen extends Screen {
         this.children.clear();
         this.tabButtons.clear();
         if (listWidget != null)
-            tabbedEntries.put(tabs.get(selectedTabIndex).getKey(), listWidget.children());
+            tabbedEntries.put(tabs.get(selectedTabIndex).getLeft(), listWidget.children());
         selectedTabIndex = nextTabIndex;
         children.add(listWidget = new ListWidget(minecraft, width, height, 70, height - 32, 24));
         if (tabbedEntries.size() > selectedTabIndex)
@@ -188,7 +188,7 @@ public abstract class ClothConfigScreen extends Screen {
         int j = 0;
         int xx = 20 - (int) tabsScrollProgress;
         for(Pair<String, Integer> tab : tabs) {
-            tabButtons.add(new ClothConfigTabButton(this, j, -100, 43, tab.getValue(), 20, I18n.translate(tab.getKey())));
+            tabButtons.add(new ClothConfigTabButton(this, j, -100, 43, tab.getRight(), 20, I18n.translate(tab.getLeft())));
             j++;
         }
         tabButtons.forEach(children::add);
@@ -231,7 +231,7 @@ public abstract class ClothConfigScreen extends Screen {
     public double getTabsMaximumScrolled() {
         if (tabsMaximumScrolled == -1d) {
             AtomicDouble d = new AtomicDouble();
-            tabs.forEach(pair -> d.addAndGet(pair.getValue() + 2));
+            tabs.forEach(pair -> d.addAndGet(pair.getRight() + 2));
             tabsMaximumScrolled = d.get();
         }
         return tabsMaximumScrolled;
@@ -582,7 +582,7 @@ public abstract class ClothConfigScreen extends Screen {
             public SavedCategory(SavedConfig savedConfig, String category) {
                 this.savedConfig = savedConfig;
                 this.category = category;
-                this.options = getOptionPairs().stream().map(pair -> new SavedOption(pair.getKey(), pair.getValue())).collect(Collectors.toList());
+                this.options = getOptionPairs().stream().map(pair -> new SavedOption(pair.getLeft(), pair.getRight())).collect(Collectors.toList());
             }
             
             @Override

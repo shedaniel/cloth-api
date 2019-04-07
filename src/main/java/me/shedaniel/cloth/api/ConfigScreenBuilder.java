@@ -1,8 +1,8 @@
 package me.shedaniel.cloth.api;
 
-import javafx.util.Pair;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.gui.Screen;
+import net.minecraft.util.Pair;
 
 import java.util.List;
 import java.util.Map;
@@ -49,6 +49,7 @@ public interface ConfigScreenBuilder {
     
     void addOption(String category, ClothConfigScreen.AbstractListEntry entry);
     
+    @Deprecated
     List<Pair<String, Object>> getOptions(String category);
     
     void setDoesConfirmSave(boolean confirmSave);
@@ -63,6 +64,7 @@ public interface ConfigScreenBuilder {
     public Map<String, List<Pair<String, Object>>> getDataMap();
     
     public static interface CategoryBuilder {
+        @Deprecated
         List<Pair<String, Object>> getOptions();
         
         CategoryBuilder addOption(ClothConfigScreen.AbstractListEntry entry);
@@ -92,6 +94,7 @@ public interface ConfigScreenBuilder {
         
         String getName();
         
+        @Deprecated
         List<Pair<String, Object>> getOptionPairs();
         
         List<SavedOption> getOptions();
