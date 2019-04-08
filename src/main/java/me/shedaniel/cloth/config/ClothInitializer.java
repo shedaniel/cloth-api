@@ -6,6 +6,7 @@ import me.shedaniel.cloth.config.gui.entries.BooleanListEntry;
 import me.shedaniel.cloth.config.gui.entries.IntegerListEntry;
 import me.shedaniel.cloth.config.gui.entries.IntegerSliderEntry;
 import me.shedaniel.cloth.config.gui.entries.StringListEntry;
+import me.shedaniel.cloth.config.utils.ClientUtils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
@@ -21,6 +22,7 @@ public class ClothInitializer implements ClientModInitializer {
     
     @Override
     public void onInitializeClient() {
+        new ClientUtils();
         AtomicBoolean test = new AtomicBoolean(false);
         if (FabricLoader.getInstance().isModLoaded("modmenu")) {
             try {
