@@ -28,6 +28,7 @@ configurations {
 }
 
 shadowJar {
+    version = project.mod_version.replaceAll('\\+build.','.')
     classifier = null
     configurations = [project.configurations.contained]
 }
