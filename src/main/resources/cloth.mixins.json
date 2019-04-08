@@ -3,15 +3,15 @@
   "package": "me.shedaniel.cloth.mixin",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.7.11",
-  "mixins": [
+  "client": [
     "MixinScreen",
     "MixinClientPlayNetworkHandler",
     "MixinMinecraftClient",
     "MixinMouse",
     "MixinKeyboard",
-    "MixinTextFieldWidget",
     "MixinGameRenderer"
   ],
+  "mixins": [],
   "injectors": {
     "defaultRequire": 1
   }

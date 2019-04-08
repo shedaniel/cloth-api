@@ -1,14 +1,34 @@
 {
+  "schemaVersion": 1,
   "id": "cloth",
-  "name": "Cloth API",
-  "description": "An API for events.",
-  "version": "0.1.6",
-  "side": "universal",
-  "initializers": [
-    "me.shedaniel.cloth.ClothInitializer"
+  "name": "Cloth Events",
+  "description": "An API for client-sided events.",
+  "version": "${version}",
+  "authors": [
+    "Danielshe"
   ],
-  "mixins": {
-    "client": "cloth.client.json",
-    "common": "cloth.common.json"
+  "contact": {
+    "homepage": "https://minecraft.curseforge.com/projects/cloth",
+    "sources": "https://github.com/shedaniel/Cloth",
+    "issues": "https://github.com/shedaniel/Cloth/issues"
+  },
+  "license": "Unlicense",
+  "icon": "pack.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "me.shedaniel.cloth.ClothInitializer"
+    ]
+  },
+  "mixins": [
+    "cloth.mixins.json"
+  ],
+  "requires": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:clientsideOnly": true
   }
 }

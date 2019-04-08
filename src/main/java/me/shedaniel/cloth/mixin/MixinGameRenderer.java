@@ -24,4 +24,9 @@ public abstract class MixinGameRenderer implements AutoCloseable, SynchronousRes
         ClothClientHooks.SCREEN_LATE_RENDER.invoker().render(client, client.currentScreen, (int) ClientUtils.getInstance().getMouseX(), (int) ClientUtils.getInstance().getMouseY(), client.getLastFrameDuration());
     }
     
+    @Inject(method = "renderCenter", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/debug/DebugRenderer;shouldRender()Z", ordinal = 0))
+    public void renderLightOverlay(float delta, long long_1, CallbackInfo callbackInfo) {
+        ClothClientHooks.DEBUG_RENDER_PRE.invoker().run();
+    }
+    
 }

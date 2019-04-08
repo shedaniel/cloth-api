@@ -9,36 +9,20 @@ dependencies {
 }
 ```
 ### APIs
-###### Config Screen API
-Start by making an instance of `ClothConfigScreen.Builder`, inside it you can do `addCategory` to get the category instance. Do `addOption` with the category instance to add an option.
-```java
-ClothConfigScreen.Builder builder = new ClothConfigScreen.Builder(parentScreen, screenTitleKey, saveConsumer);
-builder.addCategory("text.category.key").addOption(option);
-```
-There are multiple builtin option types:
-- Boolean -> BooleanListEntry
-- String -> StringListEntry
-- Integer -> IntegerListEntry (Text Field), IntegerSliderEntry (Slider)
-- Long -> LongListEntry (Text Field), LongSliderEntry (Slider)
-- Float -> FloatListEntry
-- Double -> DoubleListEntry
-
-And you can always build your own entry. Example of a boolean entry:
-```java
-builder.addCategory("text.category.key").addOption(new BooleanListEntry(fieldKey, value, save));
-```
-`fieldKey` will be translated automatically using `I18n`, `value` is the `true` or `false`, for `save`, it will only be called when you press save.
-
-Infect, you should do something like this:
-```java
-AtomicBoolean configBool = new AtomicBoolean(false);
-builder.addCategory("text.category.key").addOption(new BooleanListEntry("text.value.key", configBool, bool -> configBool.set(bool)));
-builder.setOnSave(savedConfig -> {
-    // Save your config data file here
-});
-```
-
-Lastly, you can open the screen like this:
-```java
-MinecraftClient.getInstance().openScreen(builder.build());
-```
+###### Events
+These are all the events in ClothClientHooks:
+- HANDLE_INPUT: Hook into MinecraftClient's handleInputEvents()
+- SYNC_RECIPES: Hook into client receiving the recipes sync packet
+- SCREEN_RENDER_PRE: Hook before Screen's render (does not do anything if screen completely overrides render)
+- SCREEN_RENDER_POST: Hook after Screen's render (does not do anything if screen completely overrides render)
+- SCREEN_LATE_RENDER: Hook after Screen's render (works even if screen completely overrides render)
+- SCREEN_INIT_PRE: Hook before Screen's initScreen
+- SCREEN_INIT_POST: Hook after Screen's initScreen
+- SCREEN_ADD_BUTTON: Hook into Screen's addButton
+- SCREEN_MOUSE_SCROLLED: Hook before Screen's mouseScrolled
+- SCREEN_MOUSE_CLICKED: Hook before Screen's mouseClicked
+- SCREEN_MOUSE_RELEASED: Hook before Screen's mouseReleased
+- SCREEN_CHAR_TYPED: Hook before Screen's charTyped
+- SCREEN_KEY_PRESSED: Hook before Screen's keyPressed
+- SCREEN_KEY_RELEASED: Hook before Screen's keyReleased
+- DEBUG_RENDER_PRE: Hook before GameRenderer's debug renders (like chunk borders)
