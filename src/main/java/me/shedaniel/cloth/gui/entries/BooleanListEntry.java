@@ -1,8 +1,8 @@
-package me.shedaniel.cloth.config.gui.entries;
+package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.cloth.config.api.ClientUtils;
-import me.shedaniel.cloth.config.gui.ClothConfigScreen;
+import me.shedaniel.cloth.api.ClientUtils;
+import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;

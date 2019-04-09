@@ -1,4 +1,4 @@
-package me.shedaniel.cloth.config.gui;
+package me.shedaniel.cloth.gui;
 
 import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
 

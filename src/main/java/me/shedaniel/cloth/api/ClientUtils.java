@@ -1,4 +1,4 @@
-package me.shedaniel.cloth.config.api;
+package me.shedaniel.cloth.api;
 
 import java.awt.*;
 
@@ -6,7 +6,7 @@ public interface ClientUtils {
     
     @SuppressWarnings("deprecated")
     static ClientUtils getInstance() {
-        return me.shedaniel.cloth.config.utils.ClientUtils.getInstance();
+        return me.shedaniel.cloth.utils.ClientUtils.getInstance();
     }
     
     static Point getMouseLocation() {

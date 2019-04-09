@@ -1,6 +1,6 @@
 package me.shedaniel.cloth.config.mixin;
 
-import me.shedaniel.cloth.config.hooks.TextFieldWidgetHooks;
+import me.shedaniel.cloth.hooks.TextFieldWidgetHooks;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

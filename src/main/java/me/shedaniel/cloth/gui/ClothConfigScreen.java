@@ -1,4 +1,4 @@
-package me.shedaniel.cloth.config.gui;
+package me.shedaniel.cloth.gui;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -6,8 +6,8 @@ import com.google.common.util.concurrent.AtomicDouble;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import me.shedaniel.cloth.config.api.ConfigScreenBuilder;
-import me.shedaniel.cloth.config.gui.entries.*;
+import me.shedaniel.cloth.api.ConfigScreenBuilder;
+import me.shedaniel.cloth.gui.entries.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
@@ -366,21 +366,13 @@ public abstract class ClothConfigScreen extends Screen {
         private boolean confirmSave;
         private boolean displayErrors;
         
-        private Builder(Screen parentScreen, String title, Consumer<ConfigScreenBuilder.SavedConfig> onSave) {
+        public Builder(Screen parentScreen, String title, Consumer<ConfigScreenBuilder.SavedConfig> onSave) {
             this.parentScreen = parentScreen;
             this.title = I18n.translate(title);
             this.dataMap = Maps.newLinkedHashMap();
             this.onSave = onSave;
             this.confirmSave = true;
             this.displayErrors = true;
-        }
-        
-        public static ConfigScreenBuilder create(Screen parentScreen, String title, Consumer<ConfigScreenBuilder.SavedConfig> onSave) {
-            return new Builder(parentScreen, title, onSave);
-        }
-        
-        public static ConfigScreenBuilder create() {
-            return create(null, "text.cloth-config.config", null);
         }
         
         @Override

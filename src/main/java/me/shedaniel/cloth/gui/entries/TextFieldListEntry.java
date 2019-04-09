@@ -1,8 +1,8 @@
-package me.shedaniel.cloth.config.gui.entries;
+package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.cloth.config.gui.ClothConfigScreen.ListEntry;
-import me.shedaniel.cloth.config.hooks.TextFieldWidgetHooks;
+import me.shedaniel.cloth.hooks.TextFieldWidgetHooks;
+import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public abstract class TextFieldListEntry<T> extends ListEntry {
+public abstract class TextFieldListEntry<T> extends ClothConfigScreen.ListEntry {
     
     protected TextFieldWidget textFieldWidget;
     protected ButtonWidget resetButton;

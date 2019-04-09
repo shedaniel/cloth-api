@@ -10,9 +10,9 @@ dependencies {
 ```
 ### APIs
 ###### Config Screen API
-Start by making an instance of `ClothConfigScreen.Builder`, inside it you can do `addCategory` to get the category instance. Do `addOption` with the category instance to add an option.
+Start by using `ConfigScreenBuilder.create`, inside it you can do `addCategory` to get the category instance. Do `addOption` with the category instance to add an option.
 ```java
-ClothConfigScreen.Builder builder = new ClothConfigScreen.Builder(parentScreen, screenTitleKey, saveConsumer);
+ConfigScreenBuilder builder = ConfigScreenBuilder.create(parentScreen, screenTitleKey, saveConsumer);
 builder.addCategory("text.category.key").addOption(option);
 ```
 There are multiple builtin option types:

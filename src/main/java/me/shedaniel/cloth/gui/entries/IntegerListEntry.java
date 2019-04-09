@@ -1,4 +1,4 @@
-package me.shedaniel.cloth.config.gui.entries;
+package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.MinecraftClient;
@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class DoubleListEntry extends TextFieldListEntry<Double> {
+public class IntegerListEntry extends TextFieldListEntry<Integer> {
     
     private static Function<String, String> stripCharacters = s -> {
         StringBuilder stringBuilder_1 = new StringBuilder();
@@ -18,22 +18,22 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
         int var3 = var2.length;
         
         for(int var4 = 0; var4 < var3; ++var4)
-            if (Character.isDigit(var2[var4]) || var2[var4] == '-' || var2[var4] == '.')
+            if (Character.isDigit(var2[var4]) || var2[var4] == '-')
                 stringBuilder_1.append(var2[var4]);
         
         return stringBuilder_1.toString();
     };
-    private double minimum, maximum;
-    private Consumer<Double> saveConsumer;
+    private int minimum, maximum;
+    private Consumer<Integer> saveConsumer;
     
-    public DoubleListEntry(String fieldName, Double value, Consumer<Double> saveConsumer) {
+    public IntegerListEntry(String fieldName, Integer value, Consumer<Integer> saveConsumer) {
         this(fieldName, value, "text.cloth-config.reset_value", null, saveConsumer);
     }
     
-    public DoubleListEntry(String fieldName, Double value, String resetButtonKey, Supplier<Double> defaultValue, Consumer<Double> saveConsumer) {
+    public IntegerListEntry(String fieldName, Integer value, String resetButtonKey, Supplier<Integer> defaultValue, Consumer<Integer> saveConsumer) {
         super(fieldName, value, resetButtonKey, defaultValue);
-        this.minimum = -Double.MAX_VALUE;
-        this.maximum = Double.MAX_VALUE;
+        this.minimum = -Integer.MAX_VALUE;
+        this.maximum = Integer.MAX_VALUE;
         this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 148, 18) {
             @Override
             public void addText(String string_1) {
@@ -43,7 +43,7 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
             @Override
             public void render(int int_1, int int_2, float float_1) {
                 try {
-                    double i = Double.valueOf(textFieldWidget.getText());
+                    int i = Integer.valueOf(textFieldWidget.getText());
                     if (i < minimum || i > maximum)
                         method_1868(16733525);
                     else
@@ -54,13 +54,13 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
                 super.render(int_1, int_2, float_1);
             }
         };
-        this.saveConsumer = saveConsumer;
         textFieldWidget.setText(String.valueOf(value));
         textFieldWidget.setMaxLength(999999);
         textFieldWidget.setChangedListener(s -> {
             if (!original.equals(s))
                 getScreen().setEdited(true);
         });
+        this.saveConsumer = saveConsumer;
         this.widgets = Lists.newArrayList(textFieldWidget, resetButton);
     }
     
@@ -75,35 +75,35 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
             saveConsumer.accept(getObject());
     }
     
-    public DoubleListEntry setMinimum(double minimum) {
-        this.minimum = minimum;
-        return this;
-    }
-    
-    public DoubleListEntry setMaximum(double maximum) {
+    public IntegerListEntry setMaximum(int maximum) {
         this.maximum = maximum;
         return this;
     }
     
+    public IntegerListEntry setMinimum(int minimum) {
+        this.minimum = minimum;
+        return this;
+    }
+    
     @Override
-    public Double getObject() {
+    public Integer getObject() {
         try {
-            return Double.valueOf(textFieldWidget.getText());
+            return Integer.valueOf(textFieldWidget.getText());
         } catch (Exception e) {
-            return 0d;
+            return 0;
         }
     }
     
     @Override
     public Optional<String> getError() {
         try {
-            double i = Double.valueOf(textFieldWidget.getText());
+            int i = Integer.valueOf(textFieldWidget.getText());
             if (i > maximum)
                 return Optional.of(I18n.translate("text.cloth-config.error.too_large", maximum));
             else if (i < minimum)
                 return Optional.of(I18n.translate("text.cloth-config.error.too_small", minimum));
         } catch (NumberFormatException ex) {
-            return Optional.of(I18n.translate("text.cloth-config.error.not_valid_number_double"));
+            return Optional.of(I18n.translate("text.cloth-config.error.not_valid_number_int"));
         }
         return super.getError();
     }

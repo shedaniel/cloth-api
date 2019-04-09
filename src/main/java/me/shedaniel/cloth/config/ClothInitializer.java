@@ -1,12 +1,11 @@
 package me.shedaniel.cloth.config;
 
-import me.shedaniel.cloth.config.api.ConfigScreenBuilder;
-import me.shedaniel.cloth.config.gui.ClothConfigScreen;
-import me.shedaniel.cloth.config.gui.entries.BooleanListEntry;
-import me.shedaniel.cloth.config.gui.entries.IntegerListEntry;
-import me.shedaniel.cloth.config.gui.entries.IntegerSliderEntry;
-import me.shedaniel.cloth.config.gui.entries.StringListEntry;
-import me.shedaniel.cloth.config.utils.ClientUtils;
+import me.shedaniel.cloth.api.ConfigScreenBuilder;
+import me.shedaniel.cloth.gui.entries.BooleanListEntry;
+import me.shedaniel.cloth.gui.entries.IntegerListEntry;
+import me.shedaniel.cloth.gui.entries.IntegerSliderEntry;
+import me.shedaniel.cloth.gui.entries.StringListEntry;
+import me.shedaniel.cloth.utils.ClientUtils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
@@ -29,7 +28,7 @@ public class ClothInitializer implements ClientModInitializer {
                 Class<?> clazz = Class.forName("io.github.prospector.modmenu.api.ModMenuApi");
                 Method method = clazz.getMethod("addConfigOverride", String.class, Runnable.class);
                 method.invoke(null, "cloth-config", (Runnable) () -> {
-                    ConfigScreenBuilder builder = ClothConfigScreen.Builder.create(MinecraftClient.getInstance().currentScreen, "Cloth Mod Config Demo", null);
+                    ConfigScreenBuilder builder = ConfigScreenBuilder.create(MinecraftClient.getInstance().currentScreen, "Cloth Mod Config Demo", null);
                     builder.addCategory("Boolean Zone").addOption(new BooleanListEntry("Simple Boolean", false, null));
                     ConfigScreenBuilder.CategoryBuilder numberZone = builder.addCategory("Numbers Zone");
                     numberZone.addOption(new StringListEntry("String Field", "ab", "text.cloth-config.reset_value", () -> "ab", null));

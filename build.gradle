@@ -8,7 +8,7 @@ plugins {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-archivesBaseName = "Cloth-Config"
+archivesBaseName = "ClothConfig"
 version = project.mod_version
 
 minecraft {

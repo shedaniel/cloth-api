@@ -1,8 +1,8 @@
-package me.shedaniel.cloth.config.utils;
+package me.shedaniel.cloth.utils;
 
 import net.minecraft.client.MinecraftClient;
 
-public class ClientUtils implements me.shedaniel.cloth.config.api.ClientUtils {
+public class ClientUtils implements me.shedaniel.cloth.api.ClientUtils {
     
     private static ClientUtils instance;
     private MinecraftClient client;

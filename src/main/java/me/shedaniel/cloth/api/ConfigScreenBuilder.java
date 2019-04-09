@@ -1,6 +1,6 @@
-package me.shedaniel.cloth.config.api;
+package me.shedaniel.cloth.api;
 
-import me.shedaniel.cloth.config.gui.ClothConfigScreen;
+import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.gui.Screen;
 import net.minecraft.util.Pair;
 
@@ -10,6 +10,14 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public interface ConfigScreenBuilder {
+    
+    public static ConfigScreenBuilder create(Screen parentScreen, String title, Consumer<ConfigScreenBuilder.SavedConfig> onSave) {
+        return new ClothConfigScreen.Builder(parentScreen, title, onSave);
+    }
+    
+    public static ConfigScreenBuilder create() {
+        return create(null, "text.cloth-config.config", null);
+    }
     
     String getTitle();
     

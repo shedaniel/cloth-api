@@ -1,4 +1,4 @@
-package me.shedaniel.cloth.config.gui.entries;
+package me.shedaniel.cloth.gui.entries;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;

@@ -1,4 +1,4 @@
-package me.shedaniel.cloth.config.gui.entries;
+package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.MinecraftClient;
@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class FloatListEntry extends TextFieldListEntry<Float> {
+public class LongListEntry extends TextFieldListEntry<Long> {
     
     private static Function<String, String> stripCharacters = s -> {
         StringBuilder stringBuilder_1 = new StringBuilder();
@@ -18,22 +18,22 @@ public class FloatListEntry extends TextFieldListEntry<Float> {
         int var3 = var2.length;
         
         for(int var4 = 0; var4 < var3; ++var4)
-            if (Character.isDigit(var2[var4]) || var2[var4] == '-' || var2[var4] == '.')
+            if (Character.isDigit(var2[var4]) || var2[var4] == '-')
                 stringBuilder_1.append(var2[var4]);
         
         return stringBuilder_1.toString();
     };
-    private float minimum, maximum;
-    private Consumer<Float> saveConsumer;
+    private long minimum, maximum;
+    private Consumer<Long> saveConsumer;
     
-    public FloatListEntry(String fieldName, Float value, Consumer<Float> saveConsumer) {
+    public LongListEntry(String fieldName, Long value, Consumer<Long> saveConsumer) {
         this(fieldName, value, "text.cloth-config.reset_value", null, saveConsumer);
     }
     
-    public FloatListEntry(String fieldName, Float value, String resetButtonKey, Supplier<Float> defaultValue, Consumer<Float> saveConsumer) {
+    public LongListEntry(String fieldName, Long value, String resetButtonKey, Supplier<Long> defaultValue, Consumer<Long> saveConsumer) {
         super(fieldName, value, resetButtonKey, defaultValue);
-        this.minimum = -Float.MAX_VALUE;
-        this.maximum = Float.MAX_VALUE;
+        this.minimum = -Long.MAX_VALUE;
+        this.maximum = Long.MAX_VALUE;
         this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 148, 18) {
             @Override
             public void addText(String string_1) {
@@ -43,7 +43,7 @@ public class FloatListEntry extends TextFieldListEntry<Float> {
             @Override
             public void render(int int_1, int int_2, float float_1) {
                 try {
-                    float i = Float.valueOf(textFieldWidget.getText());
+                    long i = Long.valueOf(textFieldWidget.getText());
                     if (i < minimum || i > maximum)
                         method_1868(16733525);
                     else
@@ -65,45 +65,45 @@ public class FloatListEntry extends TextFieldListEntry<Float> {
     }
     
     @Override
-    protected boolean isMatchDefault(String text) {
-        return getDefaultValue().isPresent() ? text.equals(defaultValue.get().toString()) : false;
-    }
-    
-    public FloatListEntry setMinimum(float minimum) {
-        this.minimum = minimum;
-        return this;
-    }
-    
-    public FloatListEntry setMaximum(float maximum) {
-        this.maximum = maximum;
-        return this;
-    }
-    
-    @Override
     public void save() {
         if (saveConsumer != null)
             saveConsumer.accept(getObject());
     }
     
     @Override
-    public Float getObject() {
+    protected boolean isMatchDefault(String text) {
+        return getDefaultValue().isPresent() ? text.equals(defaultValue.get().toString()) : false;
+    }
+    
+    public LongListEntry setMinimum(long minimum) {
+        this.minimum = minimum;
+        return this;
+    }
+    
+    public LongListEntry setMaximum(long maximum) {
+        this.maximum = maximum;
+        return this;
+    }
+    
+    @Override
+    public Long getObject() {
         try {
-            return Float.valueOf(textFieldWidget.getText());
+            return Long.valueOf(textFieldWidget.getText());
         } catch (Exception e) {
-            return 0f;
+            return 0l;
         }
     }
     
     @Override
     public Optional<String> getError() {
         try {
-            float i = Float.valueOf(textFieldWidget.getText());
+            long i = Long.valueOf(textFieldWidget.getText());
             if (i > maximum)
                 return Optional.of(I18n.translate("text.cloth-config.error.too_large", maximum));
             else if (i < minimum)
                 return Optional.of(I18n.translate("text.cloth-config.error.too_small", minimum));
         } catch (NumberFormatException ex) {
-            return Optional.of(I18n.translate("text.cloth-config.error.not_valid_number_float"));
+            return Optional.of(I18n.translate("text.cloth-config.error.not_valid_number_long"));
         }
         return super.getError();
     }
