@@ -22,6 +22,7 @@ There are multiple builtin option types:
 - Long -> LongListEntry (Text Field), LongSliderEntry (Slider)
 - Float -> FloatListEntry
 - Double -> DoubleListEntry
+- Enum -> EnumListEntry (Override enumNameProvider for custom names, or make the enum implement Translatable, or override `toString()` in the enum for names)
 
 And you can always build your own entry. Example of a boolean entry:
 ```java

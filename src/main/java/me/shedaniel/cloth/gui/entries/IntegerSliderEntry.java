@@ -1,7 +1,6 @@
 package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.cloth.api.ClientUtils;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
@@ -11,7 +10,6 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.Window;
 import net.minecraft.util.math.MathHelper;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -94,7 +92,6 @@ public class IntegerSliderEntry extends ClothConfigScreen.ListEntry {
     @Override
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         Window window = MinecraftClient.getInstance().window;
-        Point mouse = ClientUtils.getMouseLocation();
         this.resetButton.active = getDefaultValue().isPresent() && defaultValue.get().intValue() != value.get();
         this.resetButton.y = y;
         this.sliderWidget.y = y;
@@ -109,8 +106,8 @@ public class IntegerSliderEntry extends ClothConfigScreen.ListEntry {
             this.sliderWidget.x = window.getScaledWidth() - x - 150;
             this.sliderWidget.setWidth(150 - resetButton.getWidth() - 2);
         }
-        resetButton.render(mouse.x, mouse.y, delta);
-        sliderWidget.render(mouse.x, mouse.y, delta);
+        resetButton.render(mouseX, mouseY, delta);
+        sliderWidget.render(mouseX, mouseY, delta);
     }
     
     private class Slider extends SliderWidget {

@@ -1,16 +1,7 @@
 package me.shedaniel.cloth.gui.entries;
 
-import java.awt.Point;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-
-import me.shedaniel.cloth.api.ClientUtils;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
@@ -18,20 +9,33 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.Window;
 
-public class EnumListEntry<T extends Enum<?> & EnumListEntry.Translatable> extends ClothConfigScreen.ListEntry {
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+public class EnumListEntry<T extends Enum<?>> extends ClothConfigScreen.ListEntry {
     
+    public static final Function<Enum, String> DEFAULT_NAME_PROVIDER = t -> I18n.translate(t instanceof Translatable ? ((Translatable) t).getKey() : t.toString());
     private ImmutableList<T> values;
     private AtomicInteger index;
     private ButtonWidget buttonWidget, resetButton;
     private Consumer<T> saveConsumer;
     private Supplier<T> defaultValue;
     private List<Element> widgets;
+    private Function<Enum, String> enumNameProvider;
     
     public EnumListEntry(String fieldName, Class<T> clazz, T value, Consumer<T> saveConsumer) {
         this(fieldName, clazz, value, "text.cloth-config.reset_value", null, saveConsumer);
     }
     
     public EnumListEntry(String fieldName, Class<T> clazz, T value, String resetButtonKey, Supplier<T> defaultValue, Consumer<T> saveConsumer) {
+        this(fieldName, clazz, value, resetButtonKey, defaultValue, saveConsumer, DEFAULT_NAME_PROVIDER);
+    }
+    
+    public EnumListEntry(String fieldName, Class<T> clazz, T value, String resetButtonKey, Supplier<T> defaultValue, Consumer<T> saveConsumer, Function<Enum, String> enumNameProvider) {
         super(fieldName);
         T[] valuesArray = clazz.getEnumConstants();
         if (valuesArray != null)
@@ -52,6 +56,7 @@ public class EnumListEntry<T extends Enum<?> & EnumListEntry.Translatable> exten
         });
         this.saveConsumer = saveConsumer;
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
+        this.enumNameProvider = enumNameProvider;
     }
     
     @Override
@@ -73,11 +78,10 @@ public class EnumListEntry<T extends Enum<?> & EnumListEntry.Translatable> exten
     @Override
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         Window window = MinecraftClient.getInstance().window;
-        Point mouse = ClientUtils.getMouseLocation();
         this.resetButton.active = getDefaultValue().isPresent() && getDefaultIndex() != this.index.get();
         this.resetButton.y = y;
         this.buttonWidget.y = y;
-        this.buttonWidget.setMessage(I18n.translate(getObject().getKey()));
+        this.buttonWidget.setMessage(enumNameProvider.apply(getObject()));
         if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {
             MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), window.getScaledWidth() - x - MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(getFieldName())), y + 5, 16777215);
             this.resetButton.x = x;
@@ -89,8 +93,8 @@ public class EnumListEntry<T extends Enum<?> & EnumListEntry.Translatable> exten
             this.buttonWidget.x = window.getScaledWidth() - x - 150;
             this.buttonWidget.setWidth(150 - resetButton.getWidth() - 2);
         }
-        resetButton.render(mouse.x, mouse.y, delta);
-        buttonWidget.render(mouse.x, mouse.y, delta);
+        resetButton.render(mouseX, mouseY, delta);
+        buttonWidget.render(mouseX, mouseY, delta);
     }
     
     private int getDefaultIndex() {
@@ -101,7 +105,7 @@ public class EnumListEntry<T extends Enum<?> & EnumListEntry.Translatable> exten
     public List<? extends Element> children() {
         return widgets;
     }
-
+    
     public static interface Translatable {
         String getKey();
     }
