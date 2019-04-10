@@ -1,7 +1,7 @@
 package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.cloth.hooks.TextFieldWidgetHooks;
+import me.shedaniel.clothconfig.hooks.TextFieldWidgetHooks;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;

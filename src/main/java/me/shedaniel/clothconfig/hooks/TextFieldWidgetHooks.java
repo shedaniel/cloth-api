@@ -1,4 +1,4 @@
-package me.shedaniel.cloth.hooks;
+package me.shedaniel.clothconfig.hooks;
 
 public interface TextFieldWidgetHooks {
     

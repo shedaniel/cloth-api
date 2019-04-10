@@ -1,12 +1,7 @@
-package me.shedaniel.cloth.config;
+package me.shedaniel.clothconfig;
 
 import me.shedaniel.cloth.api.ConfigScreenBuilder;
-import me.shedaniel.cloth.gui.entries.BooleanListEntry;
-import me.shedaniel.cloth.gui.entries.EnumListEntry;
-import me.shedaniel.cloth.gui.entries.IntegerListEntry;
-import me.shedaniel.cloth.gui.entries.IntegerSliderEntry;
-import me.shedaniel.cloth.gui.entries.StringListEntry;
-import me.shedaniel.cloth.utils.ClientUtils;
+import me.shedaniel.cloth.gui.entries.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
@@ -16,13 +11,12 @@ import org.apache.logging.log4j.Logger;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ClothInitializer implements ClientModInitializer {
+public class ClothConfigInitializer implements ClientModInitializer {
     
-    public static final Logger LOGGER = LogManager.getFormatterLogger("Cloth-Config");
+    public static final Logger LOGGER = LogManager.getFormatterLogger("ClothConfig");
     
     @Override
     public void onInitializeClient() {
-        new ClientUtils();
         AtomicBoolean test = new AtomicBoolean(false);
         if (FabricLoader.getInstance().isModLoaded("modmenu")) {
             try {
@@ -40,22 +34,22 @@ public class ClothInitializer implements ClientModInitializer {
                     MinecraftClient.getInstance().openScreen(builder.build());
                 });
             } catch (Exception e) {
-                ClothInitializer.LOGGER.error("[Cloth-Config] Failed to add test config override for ModMenu!", e);
+                ClothConfigInitializer.LOGGER.error("[ClothConfig] Failed to add test config override for ModMenu!", e);
             }
         }
     }
-
-    private static enum DemoEnum implements EnumListEntry.Translatable {
+    
+    private static enum DemoEnum {
         CONSTANT_1("Constant 1"), CONSTANT_2("Constant 2"), CONSTANT_3("Constant 3");
-
+        
         private final String key;
-
+        
         private DemoEnum(String key) {
             this.key = key;
         }
-
+        
         @Override
-        public String getKey() {
+        public String toString() {
             return this.key;
         }
     }
