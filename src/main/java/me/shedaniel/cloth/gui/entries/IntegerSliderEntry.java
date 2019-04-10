@@ -51,6 +51,12 @@ public class IntegerSliderEntry extends ClothConfigScreen.ListEntry {
         this.widgets = Lists.newArrayList(sliderWidget, resetButton);
     }
     
+    @Override
+    public void save() {
+        if (saveConsumer != null)
+            saveConsumer.accept(getObject());
+    }
+    
     public Function<Integer, String> getTextGetter() {
         return textGetter;
     }
