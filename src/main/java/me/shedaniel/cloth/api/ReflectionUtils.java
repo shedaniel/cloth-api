@@ -1,6 +1,6 @@
 package me.shedaniel.cloth.api;
 
-import me.shedaniel.cloth.ClothInitializer;
+import me.shedaniel.cloth.ClothEventsInitializer;
 
 import java.lang.reflect.Field;
 import java.util.Optional;
@@ -17,7 +17,7 @@ public class ReflectionUtils {
                 return Optional.ofNullable(clazz.cast(field.get(parent)));
             } catch (Exception e) {
             }
-        ClothInitializer.LOGGER.warn("Reflection failed! Trying to get " + possibleNames + " from %s", clazz.getName());
+        ClothEventsInitializer.LOGGER.warn("Reflection failed! Trying to get " + possibleNames + " from %s", clazz.getName());
         return Optional.empty();
     }
     
@@ -29,7 +29,7 @@ public class ReflectionUtils {
             return Optional.ofNullable(clazz.cast(field.get(parent)));
         } catch (Exception e) {
         }
-        ClothInitializer.LOGGER.warn("Reflection failed! Trying to get #" + index + " from %s", clazz.getName());
+        ClothEventsInitializer.LOGGER.warn("Reflection failed! Trying to get #" + index + " from %s", clazz.getName());
         return Optional.empty();
     }
     
@@ -43,7 +43,7 @@ public class ReflectionUtils {
                 return Optional.ofNullable(clazz.cast(field.get(null)));
             } catch (Exception e) {
             }
-        ClothInitializer.LOGGER.warn("Reflection failed! Trying to get " + possibleNames + " from %s", clazz.getName());
+        ClothEventsInitializer.LOGGER.warn("Reflection failed! Trying to get " + possibleNames + " from %s", clazz.getName());
         return Optional.empty();
     }
     
@@ -55,7 +55,7 @@ public class ReflectionUtils {
             return Optional.ofNullable(clazz.cast(field.get(null)));
         } catch (Exception e) {
         }
-        ClothInitializer.LOGGER.warn("Reflection failed! Trying to get #" + index + " from %s", clazz.getName());
+        ClothEventsInitializer.LOGGER.warn("Reflection failed! Trying to get #" + index + " from %s", clazz.getName());
         return Optional.empty();
     }
     
@@ -72,7 +72,7 @@ public class ReflectionUtils {
             return;
         } catch (Exception e) {
         }
-        ClothInitializer.LOGGER.warn("Reflection failed! Trying to set #" + index + " from %s", parent.getClass().getName());
+        ClothEventsInitializer.LOGGER.warn("Reflection failed! Trying to set #" + index + " from %s", parent.getClass().getName());
         printAllFields(parent.getClass());
     }
     
@@ -86,7 +86,7 @@ public class ReflectionUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ClothInitializer.LOGGER.warn("Reflection failed! Trying to set #" + index + " from %s", parent.getName());
+        ClothEventsInitializer.LOGGER.warn("Reflection failed! Trying to set #" + index + " from %s", parent.getName());
         printAllFields(parent);
     }
     
@@ -104,7 +104,7 @@ public class ReflectionUtils {
                 return;
             } catch (Exception e) {
             }
-        ClothInitializer.LOGGER.warn("Reflection failed! Trying to set " + String.join(", ", possibleNames) + " from %s", parent.getClass().getName());
+        ClothEventsInitializer.LOGGER.warn("Reflection failed! Trying to set " + String.join(", ", possibleNames) + " from %s", parent.getClass().getName());
         printAllFields(parent.getClass());
     }
     
@@ -118,7 +118,7 @@ public class ReflectionUtils {
                 return;
             } catch (Exception e) {
             }
-        ClothInitializer.LOGGER.warn("Reflection failed! Trying to set " + String.join(", ", possibleNames) + " from %s", parent.getName());
+        ClothEventsInitializer.LOGGER.warn("Reflection failed! Trying to set " + String.join(", ", possibleNames) + " from %s", parent.getName());
         printAllFields(parent);
     }
     

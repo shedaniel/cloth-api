@@ -17,7 +17,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "me.shedaniel.cloth.ClothInitializer"
+      "me.shedaniel.cloth.ClothEventsInitializer"
     ]
   },
   "mixins": [

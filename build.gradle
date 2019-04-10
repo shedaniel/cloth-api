@@ -1,14 +1,14 @@
 import net.fabricmc.loom.task.RemapJar
 
 plugins {
-    id 'fabric-loom' version '0.1.0-SNAPSHOT'
+    id 'fabric-loom' version '0.2.1-SNAPSHOT'
     id "com.github.johnrengelman.shadow" version "4.0.3"
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-archivesBaseName = "Cloth"
+archivesBaseName = "ClothEvents"
 version = project.mod_version
 
 minecraft {
@@ -28,7 +28,7 @@ configurations {
 }
 
 shadowJar {
-    version = project.mod_version.replaceAll('-','.')
+    version = project.mod_version.replaceAll('\\+build.','.')
     classifier = null
     configurations = [project.configurations.contained]
 }

@@ -1,19 +1,19 @@
-package me.shedaniel.cloth.utils;
+package me.shedaniel.cloth.impl;
 
 import net.minecraft.client.MinecraftClient;
 
-public class ClientUtils implements me.shedaniel.cloth.api.ClientUtils {
+public class ClientUtilsImpl implements me.shedaniel.cloth.api.ClientUtils {
     
-    private static ClientUtils instance;
+    private static ClientUtilsImpl instance;
     private MinecraftClient client;
     
-    public ClientUtils() {
-        ClientUtils.instance = this;
+    public ClientUtilsImpl() {
+        ClientUtilsImpl.instance = this;
         this.client = MinecraftClient.getInstance();
     }
     
     @Deprecated
-    public static ClientUtils getInstance() {
+    public static ClientUtilsImpl getInstance() {
         return instance;
     }
     
