@@ -2,6 +2,7 @@ package me.shedaniel.cloth.config;
 
 import me.shedaniel.cloth.api.ConfigScreenBuilder;
 import me.shedaniel.cloth.gui.entries.BooleanListEntry;
+import me.shedaniel.cloth.gui.entries.EnumListEntry;
 import me.shedaniel.cloth.gui.entries.IntegerListEntry;
 import me.shedaniel.cloth.gui.entries.IntegerSliderEntry;
 import me.shedaniel.cloth.gui.entries.StringListEntry;
@@ -34,11 +35,28 @@ public class ClothInitializer implements ClientModInitializer {
                     numberZone.addOption(new StringListEntry("String Field", "ab", "text.cloth-config.reset_value", () -> "ab", null));
                     numberZone.addOption(new IntegerListEntry("Integer Field", 2, "text.cloth-config.reset_value", () -> 2, null).setMaximum(99).setMinimum(2));
                     numberZone.addOption(new IntegerSliderEntry("Integer Slider", 2, 99, 99, "text.cloth-config.reset_value", () -> 2, null));
+                    ConfigScreenBuilder.CategoryBuilder enumZone = builder.addCategory("Enum Zone");
+                    enumZone.addOption(new EnumListEntry<DemoEnum>("Enum Field", DemoEnum.class, DemoEnum.CONSTANT_2, "text.cloth-config.reset_value", () -> DemoEnum.CONSTANT_1, null));
                     MinecraftClient.getInstance().openScreen(builder.build());
                 });
             } catch (Exception e) {
                 ClothInitializer.LOGGER.error("[Cloth-Config] Failed to add test config override for ModMenu!", e);
             }
+        }
+    }
+
+    private static enum DemoEnum implements EnumListEntry.Translatable {
+        CONSTANT_1("Constant 1"), CONSTANT_2("Constant 2"), CONSTANT_3("Constant 3");
+
+        private final String key;
+
+        private DemoEnum(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public String getKey() {
+            return this.key;
         }
     }
     
