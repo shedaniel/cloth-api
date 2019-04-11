@@ -6,6 +6,7 @@ import com.google.common.util.concurrent.AtomicDouble;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import me.shedaniel.cloth.api.ConfigScreenBuilder;
 import me.shedaniel.cloth.gui.entries.*;
 import net.minecraft.client.MinecraftClient;
@@ -125,7 +126,7 @@ public abstract class ClothConfigScreen extends Screen {
         clampTabsScrolled();
         addButton(buttonQuit = new ButtonWidget(width / 2 - 154, height - 26, 150, 20, edited ? I18n.translate("text.cloth-config.cancel_discard") : I18n.translate("gui.cancel"), widget -> {
             if (confirmSave && edited)
-                minecraft.openScreen(new YesNoScreen(ClothConfigScreen.this, new TranslatableTextComponent("text.cloth-config.quit_config"), new TranslatableTextComponent("text.cloth-config.quit_config_sure"), I18n.translate("text.cloth-config.quit_discard"), I18n.translate("gui.cancel"), 812748710));
+                minecraft.openScreen(new YesNoScreen(new QuitSaveConsumer(), new TranslatableTextComponent("text.cloth-config.quit_config"), new TranslatableTextComponent("text.cloth-config.quit_config_sure"), I18n.translate("text.cloth-config.quit_discard"), I18n.translate("gui.cancel")));
             else
                 minecraft.openScreen(parent);
         }));
@@ -175,7 +176,6 @@ public abstract class ClothConfigScreen extends Screen {
             
             @Override
             public void renderButton(int int_1, int int_2, float float_1) {
-                TextRenderer textRenderer = minecraft.textRenderer;
                 minecraft.getTextureManager().bindTexture(CONFIG_TEX);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, this.alpha);
                 int int_3 = this.getYImage(this.isHovered());
@@ -186,7 +186,6 @@ public abstract class ClothConfigScreen extends Screen {
             }
         });
         int j = 0;
-        int xx = 20 - (int) tabsScrollProgress;
         for(Pair<String, Integer> tab : tabs) {
             tabButtons.add(new ClothConfigTabButton(this, j, -100, 43, tab.getRight(), 20, I18n.translate(tab.getLeft())));
             j++;
@@ -201,7 +200,6 @@ public abstract class ClothConfigScreen extends Screen {
             
             @Override
             public void renderButton(int int_1, int int_2, float float_1) {
-                TextRenderer textRenderer = minecraft.textRenderer;
                 minecraft.getTextureManager().bindTexture(CONFIG_TEX);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, this.alpha);
                 int int_3 = this.getYImage(this.isHovered());
@@ -215,15 +213,13 @@ public abstract class ClothConfigScreen extends Screen {
     
     @Override
     public boolean mouseScrolled(double double_1, double double_2, double double_3) {
-        if (tabsBounds.contains(double_1, double_2) && !tabsLeftBounds.contains(double_1, double_2) && !tabsRightBounds.contains(double_1, double_2)) {
-            if (double_3 != 0d) {
-                if (double_3 < 0)
-                    tabsScrollProgress += 16;
-                if (double_3 > 0)
-                    tabsScrollProgress -= 16;
-                clampTabsScrolled();
-                return true;
-            }
+        if (tabsBounds.contains(double_1, double_2) && !tabsLeftBounds.contains(double_1, double_2) && !tabsRightBounds.contains(double_1, double_2) && double_3 != 0d) {
+            if (double_3 < 0)
+                tabsScrollProgress += 16;
+            if (double_3 > 0)
+                tabsScrollProgress -= 16;
+            clampTabsScrolled();
+            return true;
         }
         return super.mouseScrolled(double_1, double_2, double_3);
     }
@@ -336,24 +332,12 @@ public abstract class ClothConfigScreen extends Screen {
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
             if (confirmSave && edited)
-                minecraft.openScreen(new YesNoScreen(this, new TranslatableTextComponent("text.cloth-config.quit_config"), new TranslatableTextComponent("text.cloth-config.quit_config_sure"), I18n.translate("text.cloth-config.quit_discard"), I18n.translate("gui.cancel"), 812748710));
+                minecraft.openScreen(new YesNoScreen(new QuitSaveConsumer(), new TranslatableTextComponent("text.cloth-config.quit_config"), new TranslatableTextComponent("text.cloth-config.quit_config_sure"), I18n.translate("text.cloth-config.quit_discard"), I18n.translate("gui.cancel")));
             else
                 minecraft.openScreen(parent);
             return true;
         }
         return super.keyPressed(int_1, int_2, int_3);
-    }
-    
-    @Override
-    public void confirmResult(boolean boolean_1, int int_1) {
-        if (int_1 == 812748710) {
-            if (!boolean_1)
-                this.minecraft.openScreen(this);
-            else
-                this.minecraft.openScreen(parent);
-            return;
-        }
-        super.confirmResult(boolean_1, int_1);
     }
     
     public abstract void onSave(Map<String, List<Pair<String, Object>>> o);
@@ -669,8 +653,18 @@ public abstract class ClothConfigScreen extends Screen {
         }
     }
     
+    private class QuitSaveConsumer implements BooleanConsumer {
+        @Override
+        public void accept(boolean t) {
+            if (!t)
+                minecraft.openScreen(ClothConfigScreen.this);
+            else
+                minecraft.openScreen(parent);
+            return;
+        }
+    }
+    
     public class ListWidget extends ElementListWidget {
-        
         public ListWidget(MinecraftClient client, int int_1, int int_2, int int_3, int int_4, int int_5) {
             super(client, int_1, int_2, int_3, int_4, int_5);
             visible = false;

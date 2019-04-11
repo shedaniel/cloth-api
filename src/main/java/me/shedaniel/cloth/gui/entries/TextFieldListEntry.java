@@ -1,8 +1,8 @@
 package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.clothconfig.hooks.TextFieldWidgetHooks;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
+import me.shedaniel.clothconfig.hooks.TextFieldWidgetHooks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -26,7 +26,21 @@ public abstract class TextFieldListEntry<T> extends ClothConfigScreen.ListEntry 
         super(fieldName);
         this.defaultValue = defaultValue;
         this.original = original;
-        this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 148, 18);
+        this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 148, 18) {
+            @Override
+            public void render(int int_1, int int_2, float float_1) {
+                boolean f = isFocused();
+                setFocused(TextFieldListEntry.this.getParent().getFocused() == TextFieldListEntry.this && TextFieldListEntry.this.getFocused() == this);
+                textFieldPreRender(this);
+                super.render(int_1, int_2, float_1);
+                setFocused(f);
+            }
+    
+            @Override
+            public void addText(String string_1) {
+                super.addText(stripAddText(string_1));
+            }
+        };
         textFieldWidget.setMaxLength(999999);
         textFieldWidget.setText(String.valueOf(original));
         textFieldWidget.setChangedListener(s -> {
@@ -38,6 +52,14 @@ public abstract class TextFieldListEntry<T> extends ClothConfigScreen.ListEntry 
             getScreen().setEdited(true);
         });
         this.widgets = Lists.newArrayList(textFieldWidget, resetButton);
+    }
+    
+    protected String stripAddText(String s) {
+        return s;
+    }
+    
+    protected void textFieldPreRender(TextFieldWidget widget) {
+    
     }
     
     protected static void setTextFieldWidth(TextFieldWidget widget, int width) {
@@ -70,10 +92,6 @@ public abstract class TextFieldListEntry<T> extends ClothConfigScreen.ListEntry 
     @Override
     public Optional<Object> getDefaultValue() {
         return defaultValue == null ? Optional.empty() : Optional.ofNullable(defaultValue.get());
-    }
-    
-    public String getYesNoText(boolean bool) {
-        return bool ? "§aYes" : "§cNo";
     }
     
     @Override

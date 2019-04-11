@@ -9,7 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Method;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClothConfigInitializer implements ClientModInitializer {
     
@@ -17,7 +16,6 @@ public class ClothConfigInitializer implements ClientModInitializer {
     
     @Override
     public void onInitializeClient() {
-        AtomicBoolean test = new AtomicBoolean(false);
         if (FabricLoader.getInstance().isModLoaded("modmenu")) {
             try {
                 Class<?> clazz = Class.forName("io.github.prospector.modmenu.api.ModMenuApi");
