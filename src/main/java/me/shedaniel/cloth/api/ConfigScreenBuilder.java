@@ -33,6 +33,8 @@ public interface ConfigScreenBuilder {
     
     ClothConfigScreen build();
     
+    Screen build(Consumer<ClothConfigScreen> afterInitConsumer);
+    
     List<String> getCategories();
     
     CategoryBuilder addCategory(String category);

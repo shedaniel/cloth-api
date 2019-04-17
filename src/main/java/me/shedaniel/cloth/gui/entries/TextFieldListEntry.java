@@ -2,7 +2,6 @@ package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
-import me.shedaniel.clothconfig.hooks.TextFieldWidgetHooks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -26,7 +25,7 @@ public abstract class TextFieldListEntry<T> extends ClothConfigScreen.ListEntry 
         super(fieldName);
         this.defaultValue = defaultValue;
         this.original = original;
-        this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 148, 18) {
+        this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 148, 18, "") {
             @Override
             public void render(int int_1, int int_2, float float_1) {
                 boolean f = isFocused();
@@ -35,7 +34,7 @@ public abstract class TextFieldListEntry<T> extends ClothConfigScreen.ListEntry 
                 super.render(int_1, int_2, float_1);
                 setFocused(f);
             }
-    
+            
             @Override
             public void addText(String string_1) {
                 super.addText(stripAddText(string_1));
@@ -54,6 +53,10 @@ public abstract class TextFieldListEntry<T> extends ClothConfigScreen.ListEntry 
         this.widgets = Lists.newArrayList(textFieldWidget, resetButton);
     }
     
+    protected static void setTextFieldWidth(TextFieldWidget widget, int width) {
+        widget.setWidth(width);
+    }
+    
     protected String stripAddText(String s) {
         return s;
     }
@@ -62,16 +65,12 @@ public abstract class TextFieldListEntry<T> extends ClothConfigScreen.ListEntry 
     
     }
     
-    protected static void setTextFieldWidth(TextFieldWidget widget, int width) {
-        ((TextFieldWidgetHooks) widget).clothconfig_setWidth(width);
-    }
-    
     @Override
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         Window window = MinecraftClient.getInstance().window;
         this.resetButton.active = getDefaultValue().isPresent() && !isMatchDefault(textFieldWidget.getText());
         this.resetButton.y = y;
-        ((TextFieldWidgetHooks) this.textFieldWidget).clothconfig_setY(y + 1);
+        this.textFieldWidget.y = y + 1;
         if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {
             MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), window.getScaledWidth() - x - MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(getFieldName())), y + 5, 16777215);
             this.resetButton.x = x;

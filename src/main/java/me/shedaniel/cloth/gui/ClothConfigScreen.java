@@ -469,14 +469,26 @@ public abstract class ClothConfigScreen extends Screen {
         }
         
         @Override
-        public ClothConfigScreen build() {
+        public ClothConfigScreen build(Consumer<ClothConfigScreen> afterInitConsumer) {
             return new ClothConfigScreen(parentScreen, title, dataMap, confirmSave, displayErrors) {
                 @Override
                 public void onSave(Map<String, List<Pair<String, Object>>> o) {
                     if (getOnSave() != null)
                         getOnSave().accept(new SavedConfig(o));
                 }
+                
+                @Override
+                protected void init() {
+                    super.init();
+                    if (afterInitConsumer != null)
+                        afterInitConsumer.accept(this);
+                }
             };
+        }
+        
+        @Override
+        public ClothConfigScreen build() {
+            return build(null);
         }
         
         public static class Category implements CategoryBuilder {
