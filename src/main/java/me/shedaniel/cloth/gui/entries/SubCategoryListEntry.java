@@ -67,7 +67,7 @@ public class SubCategoryListEntry extends ClothConfigScreen.ListEntry {
         if (expended) {
             int yy = y + 24;
             for(ClothConfigScreen.AbstractListEntry entry : entries) {
-                entry.render(-1, yy, x + 14, entryWidth - 10, entry.getItemHeight(), mouseX, mouseY, isSelected, delta);
+                entry.render(-1, yy, x + 14, entryWidth- 14, entry.getItemHeight(), mouseX, mouseY, isSelected, delta);
                 yy += entry.getItemHeight();
             }
         }

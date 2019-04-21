@@ -1,5 +1,6 @@
 package me.shedaniel.clothconfig;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import me.shedaniel.cloth.api.ConfigScreenBuilder;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
@@ -33,6 +34,7 @@ public class ClothConfigInitializer implements ClientModInitializer {
                     playZone.addOption(new LongSliderEntry("Long Slider", -10, 10, 0, null, "text.cloth-config.reset_value", () -> 0l));
                     List<ClothConfigScreen.AbstractListEntry> randomCategory = Lists.newArrayList();
                     randomCategory.add(new TextListEntry("x", "§7This is a promotional message brought to you by Danielshe. Shop your favorite Lil Tater at store.liltater.com!", -1, () -> Optional.of(new String[]{"This is an example tooltip."})));
+                  randomCategory.add(new SubCategoryListEntry("Sub-Sub-Category", ImmutableList.of(new EnumListEntry<DemoEnum>("Enum Field No. 1", DemoEnum.class, DemoEnum.CONSTANT_2, "text.cloth-config.reset_value", () -> DemoEnum.CONSTANT_1, null),new EnumListEntry<DemoEnum>("Enum Field No. 2", DemoEnum.class, DemoEnum.CONSTANT_2, "text.cloth-config.reset_value", () -> DemoEnum.CONSTANT_1, null)), false));
                     for(int i = 0; i < 10; i++)
                         randomCategory.add(new IntegerSliderEntry("Integer Slider No. " + (i + 1), -99, 99, 0, "text.cloth-config.reset_value", () -> 0, null));
                     playZone.addOption(new SubCategoryListEntry("Random Sub-Category", randomCategory, false));
