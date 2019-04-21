@@ -1,5 +1,6 @@
 package me.shedaniel.cloth.gui.entries;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -13,6 +14,11 @@ public class StringListEntry extends TextFieldListEntry<String> {
     
     public StringListEntry(String fieldName, String value, String resetButtonKey, Supplier<String> defaultValue, Consumer<String> saveConsumer) {
         super(fieldName, value, resetButtonKey, defaultValue);
+        this.saveConsumer = saveConsumer;
+    }
+    
+    public StringListEntry(String fieldName, String value, String resetButtonKey, Supplier<String> defaultValue, Consumer<String> saveConsumer, Supplier<Optional<String[]>> tooltipSupplier) {
+        super(fieldName, value, resetButtonKey, defaultValue, tooltipSupplier);
         this.saveConsumer = saveConsumer;
     }
     

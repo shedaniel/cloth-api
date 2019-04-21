@@ -1,7 +1,6 @@
 package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -13,18 +12,24 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public abstract class TextFieldListEntry<T> extends ClothConfigScreen.ListEntry {
+public abstract class TextFieldListEntry<T> extends TooltipListEntry {
     
     protected TextFieldWidget textFieldWidget;
     protected ButtonWidget resetButton;
     protected Supplier<T> defaultValue;
     protected T original;
     protected List<Element> widgets;
+    private Supplier<Optional<String[]>> tooltipSupplier;
     
     protected TextFieldListEntry(String fieldName, T original, String resetButtonKey, Supplier<T> defaultValue) {
+        this(fieldName, original, resetButtonKey, defaultValue, () -> Optional.empty());
+    }
+    
+    protected TextFieldListEntry(String fieldName, T original, String resetButtonKey, Supplier<T> defaultValue, Supplier<Optional<String[]>> tooltipSupplier) {
         super(fieldName);
         this.defaultValue = defaultValue;
         this.original = original;
+        this.tooltipSupplier = tooltipSupplier;
         this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 148, 18, "") {
             @Override
             public void render(int int_1, int int_2, float float_1) {
@@ -67,6 +72,7 @@ public abstract class TextFieldListEntry<T> extends ClothConfigScreen.ListEntry 
     
     @Override
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+        super.render(index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
         Window window = MinecraftClient.getInstance().window;
         this.resetButton.active = getDefaultValue().isPresent() && !isMatchDefault(textFieldWidget.getText());
         this.resetButton.y = y;
@@ -74,13 +80,13 @@ public abstract class TextFieldListEntry<T> extends ClothConfigScreen.ListEntry 
         if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {
             MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), window.getScaledWidth() - x - MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(getFieldName())), y + 5, 16777215);
             this.resetButton.x = x;
-            this.textFieldWidget.setX(x + resetButton.getWidth() + 2);
-            setTextFieldWidth(textFieldWidget, 150 - resetButton.getWidth() - 4);
+            this.textFieldWidget.setX(x + resetButton.getWidth());
+            setTextFieldWidth(textFieldWidget, 148 - resetButton.getWidth() - 4);
         } else {
             MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), x, y + 5, 16777215);
             this.resetButton.x = window.getScaledWidth() - x - resetButton.getWidth();
-            this.textFieldWidget.setX(window.getScaledWidth() - x - 150);
-            setTextFieldWidth(textFieldWidget, 150 - resetButton.getWidth() - 4);
+            this.textFieldWidget.setX(window.getScaledWidth() - x - 148);
+            setTextFieldWidth(textFieldWidget, 148 - resetButton.getWidth() - 4);
         }
         resetButton.render(mouseX, mouseY, delta);
         textFieldWidget.render(mouseX, mouseY, delta);
@@ -96,6 +102,13 @@ public abstract class TextFieldListEntry<T> extends ClothConfigScreen.ListEntry 
     @Override
     public List<? extends Element> children() {
         return widgets;
+    }
+    
+    @Override
+    public Optional<String[]> getTooltip() {
+        if (tooltipSupplier == null)
+            return Optional.empty();
+        return tooltipSupplier.get();
     }
     
 }

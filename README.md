@@ -23,6 +23,7 @@ There are multiple builtin option types:
 - Float -> FloatListEntry
 - Double -> DoubleListEntry
 - Enum -> EnumListEntry (Override enumNameProvider for custom names, or make the enum implement Translatable, or override `toString()` in the enum for names)
+- Text for Description -> TextListEntry
 
 And you can always build your own entry. Example of a boolean entry:
 ```java

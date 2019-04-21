@@ -1,7 +1,6 @@
 package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -14,19 +13,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class BooleanListEntry extends ClothConfigScreen.ListEntry {
+public class BooleanListEntry extends TooltipListEntry {
     
     private AtomicBoolean bool;
     private ButtonWidget buttonWidget, resetButton;
     private Consumer<Boolean> saveConsumer;
     private Supplier<Boolean> defaultValue;
     private List<Element> widgets;
+    private Supplier<Optional<String[]>> tooltipSupplier;
     
     public BooleanListEntry(String fieldName, boolean bool, Consumer<Boolean> saveConsumer) {
         this(fieldName, bool, "text.cloth-config.reset_value", null, saveConsumer);
     }
     
     public BooleanListEntry(String fieldName, boolean bool, String resetButtonKey, Supplier<Boolean> defaultValue, Consumer<Boolean> saveConsumer) {
+        this(fieldName, bool, resetButtonKey, defaultValue, saveConsumer, () -> Optional.empty());
+    }
+    
+    public BooleanListEntry(String fieldName, boolean bool, String resetButtonKey, Supplier<Boolean> defaultValue, Consumer<Boolean> saveConsumer, Supplier<Optional<String[]>> tooltipSupplier) {
         super(fieldName);
         this.defaultValue = defaultValue;
         this.bool = new AtomicBoolean(bool);
@@ -39,6 +43,7 @@ public class BooleanListEntry extends ClothConfigScreen.ListEntry {
             getScreen().setEdited(true);
         });
         this.saveConsumer = saveConsumer;
+        this.tooltipSupplier = tooltipSupplier;
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
     }
     
@@ -60,6 +65,7 @@ public class BooleanListEntry extends ClothConfigScreen.ListEntry {
     
     @Override
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+        super.render(index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
         Window window = MinecraftClient.getInstance().window;
         this.resetButton.active = getDefaultValue().isPresent() && defaultValue.get().booleanValue() != bool.get();
         this.resetButton.y = y;
@@ -87,6 +93,13 @@ public class BooleanListEntry extends ClothConfigScreen.ListEntry {
     @Override
     public List<? extends Element> children() {
         return widgets;
+    }
+    
+    @Override
+    public Optional<String[]> getTooltip() {
+        if (tooltipSupplier == null)
+            return Optional.empty();
+        return tooltipSupplier.get();
     }
     
 }

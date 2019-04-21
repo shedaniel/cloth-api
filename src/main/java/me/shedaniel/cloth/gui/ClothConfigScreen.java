@@ -9,6 +9,8 @@ import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import me.shedaniel.cloth.api.ConfigScreenBuilder;
 import me.shedaniel.cloth.gui.entries.*;
+import me.shedaniel.clothconfig.gui.DynamicElementListWidget;
+import me.shedaniel.clothconfig.gui.QueuedTooltip;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
@@ -17,7 +19,6 @@ import net.minecraft.client.gui.menu.YesNoScreen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 public abstract class ClothConfigScreen extends Screen {
     
     private static final Identifier CONFIG_TEX = new Identifier("cloth-config", "textures/gui/cloth_config.png");
+    private final List<QueuedTooltip> queuedTooltips = Lists.newArrayList();
     public int nextTabIndex;
     public int selectedTabIndex;
     public double tabsScrollVelocity = 0d;
@@ -56,17 +58,25 @@ public abstract class ClothConfigScreen extends Screen {
     private double tabsMaximumScrolled = -1d;
     private boolean displayErrors;
     private List<ClothConfigTabButton> tabButtons;
-    private boolean smoothScrolling = true;
+    private boolean smoothScrollingTabs = true;
+    private boolean smoothScrollingList = true;
+    private Identifier backgroundLocation;
     
     public ClothConfigScreen(Screen parent, String title, Map<String, List<Pair<String, Object>>> o) {
         this(parent, title, o, true, true);
     }
     
     public ClothConfigScreen(Screen parent, String title, Map<String, List<Pair<String, Object>>> o, boolean confirmSave, boolean displayErrors) {
+        this(parent, title, o, confirmSave, displayErrors, true, DrawableHelper.BACKGROUND_LOCATION);
+    }
+    
+    public ClothConfigScreen(Screen parent, String title, Map<String, List<Pair<String, Object>>> o, boolean confirmSave, boolean displayErrors, boolean smoothScrollingList, Identifier backgroundLocation) {
         super(new StringTextComponent(""));
         this.parent = parent;
         this.title = title;
         this.tabbedEntries = Maps.newLinkedHashMap();
+        this.smoothScrollingList = smoothScrollingList;
+        this.backgroundLocation = backgroundLocation;
         o.forEach((tab, pairs) -> {
             List<AbstractListEntry> list = Lists.newArrayList();
             for(Pair<String, Object> pair : pairs) {
@@ -104,12 +114,20 @@ public abstract class ClothConfigScreen extends Screen {
         this.displayErrors = displayErrors;
     }
     
-    public boolean isSmoothScrolling() {
-        return smoothScrolling;
+    public boolean isSmoothScrollingList() {
+        return smoothScrollingList;
     }
     
-    public void setSmoothScrolling(boolean smoothScrolling) {
-        this.smoothScrolling = smoothScrolling;
+    public void setSmoothScrollingList(boolean smoothScrollingList) {
+        this.smoothScrollingList = smoothScrollingList;
+    }
+    
+    public boolean isSmoothScrollingTabs() {
+        return smoothScrollingTabs;
+    }
+    
+    public void setSmoothScrollingTabs(boolean smoothScrolling) {
+        this.smoothScrollingTabs = smoothScrolling;
     }
     
     public boolean isEdited() {
@@ -130,7 +148,8 @@ public abstract class ClothConfigScreen extends Screen {
         if (listWidget != null)
             tabbedEntries.put(tabs.get(selectedTabIndex).getLeft(), listWidget.children());
         selectedTabIndex = nextTabIndex;
-        children.add(listWidget = new ListWidget(minecraft, width, height, 70, height - 32, 24));
+        children.add(listWidget = new ListWidget(minecraft, width, height, 70, height - 32, backgroundLocation));
+        listWidget.setSmoothScrolling(this.smoothScrollingList);
         if (tabbedEntries.size() > selectedTabIndex)
             Lists.newArrayList(tabbedEntries.values()).get(selectedTabIndex).forEach(entry -> listWidget.children().add(entry));
         addButton(buttonQuit = new ButtonWidget(width / 2 - 154, height - 26, 150, 20, edited ? I18n.translate("text.cloth-config.cancel_discard") : I18n.translate("gui.cancel"), widget -> {
@@ -260,7 +279,7 @@ public abstract class ClothConfigScreen extends Screen {
     
     @Override
     public void render(int int_1, int int_2, float float_1) {
-        if (smoothScrolling) {
+        if (smoothScrollingTabs) {
             double change = tabsScrollVelocity * 0.2f;
             if (change != 0) {
                 if (change > 0 && change < .2)
@@ -314,6 +333,12 @@ public abstract class ClothConfigScreen extends Screen {
             }
         }
         super.render(int_1, int_2, float_1);
+        queuedTooltips.forEach(queuedTooltip -> renderTooltip(queuedTooltip.getText(), queuedTooltip.getX(), queuedTooltip.getY()));
+        queuedTooltips.clear();
+    }
+    
+    public void queueTooltip(QueuedTooltip queuedTooltip) {
+        queuedTooltips.add(queuedTooltip);
     }
     
     private void drawShades() {
@@ -377,7 +402,8 @@ public abstract class ClothConfigScreen extends Screen {
         private Consumer<ConfigScreenBuilder.SavedConfig> onSave;
         private boolean confirmSave;
         private boolean displayErrors;
-        private boolean smoothScrolling;
+        private boolean smoothScrollingTabs, smoothScrollingList;
+        private Identifier backgroundTexture;
         
         public Builder(Screen parentScreen, String title, Consumer<ConfigScreenBuilder.SavedConfig> onSave) {
             this.parentScreen = parentScreen;
@@ -386,7 +412,19 @@ public abstract class ClothConfigScreen extends Screen {
             this.onSave = onSave;
             this.confirmSave = true;
             this.displayErrors = true;
-            this.smoothScrolling = true;
+            this.smoothScrollingTabs = true;
+            this.smoothScrollingList = true;
+            this.backgroundTexture = DrawableHelper.BACKGROUND_LOCATION;
+        }
+        
+        @Override
+        public Identifier getBackgroundTexture() {
+            return backgroundTexture;
+        }
+        
+        @Override
+        public void setBackgroundTexture(Identifier backgroundTexture) {
+            this.backgroundTexture = backgroundTexture;
         }
         
         @Override
@@ -490,12 +528,22 @@ public abstract class ClothConfigScreen extends Screen {
         
         @Override
         public boolean isSmoothScrollingTabs() {
-            return smoothScrolling;
+            return smoothScrollingTabs;
         }
         
         @Override
         public void setSmoothScrollingTabs(boolean smoothScrolling) {
-            this.smoothScrolling = smoothScrolling;
+            this.smoothScrollingTabs = smoothScrolling;
+        }
+        
+        @Override
+        public boolean isSmoothScrollingList() {
+            return smoothScrollingList;
+        }
+        
+        @Override
+        public void setSmoothScrollingList(boolean smoothScrollingList) {
+            this.smoothScrollingList = smoothScrollingList;
         }
         
         @Override
@@ -510,7 +558,7 @@ public abstract class ClothConfigScreen extends Screen {
         
         @Override
         public ClothConfigScreen build(Consumer<ClothConfigScreen> afterInitConsumer) {
-            ClothConfigScreen screen = new ClothConfigScreen(parentScreen, title, dataMap, confirmSave, displayErrors) {
+            ClothConfigScreen screen = new ClothConfigScreen(parentScreen, title, dataMap, confirmSave, displayErrors, smoothScrollingList, backgroundTexture) {
                 @Override
                 public void onSave(Map<String, List<Pair<String, Object>>> o) {
                     if (getOnSave() != null)
@@ -524,7 +572,7 @@ public abstract class ClothConfigScreen extends Screen {
                         afterInitConsumer.accept(this);
                 }
             };
-            screen.setSmoothScrolling(isSmoothScrollingTabs());
+            screen.setSmoothScrollingTabs(isSmoothScrollingTabs());
             return screen;
         }
         
@@ -681,7 +729,7 @@ public abstract class ClothConfigScreen extends Screen {
         }
     }
     
-    public static abstract class AbstractListEntry extends ElementListWidget.ElementItem<AbstractListEntry> {
+    public static abstract class AbstractListEntry extends DynamicElementListWidget.ElementItem<AbstractListEntry> {
         private ClothConfigScreen screen;
         
         public abstract String getFieldName();
@@ -702,8 +750,17 @@ public abstract class ClothConfigScreen extends Screen {
             return screen;
         }
         
+        public final void setScreen(ClothConfigScreen screen) {
+            this.screen = screen;
+        }
+        
         public void save() {
         
+        }
+        
+        @Override
+        public int getItemHeight() {
+            return 24;
         }
     }
     
@@ -718,9 +775,10 @@ public abstract class ClothConfigScreen extends Screen {
         }
     }
     
-    public class ListWidget extends ElementListWidget {
-        public ListWidget(MinecraftClient client, int int_1, int int_2, int int_3, int int_4, int int_5) {
-            super(client, int_1, int_2, int_3, int_4, int_5);
+    public class ListWidget extends DynamicElementListWidget {
+        
+        public ListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
+            super(client, width, height, top, bottom, backgroundLocation);
             visible = false;
         }
         

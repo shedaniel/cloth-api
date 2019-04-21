@@ -1,6 +1,5 @@
 package me.shedaniel.cloth.gui.entries;
 
-import com.google.common.collect.Lists;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 
@@ -31,6 +30,13 @@ public class DoubleListEntry extends TextFieldListEntry<Double> {
     
     public DoubleListEntry(String fieldName, Double value, String resetButtonKey, Supplier<Double> defaultValue, Consumer<Double> saveConsumer) {
         super(fieldName, value, resetButtonKey, defaultValue);
+        this.minimum = -Double.MAX_VALUE;
+        this.maximum = Double.MAX_VALUE;
+        this.saveConsumer = saveConsumer;
+    }
+    
+    public DoubleListEntry(String fieldName, Double value, String resetButtonKey, Supplier<Double> defaultValue, Consumer<Double> saveConsumer, Supplier<Optional<String[]>> tooltipSupplier) {
+        super(fieldName, value, resetButtonKey, defaultValue, tooltipSupplier);
         this.minimum = -Double.MAX_VALUE;
         this.maximum = Double.MAX_VALUE;
         this.saveConsumer = saveConsumer;

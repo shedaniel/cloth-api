@@ -1,6 +1,5 @@
 package me.shedaniel.cloth.gui.entries;
 
-import com.google.common.collect.Lists;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 
@@ -31,6 +30,13 @@ public class IntegerListEntry extends TextFieldListEntry<Integer> {
     
     public IntegerListEntry(String fieldName, Integer value, String resetButtonKey, Supplier<Integer> defaultValue, Consumer<Integer> saveConsumer) {
         super(fieldName, value, resetButtonKey, defaultValue);
+        this.minimum = -Integer.MAX_VALUE;
+        this.maximum = Integer.MAX_VALUE;
+        this.saveConsumer = saveConsumer;
+    }
+    
+    public IntegerListEntry(String fieldName, Integer value, String resetButtonKey, Supplier<Integer> defaultValue, Consumer<Integer> saveConsumer, Supplier<Optional<String[]>> tooltipSupplier) {
+        super(fieldName, value, resetButtonKey, defaultValue, tooltipSupplier);
         this.minimum = -Integer.MAX_VALUE;
         this.maximum = Integer.MAX_VALUE;
         this.saveConsumer = saveConsumer;

@@ -35,6 +35,13 @@ public class LongListEntry extends TextFieldListEntry<Long> {
         this.saveConsumer = saveConsumer;
     }
     
+    public LongListEntry(String fieldName, Long value, String resetButtonKey, Supplier<Long> defaultValue, Consumer<Long> saveConsumer, Supplier<Optional<String[]>> tooltipSupplier) {
+        super(fieldName, value, resetButtonKey, defaultValue, tooltipSupplier);
+        this.minimum = -Long.MAX_VALUE;
+        this.maximum = Long.MAX_VALUE;
+        this.saveConsumer = saveConsumer;
+    }
+    
     @Override
     protected String stripAddText(String s) {
         return stripCharacters.apply(s);

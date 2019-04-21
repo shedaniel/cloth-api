@@ -2,6 +2,7 @@ package me.shedaniel.cloth.api;
 
 import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.gui.Screen;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 
 import java.util.List;
@@ -77,7 +78,16 @@ public interface ConfigScreenBuilder {
     
     void setSmoothScrollingTabs(boolean smoothScrolling);
     
+    boolean isSmoothScrollingList();
+    
+    void setSmoothScrollingList(boolean smoothScrolling);
+    
+    Identifier getBackgroundTexture();
+    
+    void setBackgroundTexture(Identifier backgroundTexture);
+    
     public static interface CategoryBuilder {
+        
         @Deprecated
         List<Pair<String, Object>> getOptions();
         

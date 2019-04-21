@@ -2,7 +2,6 @@ package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -16,7 +15,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class EnumListEntry<T extends Enum<?>> extends ClothConfigScreen.ListEntry {
+public class EnumListEntry<T extends Enum<?>> extends TooltipListEntry {
     
     public static final Function<Enum, String> DEFAULT_NAME_PROVIDER = t -> I18n.translate(t instanceof Translatable ? ((Translatable) t).getKey() : t.toString());
     private ImmutableList<T> values;
@@ -26,6 +25,7 @@ public class EnumListEntry<T extends Enum<?>> extends ClothConfigScreen.ListEntr
     private Supplier<T> defaultValue;
     private List<Element> widgets;
     private Function<Enum, String> enumNameProvider;
+    private Supplier<Optional<String[]>> tooltipSupplier;
     
     public EnumListEntry(String fieldName, Class<T> clazz, T value, Consumer<T> saveConsumer) {
         this(fieldName, clazz, value, "text.cloth-config.reset_value", null, saveConsumer);
@@ -36,12 +36,17 @@ public class EnumListEntry<T extends Enum<?>> extends ClothConfigScreen.ListEntr
     }
     
     public EnumListEntry(String fieldName, Class<T> clazz, T value, String resetButtonKey, Supplier<T> defaultValue, Consumer<T> saveConsumer, Function<Enum, String> enumNameProvider) {
+        this(fieldName, clazz, value, resetButtonKey, defaultValue, saveConsumer, enumNameProvider, () -> Optional.empty());
+    }
+    
+    public EnumListEntry(String fieldName, Class<T> clazz, T value, String resetButtonKey, Supplier<T> defaultValue, Consumer<T> saveConsumer, Function<Enum, String> enumNameProvider, Supplier<Optional<String[]>> tooltipSupplier) {
         super(fieldName);
         T[] valuesArray = clazz.getEnumConstants();
         if (valuesArray != null)
             this.values = ImmutableList.copyOf(valuesArray);
         else
             this.values = ImmutableList.of(value);
+        this.tooltipSupplier = tooltipSupplier;
         this.defaultValue = defaultValue;
         this.index = new AtomicInteger(this.values.indexOf(value));
         this.index.compareAndSet(-1, 0);
@@ -77,6 +82,7 @@ public class EnumListEntry<T extends Enum<?>> extends ClothConfigScreen.ListEntr
     
     @Override
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+        super.render(index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
         Window window = MinecraftClient.getInstance().window;
         this.resetButton.active = getDefaultValue().isPresent() && getDefaultIndex() != this.index.get();
         this.resetButton.y = y;
@@ -104,6 +110,13 @@ public class EnumListEntry<T extends Enum<?>> extends ClothConfigScreen.ListEntr
     @Override
     public List<? extends Element> children() {
         return widgets;
+    }
+    
+    @Override
+    public Optional<String[]> getTooltip() {
+        if (tooltipSupplier == null)
+            return Optional.empty();
+        return tooltipSupplier.get();
     }
     
     public static interface Translatable {

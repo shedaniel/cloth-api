@@ -35,6 +35,13 @@ public class FloatListEntry extends TextFieldListEntry<Float> {
         this.saveConsumer = saveConsumer;
     }
     
+    public FloatListEntry(String fieldName, Float value, String resetButtonKey, Supplier<Float> defaultValue, Consumer<Float> saveConsumer, Supplier<Optional<String[]>> tooltipSupplier) {
+        super(fieldName, value, resetButtonKey, defaultValue, tooltipSupplier);
+        this.minimum = -Float.MAX_VALUE;
+        this.maximum = Float.MAX_VALUE;
+        this.saveConsumer = saveConsumer;
+    }
+    
     @Override
     protected String stripAddText(String s) {
         return stripCharacters.apply(s);
