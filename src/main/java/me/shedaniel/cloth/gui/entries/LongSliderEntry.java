@@ -39,7 +39,7 @@ public class LongSliderEntry extends ClothConfigScreen.ListEntry {
         this.saveConsumer = saveConsumer;
         this.maximum = maximum;
         this.minimum = minimum;
-        this.sliderWidget = new Slider(0, 0, 152, 20, ((double) LongSliderEntry.this.value.get()) / Math.abs(maximum - minimum));
+        this.sliderWidget = new Slider(0, 0, 152, 20, ((double) LongSliderEntry.this.value.get() - minimum) / Math.abs(maximum - minimum));
         this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(resetButtonKey)) + 6, 20, I18n.translate(resetButtonKey), widget -> {
             sliderWidget.setValue((MathHelper.clamp(this.defaultValue.get(), minimum, maximum) - minimum) / (double) Math.abs(maximum - minimum));
             this.value.set(Math.min(Math.max(this.defaultValue.get(), minimum), maximum));
