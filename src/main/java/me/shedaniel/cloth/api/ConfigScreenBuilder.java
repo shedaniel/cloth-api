@@ -73,6 +73,10 @@ public interface ConfigScreenBuilder {
     @Deprecated
     public Map<String, List<Pair<String, Object>>> getDataMap();
     
+    boolean isSmoothScrollingTabs();
+    
+    void setSmoothScrollingTabs(boolean smoothScrolling);
+    
     public static interface CategoryBuilder {
         @Deprecated
         List<Pair<String, Object>> getOptions();

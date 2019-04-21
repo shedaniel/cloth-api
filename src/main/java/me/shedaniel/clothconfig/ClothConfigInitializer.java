@@ -26,7 +26,7 @@ public class ClothConfigInitializer implements ClientModInitializer {
                     ConfigScreenBuilder.CategoryBuilder numberZone = builder.addCategory("Numbers Zone");
                     numberZone.addOption(new StringListEntry("String Field", "ab", "text.cloth-config.reset_value", () -> "ab", null));
                     numberZone.addOption(new IntegerListEntry("Integer Field", 2, "text.cloth-config.reset_value", () -> 2, null).setMaximum(99).setMinimum(2));
-                    numberZone.addOption(new IntegerSliderEntry("Integer Slider", 2, 99, 99, "text.cloth-config.reset_value", () -> 2, null));
+                    numberZone.addOption(new IntegerSliderEntry("Integer Slider", -99, 99, 0, "text.cloth-config.reset_value", () -> 2, null));
                     ConfigScreenBuilder.CategoryBuilder enumZone = builder.addCategory("Enum Zone");
                     enumZone.addOption(new EnumListEntry<DemoEnum>("Enum Field", DemoEnum.class, DemoEnum.CONSTANT_2, "text.cloth-config.reset_value", () -> DemoEnum.CONSTANT_1, null));
                     MinecraftClient.getInstance().openScreen(builder.build());

@@ -17,6 +17,7 @@ public class ClothConfigTabButton extends AbstractPressableButtonWidget {
     public void onPress() {
         if (index != -1)
             screen.nextTabIndex = index;
+        screen.tabsScrollVelocity = 0d;
         screen.init();
     }
     

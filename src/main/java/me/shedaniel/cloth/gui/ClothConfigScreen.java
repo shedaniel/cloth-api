@@ -39,6 +39,8 @@ public abstract class ClothConfigScreen extends Screen {
     private static final Identifier CONFIG_TEX = new Identifier("cloth-config", "textures/gui/cloth_config.png");
     public int nextTabIndex;
     public int selectedTabIndex;
+    public double tabsScrollVelocity = 0d;
+    public double tabsScrollProgress = 0d;
     private Screen parent;
     private ListWidget listWidget;
     private LinkedHashMap<String, List<AbstractListEntry>> tabbedEntries;
@@ -51,10 +53,10 @@ public abstract class ClothConfigScreen extends Screen {
     private AbstractButtonWidget buttonRightTab;
     private Rectangle tabsBounds, tabsLeftBounds, tabsRightBounds;
     private String title;
-    private double tabsScrollProgress = 0d;
     private double tabsMaximumScrolled = -1d;
     private boolean displayErrors;
     private List<ClothConfigTabButton> tabButtons;
+    private boolean smoothScrolling = true;
     
     public ClothConfigScreen(Screen parent, String title, Map<String, List<Pair<String, Object>>> o) {
         this(parent, title, o, true, true);
@@ -102,6 +104,14 @@ public abstract class ClothConfigScreen extends Screen {
         this.displayErrors = displayErrors;
     }
     
+    public boolean isSmoothScrolling() {
+        return smoothScrolling;
+    }
+    
+    public void setSmoothScrolling(boolean smoothScrolling) {
+        this.smoothScrolling = smoothScrolling;
+    }
+    
     public boolean isEdited() {
         return edited;
     }
@@ -123,7 +133,6 @@ public abstract class ClothConfigScreen extends Screen {
         children.add(listWidget = new ListWidget(minecraft, width, height, 70, height - 32, 24));
         if (tabbedEntries.size() > selectedTabIndex)
             Lists.newArrayList(tabbedEntries.values()).get(selectedTabIndex).forEach(entry -> listWidget.children().add(entry));
-        clampTabsScrolled();
         addButton(buttonQuit = new ButtonWidget(width / 2 - 154, height - 26, 150, 20, edited ? I18n.translate("text.cloth-config.cancel_discard") : I18n.translate("gui.cancel"), widget -> {
             if (confirmSave && edited)
                 minecraft.openScreen(new YesNoScreen(new QuitSaveConsumer(), new TranslatableTextComponent("text.cloth-config.quit_config"), new TranslatableTextComponent("text.cloth-config.quit_config_sure"), I18n.translate("text.cloth-config.quit_discard"), I18n.translate("gui.cancel")));
@@ -171,6 +180,7 @@ public abstract class ClothConfigScreen extends Screen {
             @Override
             public void onPress() {
                 tabsScrollProgress = Integer.MIN_VALUE;
+                tabsScrollVelocity = 0d;
                 clampTabsScrolled();
             }
             
@@ -195,6 +205,7 @@ public abstract class ClothConfigScreen extends Screen {
             @Override
             public void onPress() {
                 tabsScrollProgress = Integer.MAX_VALUE;
+                tabsScrollVelocity = 0d;
                 clampTabsScrolled();
             }
             
@@ -215,10 +226,9 @@ public abstract class ClothConfigScreen extends Screen {
     public boolean mouseScrolled(double double_1, double double_2, double double_3) {
         if (tabsBounds.contains(double_1, double_2) && !tabsLeftBounds.contains(double_1, double_2) && !tabsRightBounds.contains(double_1, double_2) && double_3 != 0d) {
             if (double_3 < 0)
-                tabsScrollProgress += 16;
+                tabsScrollVelocity += 16;
             if (double_3 > 0)
-                tabsScrollProgress -= 16;
-            clampTabsScrolled();
+                tabsScrollVelocity -= 16;
             return true;
         }
         return super.mouseScrolled(double_1, double_2, double_3);
@@ -235,6 +245,7 @@ public abstract class ClothConfigScreen extends Screen {
     
     public void resetTabsMaximumScrolled() {
         tabsMaximumScrolled = -1d;
+        tabsScrollVelocity = 0f;
     }
     
     public void clampTabsScrolled() {
@@ -249,14 +260,31 @@ public abstract class ClothConfigScreen extends Screen {
     
     @Override
     public void render(int int_1, int int_2, float float_1) {
-        clampTabsScrolled();
+        if (smoothScrolling) {
+            double change = tabsScrollVelocity * 0.2f;
+            if (change != 0) {
+                if (change > 0 && change < .2)
+                    change = .2;
+                else if (change < 0 && change > -.2)
+                    change = -.2;
+                tabsScrollProgress += change;
+                tabsScrollVelocity -= change;
+                if (change > 0 == tabsScrollVelocity < 0)
+                    tabsScrollVelocity = 0f;
+                clampTabsScrolled();
+            }
+        } else {
+            tabsScrollProgress += tabsScrollVelocity;
+            tabsScrollVelocity = 0d;
+            clampTabsScrolled();
+        }
         int xx = 20 - (int) tabsScrollProgress;
         for(ClothConfigTabButton tabButton : tabButtons) {
             tabButton.x = xx;
             xx += tabButton.getWidth() + 2;
         }
         buttonLeftTab.active = tabsScrollProgress > 0d;
-        buttonRightTab.active = tabsScrollProgress < getTabsMaximumScrolled() - width - 16;
+        buttonRightTab.active = tabsScrollProgress < getTabsMaximumScrolled() - width + 40;
         renderDirtBackground(0);
         listWidget.render(int_1, int_2, float_1);
         overlayBackground(tabsBounds, 32, 32, 32, 255, 255);
@@ -349,6 +377,7 @@ public abstract class ClothConfigScreen extends Screen {
         private Consumer<ConfigScreenBuilder.SavedConfig> onSave;
         private boolean confirmSave;
         private boolean displayErrors;
+        private boolean smoothScrolling;
         
         public Builder(Screen parentScreen, String title, Consumer<ConfigScreenBuilder.SavedConfig> onSave) {
             this.parentScreen = parentScreen;
@@ -357,6 +386,7 @@ public abstract class ClothConfigScreen extends Screen {
             this.onSave = onSave;
             this.confirmSave = true;
             this.displayErrors = true;
+            this.smoothScrolling = true;
         }
         
         @Override
@@ -459,6 +489,16 @@ public abstract class ClothConfigScreen extends Screen {
         }
         
         @Override
+        public boolean isSmoothScrollingTabs() {
+            return smoothScrolling;
+        }
+        
+        @Override
+        public void setSmoothScrollingTabs(boolean smoothScrolling) {
+            this.smoothScrolling = smoothScrolling;
+        }
+        
+        @Override
         public void setShouldProcessErrors(boolean processErrors) {
             this.displayErrors = processErrors;
         }
@@ -470,7 +510,7 @@ public abstract class ClothConfigScreen extends Screen {
         
         @Override
         public ClothConfigScreen build(Consumer<ClothConfigScreen> afterInitConsumer) {
-            return new ClothConfigScreen(parentScreen, title, dataMap, confirmSave, displayErrors) {
+            ClothConfigScreen screen = new ClothConfigScreen(parentScreen, title, dataMap, confirmSave, displayErrors) {
                 @Override
                 public void onSave(Map<String, List<Pair<String, Object>>> o) {
                     if (getOnSave() != null)
@@ -484,6 +524,8 @@ public abstract class ClothConfigScreen extends Screen {
                         afterInitConsumer.accept(this);
                 }
             };
+            screen.setSmoothScrolling(isSmoothScrollingTabs());
+            return screen;
         }
         
         @Override
@@ -495,7 +537,7 @@ public abstract class ClothConfigScreen extends Screen {
             private String category;
             private ConfigScreenBuilder builder;
             
-            protected Category(String category, ConfigScreenBuilder builder) {
+            public Category(String category, ConfigScreenBuilder builder) {
                 this.category = category;
                 this.builder = builder;
             }
@@ -544,7 +586,7 @@ public abstract class ClothConfigScreen extends Screen {
             private Map<String, List<Pair<String, Object>>> map;
             private Map<String, SavedCategory> categories;
             
-            protected SavedConfig(Map<String, List<Pair<String, Object>>> map) {
+            public SavedConfig(Map<String, List<Pair<String, Object>>> map) {
                 this.map = map;
                 categories = Maps.newLinkedHashMap();
                 map.forEach((s, pairs) -> categories.put(s, new SavedCategory(this, s)));
@@ -571,7 +613,7 @@ public abstract class ClothConfigScreen extends Screen {
             private String category;
             private List<ConfigScreenBuilder.SavedOption> options;
             
-            protected SavedCategory(SavedConfig savedConfig, String category) {
+            public SavedCategory(SavedConfig savedConfig, String category) {
                 this.savedConfig = savedConfig;
                 this.category = category;
                 this.options = getOptionPairs().stream().map(pair -> new SavedOption(pair.getLeft(), pair.getRight())).collect(Collectors.toList());
@@ -608,7 +650,7 @@ public abstract class ClothConfigScreen extends Screen {
             private String key;
             private Object value;
             
-            protected SavedOption(String key, Object value) {
+            public SavedOption(String key, Object value) {
                 this.key = key;
                 this.value = value;
             }

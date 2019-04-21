@@ -32,5 +32,6 @@ dependencies {
     modCompile "net.fabricmc:fabric:${project.fabric_version}"
 
     // ModMenu is ded
-//    modCompile "io.github.prospector.modmenu:ModMenu:${modmenu_version}"
+    modCompile "io.github.prospector.modmenu:ModMenu:${modmenu_version}"
+    compile "org.lwjgl:lwjgl-jemalloc:3.2.1"
 }

@@ -42,7 +42,7 @@ public class IntegerSliderEntry extends ClothConfigScreen.ListEntry {
         this.sliderWidget = new Slider(0, 0, 152, 20, ((double) this.value.get() - minimum) / Math.abs(maximum - minimum));
         this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(resetButtonKey)) + 6, 20, I18n.translate(resetButtonKey), widget -> {
             sliderWidget.setProgress((MathHelper.clamp(this.defaultValue.get(), minimum, maximum) - minimum) / (double) Math.abs(maximum - minimum));
-            sliderWidget.applyValue();
+            this.value.set(MathHelper.clamp(this.defaultValue.get(), minimum, maximum));
             sliderWidget.updateMessage();
         });
         this.sliderWidget.setMessage(textGetter.apply(IntegerSliderEntry.this.value.get()));
