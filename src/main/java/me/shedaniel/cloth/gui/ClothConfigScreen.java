@@ -321,7 +321,7 @@ public abstract class ClothConfigScreen extends Screen {
             for(List<AbstractListEntry> entries : Lists.newArrayList(tabbedEntries.values()))
                 for(AbstractListEntry entry : entries)
                     if (entry.getError().isPresent())
-                        errors.add((String) entry.getError().get());
+                        errors.add(entry.getError().get());
             if (errors.size() > 0) {
                 minecraft.getTextureManager().bindTexture(CONFIG_TEX);
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -370,7 +370,7 @@ public abstract class ClothConfigScreen extends Screen {
     protected void overlayBackground(Rectangle rect, int red, int green, int blue, int startAlpha, int endAlpha) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBufferBuilder();
-        minecraft.getTextureManager().bindTexture(DrawableHelper.BACKGROUND_LOCATION);
+        minecraft.getTextureManager().bindTexture(backgroundLocation);
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         float f = 32.0F;
         buffer.begin(7, VertexFormats.POSITION_UV_COLOR);

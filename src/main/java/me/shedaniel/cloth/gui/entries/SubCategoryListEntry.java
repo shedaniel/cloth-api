@@ -5,6 +5,7 @@ import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.audio.PositionedSoundInstance;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class SubCategoryListEntry extends ClothConfigScreen.ListEntry {
+public class SubCategoryListEntry extends TooltipListEntry {
     
     private static final Identifier CONFIG_TEX = new Identifier("cloth-config", "textures/gui/cloth_config.png");
     private String categoryName;
@@ -53,13 +54,15 @@ public class SubCategoryListEntry extends ClothConfigScreen.ListEntry {
     
     @Override
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
-        widget.rectangle.x = x;
+        super.render(index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
+        widget.rectangle.x = x - 19;
         widget.rectangle.y = y;
-        widget.rectangle.width = entryWidth;
+        widget.rectangle.width = entryWidth + 19;
         widget.rectangle.height = 24;
+        GuiLighting.disable();
         MinecraftClient.getInstance().getTextureManager().bindTexture(CONFIG_TEX);
-        blit(x, y + 4, 24, expended ? 9 : 0, 9, 9);
-        MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(categoryName), x + 14, y + 5, -1);
+        blit(x - 15, y + 4, 24, expended ? 9 : 0, 9, 9);
+        MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(categoryName), x, y + 5, -1);
         for(ClothConfigScreen.AbstractListEntry entry : entries) {
             entry.setParent(getParent());
             entry.setScreen(getScreen());
@@ -67,10 +70,19 @@ public class SubCategoryListEntry extends ClothConfigScreen.ListEntry {
         if (expended) {
             int yy = y + 24;
             for(ClothConfigScreen.AbstractListEntry entry : entries) {
-                entry.render(-1, yy, x + 14, entryWidth- 14, entry.getItemHeight(), mouseX, mouseY, isSelected, delta);
+                entry.render(-1, yy, x + 14, entryWidth - 14, entry.getItemHeight(), mouseX, mouseY, isSelected, delta);
                 yy += entry.getItemHeight();
             }
         }
+    }
+    
+    @Override
+    public boolean isMouseInside(int mouseX, int mouseY, int x, int y, int entryWidth, int entryHeight) {
+        widget.rectangle.x = x - 15;
+        widget.rectangle.y = y;
+        widget.rectangle.width = entryWidth + 15;
+        widget.rectangle.height = 24;
+        return widget.rectangle.contains(mouseX, mouseY) && getParent().isMouseOver(mouseX, mouseY);
     }
     
     @Override
@@ -93,6 +105,18 @@ public class SubCategoryListEntry extends ClothConfigScreen.ListEntry {
     public void save() {
         super.save();
         entries.forEach(ClothConfigScreen.AbstractListEntry::save);
+    }
+    
+    @Override
+    public Optional<String> getError() {
+        String error = null;
+        for(ClothConfigScreen.AbstractListEntry entry : entries)
+            if (entry.getError().isPresent()) {
+                if (error != null)
+                    return Optional.ofNullable(I18n.translate("text.cloth-config.multi_error"));
+                return Optional.ofNullable(entry.getError().get());
+            }
+        return Optional.ofNullable(error);
     }
     
     public class CategoryLabelWidget implements Element {
