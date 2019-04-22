@@ -198,6 +198,16 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
         buffer.vertex(this.left, this.bottom - 4, 0.0D).texture(0.0D, 0.0D).color(0, 0, 0, 0).next();
         tessellator.draw();
         int maxScroll = this.getMaxScroll();
+        renderScrollBar(tessellator, buffer, maxScroll, scrollbarPosition, int_4);
+        
+        this.renderDecorations(mouseX, mouseY);
+        GlStateManager.enableTexture();
+        GlStateManager.shadeModel(7424);
+        GlStateManager.enableAlphaTest();
+        GlStateManager.disableBlend();
+    }
+    
+    protected void renderScrollBar(Tessellator tessellator, BufferBuilder buffer, int maxScroll, int scrollbarPositionMinX, int scrollbarPositionMaxX) {
         if (maxScroll > 0) {
             int int_9 = (int) (((this.bottom - this.top) * (this.bottom - this.top)) / this.getMaxScrollPosition());
             int_9 = MathHelper.clamp(int_9, 32, this.bottom - this.top - 8);
@@ -207,30 +217,24 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
             }
             
             buffer.begin(7, VertexFormats.POSITION_UV_COLOR);
-            buffer.vertex(scrollbarPosition, this.bottom, 0.0D).texture(0.0D, 1.0D).color(0, 0, 0, 255).next();
-            buffer.vertex(int_4, this.bottom, 0.0D).texture(1.0D, 1.0D).color(0, 0, 0, 255).next();
-            buffer.vertex(int_4, this.top, 0.0D).texture(1.0D, 0.0D).color(0, 0, 0, 255).next();
-            buffer.vertex(scrollbarPosition, this.top, 0.0D).texture(0.0D, 0.0D).color(0, 0, 0, 255).next();
+            buffer.vertex(scrollbarPositionMinX, this.bottom, 0.0D).texture(0.0D, 1.0D).color(0, 0, 0, 255).next();
+            buffer.vertex(scrollbarPositionMaxX, this.bottom, 0.0D).texture(1.0D, 1.0D).color(0, 0, 0, 255).next();
+            buffer.vertex(scrollbarPositionMaxX, this.top, 0.0D).texture(1.0D, 0.0D).color(0, 0, 0, 255).next();
+            buffer.vertex(scrollbarPositionMinX, this.top, 0.0D).texture(0.0D, 0.0D).color(0, 0, 0, 255).next();
             tessellator.draw();
             buffer.begin(7, VertexFormats.POSITION_UV_COLOR);
-            buffer.vertex(scrollbarPosition, int_10 + int_9, 0.0D).texture(0.0D, 1.0D).color(128, 128, 128, 255).next();
-            buffer.vertex(int_4, int_10 + int_9, 0.0D).texture(1.0D, 1.0D).color(128, 128, 128, 255).next();
-            buffer.vertex(int_4, int_10, 0.0D).texture(1.0D, 0.0D).color(128, 128, 128, 255).next();
-            buffer.vertex(scrollbarPosition, int_10, 0.0D).texture(0.0D, 0.0D).color(128, 128, 128, 255).next();
+            buffer.vertex(scrollbarPositionMinX, int_10 + int_9, 0.0D).texture(0.0D, 1.0D).color(128, 128, 128, 255).next();
+            buffer.vertex(scrollbarPositionMaxX, int_10 + int_9, 0.0D).texture(1.0D, 1.0D).color(128, 128, 128, 255).next();
+            buffer.vertex(scrollbarPositionMaxX, int_10, 0.0D).texture(1.0D, 0.0D).color(128, 128, 128, 255).next();
+            buffer.vertex(scrollbarPositionMinX, int_10, 0.0D).texture(0.0D, 0.0D).color(128, 128, 128, 255).next();
             tessellator.draw();
             buffer.begin(7, VertexFormats.POSITION_UV_COLOR);
-            buffer.vertex(scrollbarPosition, (int_10 + int_9 - 1), 0.0D).texture(0.0D, 1.0D).color(192, 192, 192, 255).next();
-            buffer.vertex((int_4 - 1), (int_10 + int_9 - 1), 0.0D).texture(1.0D, 1.0D).color(192, 192, 192, 255).next();
-            buffer.vertex((int_4 - 1), int_10, 0.0D).texture(1.0D, 0.0D).color(192, 192, 192, 255).next();
-            buffer.vertex(scrollbarPosition, int_10, 0.0D).texture(0.0D, 0.0D).color(192, 192, 192, 255).next();
+            buffer.vertex(scrollbarPositionMinX, (int_10 + int_9 - 1), 0.0D).texture(0.0D, 1.0D).color(192, 192, 192, 255).next();
+            buffer.vertex((scrollbarPositionMaxX - 1), (int_10 + int_9 - 1), 0.0D).texture(1.0D, 1.0D).color(192, 192, 192, 255).next();
+            buffer.vertex((scrollbarPositionMaxX - 1), int_10, 0.0D).texture(1.0D, 0.0D).color(192, 192, 192, 255).next();
+            buffer.vertex(scrollbarPositionMinX, int_10, 0.0D).texture(0.0D, 0.0D).color(192, 192, 192, 255).next();
             tessellator.draw();
         }
-        
-        this.renderDecorations(mouseX, mouseY);
-        GlStateManager.enableTexture();
-        GlStateManager.shadeModel(7424);
-        GlStateManager.enableAlphaTest();
-        GlStateManager.disableBlend();
     }
     
     protected void centerScrollOn(E item) {

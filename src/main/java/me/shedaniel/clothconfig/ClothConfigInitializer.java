@@ -8,6 +8,7 @@ import me.shedaniel.cloth.gui.entries.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,6 +40,7 @@ public class ClothConfigInitializer implements ClientModInitializer {
                         randomCategory.add(new IntegerSliderEntry("Integer Slider No. " + (i + 1), -99, 99, 0, "text.cloth-config.reset_value", () -> 0, null));
                     playZone.addOption(new SubCategoryListEntry("Random Sub-Category", randomCategory, false));
                     ConfigScreenBuilder.CategoryBuilder enumZone = builder.addCategory("Enum Zone");
+                    enumZone.setBackgroundTexture(new Identifier("minecraft:textures/block/stone.png"));
                     enumZone.addOption(new EnumListEntry<DemoEnum>("Enum Field", DemoEnum.class, DemoEnum.CONSTANT_2, "text.cloth-config.reset_value", () -> DemoEnum.CONSTANT_1, null));
                     MinecraftClient.getInstance().openScreen(builder.build());
                 });

@@ -60,7 +60,8 @@ public abstract class ClothConfigScreen extends Screen {
     private List<ClothConfigTabButton> tabButtons;
     private boolean smoothScrollingTabs = true;
     private boolean smoothScrollingList = true;
-    private Identifier backgroundLocation;
+    private Identifier defaultBackgroundLocation;
+    private Map<String, Identifier> categoryBackgroundLocation;
     
     public ClothConfigScreen(Screen parent, String title, Map<String, List<Pair<String, Object>>> o) {
         this(parent, title, o, true, true);
@@ -70,13 +71,17 @@ public abstract class ClothConfigScreen extends Screen {
         this(parent, title, o, confirmSave, displayErrors, true, DrawableHelper.BACKGROUND_LOCATION);
     }
     
-    public ClothConfigScreen(Screen parent, String title, Map<String, List<Pair<String, Object>>> o, boolean confirmSave, boolean displayErrors, boolean smoothScrollingList, Identifier backgroundLocation) {
+    public ClothConfigScreen(Screen parent, String title, Map<String, List<Pair<String, Object>>> o, boolean confirmSave, boolean displayErrors, boolean smoothScrollingList, Identifier defaultBackgroundLocation) {
+        this(parent, title, o, confirmSave, displayErrors, smoothScrollingList, defaultBackgroundLocation, Maps.newHashMap());
+    }
+    
+    public ClothConfigScreen(Screen parent, String title, Map<String, List<Pair<String, Object>>> o, boolean confirmSave, boolean displayErrors, boolean smoothScrollingList, Identifier defaultBackgroundLocation, Map<String, Identifier> categoryBackgroundLocation) {
         super(new StringTextComponent(""));
         this.parent = parent;
         this.title = title;
         this.tabbedEntries = Maps.newLinkedHashMap();
         this.smoothScrollingList = smoothScrollingList;
-        this.backgroundLocation = backgroundLocation;
+        this.defaultBackgroundLocation = defaultBackgroundLocation;
         o.forEach((tab, pairs) -> {
             List<AbstractListEntry> list = Lists.newArrayList();
             for(Pair<String, Object> pair : pairs) {
@@ -112,6 +117,13 @@ public abstract class ClothConfigScreen extends Screen {
         this.tabsScrollProgress = 0d;
         this.tabButtons = Lists.newArrayList();
         this.displayErrors = displayErrors;
+        this.categoryBackgroundLocation = categoryBackgroundLocation;
+    }
+    
+    public Identifier getBackgroundLocation() {
+        if (categoryBackgroundLocation.containsKey(Lists.newArrayList(tabbedEntries.keySet()).get(selectedTabIndex)))
+            return categoryBackgroundLocation.get(Lists.newArrayList(tabbedEntries.keySet()).get(selectedTabIndex));
+        return defaultBackgroundLocation;
     }
     
     public boolean isSmoothScrollingList() {
@@ -148,7 +160,7 @@ public abstract class ClothConfigScreen extends Screen {
         if (listWidget != null)
             tabbedEntries.put(tabs.get(selectedTabIndex).getLeft(), listWidget.children());
         selectedTabIndex = nextTabIndex;
-        children.add(listWidget = new ListWidget(minecraft, width, height, 70, height - 32, backgroundLocation));
+        children.add(listWidget = new ListWidget(minecraft, width, height, 70, height - 32, getBackgroundLocation()));
         listWidget.setSmoothScrolling(this.smoothScrollingList);
         if (tabbedEntries.size() > selectedTabIndex)
             Lists.newArrayList(tabbedEntries.values()).get(selectedTabIndex).forEach(entry -> listWidget.children().add(entry));
@@ -370,7 +382,7 @@ public abstract class ClothConfigScreen extends Screen {
     protected void overlayBackground(Rectangle rect, int red, int green, int blue, int startAlpha, int endAlpha) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBufferBuilder();
-        minecraft.getTextureManager().bindTexture(backgroundLocation);
+        minecraft.getTextureManager().bindTexture(getBackgroundLocation());
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         float f = 32.0F;
         buffer.begin(7, VertexFormats.POSITION_UV_COLOR);
@@ -404,6 +416,7 @@ public abstract class ClothConfigScreen extends Screen {
         private boolean displayErrors;
         private boolean smoothScrollingTabs, smoothScrollingList;
         private Identifier backgroundTexture;
+        private Map<String, Identifier> categoryBackgroundMap;
         
         public Builder(Screen parentScreen, String title, Consumer<ConfigScreenBuilder.SavedConfig> onSave) {
             this.parentScreen = parentScreen;
@@ -415,6 +428,7 @@ public abstract class ClothConfigScreen extends Screen {
             this.smoothScrollingTabs = true;
             this.smoothScrollingList = true;
             this.backgroundTexture = DrawableHelper.BACKGROUND_LOCATION;
+            this.categoryBackgroundMap = Maps.newHashMap();
         }
         
         @Override
@@ -557,8 +571,13 @@ public abstract class ClothConfigScreen extends Screen {
         }
         
         @Override
+        public Map<String, Identifier> getCategoryBackgroundMap() {
+            return categoryBackgroundMap;
+        }
+        
+        @Override
         public ClothConfigScreen build(Consumer<ClothConfigScreen> afterInitConsumer) {
-            ClothConfigScreen screen = new ClothConfigScreen(parentScreen, title, dataMap, confirmSave, displayErrors, smoothScrollingList, backgroundTexture) {
+            ClothConfigScreen screen = new ClothConfigScreen(parentScreen, title, dataMap, confirmSave, displayErrors, smoothScrollingList, backgroundTexture, categoryBackgroundMap) {
                 @Override
                 public void onSave(Map<String, List<Pair<String, Object>>> o) {
                     if (getOnSave() != null)
@@ -581,6 +600,16 @@ public abstract class ClothConfigScreen extends Screen {
             return build(null);
         }
         
+        @Override
+        public Identifier getCategoryBackgroundTexture(String category) {
+            return getCategory(category).getBackgroundTexture();
+        }
+        
+        @Override
+        public Identifier getNullableCategoryBackgroundTexture(String category) {
+            return getCategory(category).getNullableBackgroundTexture();
+        }
+        
         public static class Category implements CategoryBuilder {
             private String category;
             private ConfigScreenBuilder builder;
@@ -588,6 +617,21 @@ public abstract class ClothConfigScreen extends Screen {
             public Category(String category, ConfigScreenBuilder builder) {
                 this.category = category;
                 this.builder = builder;
+            }
+            
+            @Override
+            public Identifier getBackgroundTexture() {
+                return builder.getCategoryBackgroundMap().getOrDefault(category, builder.getBackgroundTexture());
+            }
+            
+            @Override
+            public void setBackgroundTexture(Identifier backgroundTexture) {
+                builder.getCategoryBackgroundMap().put(category,backgroundTexture);
+            }
+            
+            @Override
+            public Identifier getNullableBackgroundTexture() {
+                return builder.getCategoryBackgroundMap().get(category);
             }
             
             @Override

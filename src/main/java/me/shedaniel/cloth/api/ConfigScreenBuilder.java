@@ -86,7 +86,19 @@ public interface ConfigScreenBuilder {
     
     void setBackgroundTexture(Identifier backgroundTexture);
     
+    Identifier getCategoryBackgroundTexture(String category);
+    
+    Identifier getNullableCategoryBackgroundTexture(String category);
+    
+    @Deprecated
+    Map<String, Identifier> getCategoryBackgroundMap();
+    
     public static interface CategoryBuilder {
+        Identifier getBackgroundTexture();
+        
+        void setBackgroundTexture(Identifier backgroundTexture);
+        
+        Identifier getNullableBackgroundTexture();
         
         @Deprecated
         List<Pair<String, Object>> getOptions();
