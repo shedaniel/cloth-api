@@ -1,18 +1,6 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url = 'https://maven.fabricmc.net/' }
-        maven { url = "https://files.minecraftforge.net/maven/" }
-        maven { url = "https://jitpack.io/" }
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath 'com.github.Chocohead:fabric-loom:b80c10b'
-    }
+plugins {
+    id 'fabric-loom' version '0.2.2-SNAPSHOT'
 }
-
-apply plugin: 'fabric-loom'
-apply plugin: 'java'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -37,7 +25,7 @@ jar {
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_version}:enigma@zip"
+    mappings "net.fabricmc:yarn:${project.yarn_version}"
     modCompile "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.

@@ -13,7 +13,6 @@ public class TextListEntry extends TooltipListEntry {
     private int savedWidth = -1;
     private int color;
     private String text;
-    private Supplier<Optional<String[]>> tooltipSupplier;
     
     public TextListEntry(String fieldName, String text) {
         this(fieldName, text, -1);
@@ -24,17 +23,9 @@ public class TextListEntry extends TooltipListEntry {
     }
     
     public TextListEntry(String fieldName, String text, int color, Supplier<Optional<String[]>> tooltipSupplier) {
-        super(fieldName);
+        super(fieldName, tooltipSupplier);
         this.text = text;
         this.color = color;
-        this.tooltipSupplier = tooltipSupplier;
-    }
-    
-    @Override
-    public Optional<String[]> getTooltip() {
-        if (tooltipSupplier == null)
-            return Optional.empty();
-        return tooltipSupplier.get();
     }
     
     @Override

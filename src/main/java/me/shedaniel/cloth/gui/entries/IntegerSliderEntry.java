@@ -26,24 +26,22 @@ public class IntegerSliderEntry extends TooltipListEntry {
     private Supplier<Integer> defaultValue;
     private Function<Integer, String> textGetter = integer -> String.format("Value: %d", integer);
     private List<Element> widgets;
-    private Supplier<Optional<String[]>> tooltipSupplier;
     
     public IntegerSliderEntry(String fieldName, int minimum, int maximum, int value, Consumer<Integer> saveConsumer) {
         this(fieldName, minimum, maximum, value, "text.cloth-config.reset_value", null, saveConsumer);
     }
     
     public IntegerSliderEntry(String fieldName, int minimum, int maximum, int value, String resetButtonKey, Supplier<Integer> defaultValue, Consumer<Integer> saveConsumer) {
-        this(fieldName, minimum, maximum, value, resetButtonKey, defaultValue, saveConsumer, () -> Optional.empty());
+        this(fieldName, minimum, maximum, value, resetButtonKey, defaultValue, saveConsumer, null);
     }
     
     public IntegerSliderEntry(String fieldName, int minimum, int maximum, int value, String resetButtonKey, Supplier<Integer> defaultValue, Consumer<Integer> saveConsumer, Supplier<Optional<String[]>> tooltipSupplier) {
-        super(fieldName);
+        super(fieldName, tooltipSupplier);
         this.defaultValue = defaultValue;
         this.value = new AtomicInteger(value);
         this.saveConsumer = saveConsumer;
         this.maximum = maximum;
         this.minimum = minimum;
-        this.tooltipSupplier = tooltipSupplier;
         this.sliderWidget = new Slider(0, 0, 152, 20, ((double) this.value.get() - minimum) / Math.abs(maximum - minimum));
         this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(resetButtonKey)) + 6, 20, I18n.translate(resetButtonKey), widget -> {
             sliderWidget.setProgress((MathHelper.clamp(this.defaultValue.get(), minimum, maximum) - minimum) / (double) Math.abs(maximum - minimum));
@@ -114,13 +112,6 @@ public class IntegerSliderEntry extends TooltipListEntry {
         }
         resetButton.render(mouseX, mouseY, delta);
         sliderWidget.render(mouseX, mouseY, delta);
-    }
-    
-    @Override
-    public Optional<String[]> getTooltip() {
-        if (tooltipSupplier == null)
-            return Optional.empty();
-        return tooltipSupplier.get();
     }
     
     private class Slider extends SliderWidget {

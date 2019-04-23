@@ -5,11 +5,15 @@ import me.shedaniel.clothconfig.gui.QueuedTooltip;
 
 import java.awt.*;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public abstract class TooltipListEntry extends ClothConfigScreen.ListEntry {
     
-    public TooltipListEntry(String fieldName) {
+    private Supplier<Optional<String[]>> tooltipSupplier;
+    
+    public TooltipListEntry(String fieldName, Supplier<Optional<String[]>> tooltipSupplier) {
         super(fieldName);
+        this.tooltipSupplier = tooltipSupplier;
     }
     
     @Override
@@ -26,7 +30,17 @@ public abstract class TooltipListEntry extends ClothConfigScreen.ListEntry {
     }
     
     public Optional<String[]> getTooltip() {
+        if (tooltipSupplier != null)
+            return tooltipSupplier.get();
         return Optional.empty();
+    }
+    
+    public Supplier<Optional<String[]>> getTooltipSupplier() {
+        return tooltipSupplier;
+    }
+    
+    public void setTooltipSupplier(Supplier<Optional<String[]>> tooltipSupplier) {
+        this.tooltipSupplier = tooltipSupplier;
     }
     
 }

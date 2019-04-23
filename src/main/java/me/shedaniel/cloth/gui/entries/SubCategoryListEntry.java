@@ -26,7 +26,7 @@ public class SubCategoryListEntry extends TooltipListEntry {
     private boolean expended;
     
     public SubCategoryListEntry(String categoryName, List<ClothConfigScreen.AbstractListEntry> entries, boolean defaultExpended) {
-        super(categoryName);
+        super(categoryName, null);
         this.categoryName = categoryName;
         this.entries = entries;
         this.expended = defaultExpended;

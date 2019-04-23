@@ -26,24 +26,22 @@ public class LongSliderEntry extends TooltipListEntry {
     private Supplier<Long> defaultValue;
     private Function<Long, String> textGetter = value -> String.format("Value: %d", value);
     private List<Element> widgets;
-    private Supplier<Optional<String[]>> tooltipSupplier;
     
     public LongSliderEntry(String fieldName, long minimum, long maximum, long value, Consumer<Long> saveConsumer) {
         this(fieldName, minimum, maximum, value, saveConsumer, "text.cloth-config.reset_value", null);
     }
     
     public LongSliderEntry(String fieldName, long minimum, long maximum, long value, Consumer<Long> saveConsumer, String resetButtonKey, Supplier<Long> defaultValue) {
-        this(fieldName, minimum, maximum, value, saveConsumer, resetButtonKey, defaultValue, () -> Optional.empty());
+        this(fieldName, minimum, maximum, value, saveConsumer, resetButtonKey, defaultValue, null);
     }
     
     public LongSliderEntry(String fieldName, long minimum, long maximum, long value, Consumer<Long> saveConsumer, String resetButtonKey, Supplier<Long> defaultValue, Supplier<Optional<String[]>> tooltipSupplier) {
-        super(fieldName);
+        super(fieldName, tooltipSupplier);
         this.defaultValue = defaultValue;
         this.value = new AtomicLong(value);
         this.saveConsumer = saveConsumer;
         this.maximum = maximum;
         this.minimum = minimum;
-        this.tooltipSupplier = tooltipSupplier;
         this.sliderWidget = new Slider(0, 0, 152, 20, ((double) LongSliderEntry.this.value.get() - minimum) / Math.abs(maximum - minimum));
         this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(resetButtonKey)) + 6, 20, I18n.translate(resetButtonKey), widget -> {
             sliderWidget.setValue((MathHelper.clamp(this.defaultValue.get(), minimum, maximum) - minimum) / (double) Math.abs(maximum - minimum));
@@ -108,19 +106,12 @@ public class LongSliderEntry extends TooltipListEntry {
             this.sliderWidget.setWidth(150 - resetButton.getWidth() - 2);
         } else {
             MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), x, y + 5, 16777215);
-            this.resetButton.x =x + entryWidth- resetButton.getWidth();
+            this.resetButton.x = x + entryWidth - resetButton.getWidth();
             this.sliderWidget.x = x + entryWidth - 150;
             this.sliderWidget.setWidth(150 - resetButton.getWidth() - 2);
         }
         resetButton.render(mouseX, mouseY, delta);
         sliderWidget.render(mouseX, mouseY, delta);
-    }
-    
-    @Override
-    public Optional<String[]> getTooltip() {
-        if (tooltipSupplier == null)
-            return Optional.empty();
-        return tooltipSupplier.get();
     }
     
     private class Slider extends SliderWidget {

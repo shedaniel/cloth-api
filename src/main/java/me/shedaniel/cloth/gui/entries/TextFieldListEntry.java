@@ -19,17 +19,15 @@ public abstract class TextFieldListEntry<T> extends TooltipListEntry {
     protected Supplier<T> defaultValue;
     protected T original;
     protected List<Element> widgets;
-    private Supplier<Optional<String[]>> tooltipSupplier;
     
     protected TextFieldListEntry(String fieldName, T original, String resetButtonKey, Supplier<T> defaultValue) {
-        this(fieldName, original, resetButtonKey, defaultValue, () -> Optional.empty());
+        this(fieldName, original, resetButtonKey, defaultValue, null);
     }
     
     protected TextFieldListEntry(String fieldName, T original, String resetButtonKey, Supplier<T> defaultValue, Supplier<Optional<String[]>> tooltipSupplier) {
-        super(fieldName);
+        super(fieldName, tooltipSupplier);
         this.defaultValue = defaultValue;
         this.original = original;
-        this.tooltipSupplier = tooltipSupplier;
         this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 148, 18, "") {
             @Override
             public void render(int int_1, int int_2, float float_1) {
@@ -102,13 +100,6 @@ public abstract class TextFieldListEntry<T> extends TooltipListEntry {
     @Override
     public List<? extends Element> children() {
         return widgets;
-    }
-    
-    @Override
-    public Optional<String[]> getTooltip() {
-        if (tooltipSupplier == null)
-            return Optional.empty();
-        return tooltipSupplier.get();
     }
     
 }

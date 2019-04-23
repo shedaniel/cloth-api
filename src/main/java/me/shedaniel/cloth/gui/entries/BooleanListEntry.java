@@ -20,18 +20,17 @@ public class BooleanListEntry extends TooltipListEntry {
     private Consumer<Boolean> saveConsumer;
     private Supplier<Boolean> defaultValue;
     private List<Element> widgets;
-    private Supplier<Optional<String[]>> tooltipSupplier;
     
     public BooleanListEntry(String fieldName, boolean bool, Consumer<Boolean> saveConsumer) {
         this(fieldName, bool, "text.cloth-config.reset_value", null, saveConsumer);
     }
     
     public BooleanListEntry(String fieldName, boolean bool, String resetButtonKey, Supplier<Boolean> defaultValue, Consumer<Boolean> saveConsumer) {
-        this(fieldName, bool, resetButtonKey, defaultValue, saveConsumer, () -> Optional.empty());
+        this(fieldName, bool, resetButtonKey, defaultValue, saveConsumer, null);
     }
     
     public BooleanListEntry(String fieldName, boolean bool, String resetButtonKey, Supplier<Boolean> defaultValue, Consumer<Boolean> saveConsumer, Supplier<Optional<String[]>> tooltipSupplier) {
-        super(fieldName);
+        super(fieldName, tooltipSupplier);
         this.defaultValue = defaultValue;
         this.bool = new AtomicBoolean(bool);
         this.buttonWidget = new ButtonWidget(0, 0, 150, 20, "", widget -> {
@@ -43,7 +42,6 @@ public class BooleanListEntry extends TooltipListEntry {
             getScreen().setEdited(true);
         });
         this.saveConsumer = saveConsumer;
-        this.tooltipSupplier = tooltipSupplier;
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
     }
     
@@ -93,13 +91,6 @@ public class BooleanListEntry extends TooltipListEntry {
     @Override
     public List<? extends Element> children() {
         return widgets;
-    }
-    
-    @Override
-    public Optional<String[]> getTooltip() {
-        if (tooltipSupplier == null)
-            return Optional.empty();
-        return tooltipSupplier.get();
     }
     
 }
