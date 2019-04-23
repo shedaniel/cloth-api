@@ -8,7 +8,7 @@ import net.minecraft.client.gui.ParentElement;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
-public abstract class DynamicElementListWidget<E extends DynamicElementListWidget.ElementItem<E>> extends DynamicSmoothScrollingItemListWidget<E> {
+public abstract class DynamicElementListWidget<E extends DynamicElementListWidget.ElementEntry<E>> extends DynamicSmoothScrollingEntryListWidget<E> {
     
     public DynamicElementListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
         super(client, width, height, top, bottom, backgroundLocation);
@@ -26,11 +26,11 @@ public abstract class DynamicElementListWidget<E extends DynamicElementListWidge
     }
     
     @Environment(EnvType.CLIENT)
-    public abstract static class ElementItem<E extends DynamicElementListWidget.ElementItem<E>> extends Item<E> implements ParentElement {
+    public abstract static class ElementEntry<E extends ElementEntry<E>> extends Entry<E> implements ParentElement {
         private Element focused;
         private boolean dragging;
         
-        public ElementItem() {
+        public ElementEntry() {
         }
         
         public boolean isDragging() {

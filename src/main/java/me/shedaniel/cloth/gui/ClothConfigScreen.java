@@ -773,7 +773,7 @@ public abstract class ClothConfigScreen extends Screen {
         }
     }
     
-    public static abstract class AbstractListEntry extends DynamicElementListWidget.ElementItem<AbstractListEntry> {
+    public static abstract class AbstractListEntry extends DynamicElementListWidget.ElementEntry<AbstractListEntry> {
         private ClothConfigScreen screen;
         
         public abstract String getFieldName();

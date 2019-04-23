@@ -31,8 +31,8 @@ public class ClothConfigInitializer implements ClientModInitializer {
                     ConfigScreenBuilder.CategoryBuilder playZone = builder.addCategory("Play Zone");
                     playZone.addOption(new BooleanListEntry("Simple Boolean", false, "text.cloth-config.reset_value", null, null));
                     playZone.addOption(new StringListEntry("String Field", "ab", "text.cloth-config.reset_value", () -> "ab", null));
-                    playZone.addOption(new IntegerListEntry("Integer Field", 2, "text.cloth-config.reset_value", () -> 2, null).setMaximum(99).setMinimum(2));
                     playZone.addOption(new LongSliderEntry("Long Slider", -10, 10, 0, null, "text.cloth-config.reset_value", () -> 0l));
+                    playZone.addOption(new IntegerListEntry("Integer Field", 2, "text.cloth-config.reset_value", () -> 2, null).setMaximum(99).setMinimum(2));
                     List<ClothConfigScreen.AbstractListEntry> randomCategory = Lists.newArrayList();
                     randomCategory.add(new TextListEntry("x", "§7This is a promotional message brought to you by Danielshe. Shop your favorite Lil Tater at store.liltater.com!", -1, () -> Optional.of(new String[]{"This is an example tooltip."})));
                     randomCategory.add(new SubCategoryListEntry("Sub-Sub-Category", ImmutableList.of(new EnumListEntry<DemoEnum>("Enum Field No. 1", DemoEnum.class, DemoEnum.CONSTANT_2, "text.cloth-config.reset_value", () -> DemoEnum.CONSTANT_1, null), new EnumListEntry<DemoEnum>("Enum Field No. 2", DemoEnum.class, DemoEnum.CONSTANT_2, "text.cloth-config.reset_value", () -> DemoEnum.CONSTANT_1, null)), false));

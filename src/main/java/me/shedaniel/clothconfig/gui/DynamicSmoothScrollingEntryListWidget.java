@@ -7,12 +7,12 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-public abstract class DynamicSmoothScrollingItemListWidget<E extends DynamicItemListWidget.Item<E>> extends DynamicItemListWidget<E> {
+public abstract class DynamicSmoothScrollingEntryListWidget<E extends DynamicEntryListWidget.Entry<E>> extends DynamicEntryListWidget<E> {
     
     protected double scrollVelocity;
     protected boolean smoothScrolling = true;
     
-    public DynamicSmoothScrollingItemListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
+    public DynamicSmoothScrollingEntryListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
         super(client, width, height, top, bottom, backgroundLocation);
     }
     
@@ -95,7 +95,7 @@ public abstract class DynamicSmoothScrollingItemListWidget<E extends DynamicItem
         else if (maxScroll > 0) {
             int height = (int) (((this.bottom - this.top) * (this.bottom - this.top)) / this.getMaxScrollPosition());
             height = MathHelper.clamp(height, 32, this.bottom - this.top - 8);
-            height -= Math.min((scroll < 0 ? (int) -scroll : scroll > getMaxScroll() ? (int) scroll - getMaxScroll() : 0), height / 2);
+            height -= Math.min((scroll < 0 ? (int) -scroll : scroll > getMaxScroll() ? (int) scroll - getMaxScroll() : 0), height * .75);
             int minY = Math.min(Math.max((int) this.getScroll() * (this.bottom - this.top - height) / maxScroll + this.top, this.top), this.bottom - height);
             
             // Black Bar

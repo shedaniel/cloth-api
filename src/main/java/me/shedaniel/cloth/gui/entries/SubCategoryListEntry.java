@@ -1,6 +1,7 @@
 package me.shedaniel.cloth.gui.entries;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.platform.GlStateManager;
 import me.shedaniel.cloth.gui.ClothConfigScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.audio.PositionedSoundInstance;
@@ -59,8 +60,9 @@ public class SubCategoryListEntry extends TooltipListEntry {
         widget.rectangle.y = y;
         widget.rectangle.width = entryWidth + 19;
         widget.rectangle.height = 24;
-        GuiLighting.disable();
         MinecraftClient.getInstance().getTextureManager().bindTexture(CONFIG_TEX);
+        GuiLighting.disable();
+        GlStateManager.color4f(1, 1, 1, 1);
         blit(x - 15, y + 4, 24, expended ? 9 : 0, 9, 9);
         MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(categoryName), x, y + 5, -1);
         for(ClothConfigScreen.AbstractListEntry entry : entries) {

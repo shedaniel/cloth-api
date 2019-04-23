@@ -10,6 +10,7 @@ import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
@@ -21,10 +22,10 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Environment(EnvType.CLIENT)
-public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item<E>> extends AbstractParentElement implements Drawable {
+public abstract class DynamicEntryListWidget<E extends DynamicEntryListWidget.Entry<E>> extends AbstractParentElement implements Drawable {
     protected static final int DRAG_OUTSIDE = -2;
     protected final MinecraftClient client;
-    private final List<E> items = new Items();
+    private final List<E> entries = new Entries();
     protected int width;
     protected int height;
     protected int top;
@@ -41,7 +42,7 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
     protected E selectedItem;
     protected Identifier backgroundLocation;
     
-    public DynamicItemListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
+    public DynamicEntryListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
         this.client = client;
         this.width = width;
         this.height = height;
@@ -80,11 +81,11 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
     }
     
     public final List<E> children() {
-        return this.items;
+        return this.entries;
     }
     
     protected final void clearItems() {
-        this.items.clear();
+        this.entries.clear();
     }
     
     protected E getItem(int index) {
@@ -92,8 +93,8 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
     }
     
     protected int addItem(E item) {
-        this.items.add(item);
-        return this.items.size() - 1;
+        this.entries.add(item);
+        return this.entries.size() - 1;
     }
     
     protected int getItemCount() {
@@ -111,7 +112,7 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
         int currentY = MathHelper.floor(mouseY - (double) this.top) - this.headerHeight + (int) this.getScroll() - 4;
         int itemY = 0;
         int itemIndex = -1;
-        for(int i = 0; i < items.size(); i++) {
+        for(int i = 0; i < entries.size(); i++) {
             E item = getItem(i);
             itemY += item.getItemHeight();
             if (itemY > currentY) {
@@ -138,7 +139,7 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
     
     protected int getMaxScrollPosition() {
         AtomicInteger integer = new AtomicInteger(headerHeight);
-        items.forEach(item -> integer.addAndGet(item.getItemHeight()));
+        entries.forEach(item -> integer.addAndGet(item.getItemHeight()));
         return integer.get();
     }
     
@@ -376,8 +377,8 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
         for(int renderIndex = 0; renderIndex < itemCount; ++renderIndex) {
             E item = this.getItem(renderIndex);
             int itemY = startY + headerHeight;
-            for(int i = 0; i < items.size() && i < renderIndex; i++)
-                itemY += items.get(i).getItemHeight();
+            for(int i = 0; i < entries.size() && i < renderIndex; i++)
+                itemY += entries.get(i).getItemHeight();
             int itemHeight = item.getItemHeight() - 4;
             int itemWidth = this.getItemWidth();
             int itemMinX, itemMaxX;
@@ -403,9 +404,10 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
                 GlStateManager.enableTexture();
             }
             
-            itemMinX = this.getRowTop(renderIndex);
-            itemMaxX = this.getRowLeft();
-            item.render(renderIndex, itemMinX, itemMaxX, itemWidth, itemHeight, int_3, int_4, this.isMouseOver((double) int_3, (double) int_4) && Objects.equals(this.getItemAtPosition((double) int_3, (double) int_4), item), float_1);
+            int y = this.getRowTop(renderIndex);
+            int x = this.getRowLeft();
+            GuiLighting.disable();
+            item.render(renderIndex, y, x, itemWidth, itemHeight, int_3, int_4, this.isMouseOver((double) int_3, (double) int_4) && Objects.equals(this.getItemAtPosition((double) int_3, (double) int_4), item), float_1);
         }
         
     }
@@ -416,8 +418,8 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
     
     protected int getRowTop(int index) {
         int integer = top + 4 - (int) this.getScroll() + headerHeight;
-        for(int i = 0; i < items.size() && i < index; i++)
-            integer += items.get(i).getItemHeight();
+        for(int i = 0; i < entries.size() && i < index; i++)
+            integer += entries.get(i).getItemHeight();
         return integer;
     }
     
@@ -440,12 +442,12 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
     }
     
     protected E remove(int int_1) {
-        E itemListWidget$Item_1 = (E) this.items.get(int_1);
-        return this.removeEntry((E) this.items.get(int_1)) ? itemListWidget$Item_1 : null;
+        E itemListWidget$Item_1 = (E) this.entries.get(int_1);
+        return this.removeEntry((E) this.entries.get(int_1)) ? itemListWidget$Item_1 : null;
     }
     
     protected boolean removeEntry(E itemListWidget$Item_1) {
-        boolean boolean_1 = this.items.remove(itemListWidget$Item_1);
+        boolean boolean_1 = this.entries.remove(itemListWidget$Item_1);
         if (boolean_1 && itemListWidget$Item_1 == this.getSelectedItem()) {
             this.selectItem((E) null);
         }
@@ -454,11 +456,11 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
     }
     
     @Environment(EnvType.CLIENT)
-    public abstract static class Item<E extends DynamicItemListWidget.Item<E>> extends DrawableHelper implements Element {
+    public abstract static class Entry<E extends Entry<E>> extends DrawableHelper implements Element {
         @Deprecated
-        DynamicItemListWidget<E> parent;
+        DynamicEntryListWidget<E> parent;
         
-        public Item() {
+        public Entry() {
         }
         
         public abstract void render(int var1, int var2, int var3, int var4, int var5, int var6, int var7, boolean var8, float var9);
@@ -467,11 +469,11 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
             return Objects.equals(this.parent.getItemAtPosition(double_1, double_2), this);
         }
         
-        public DynamicItemListWidget<E> getParent() {
+        public DynamicEntryListWidget<E> getParent() {
             return parent;
         }
         
-        public void setParent(DynamicItemListWidget<E> parent) {
+        public void setParent(DynamicEntryListWidget<E> parent) {
             this.parent = parent;
         }
         
@@ -479,10 +481,10 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
     }
     
     @Environment(EnvType.CLIENT)
-    class Items extends AbstractList<E> {
+    class Entries extends AbstractList<E> {
         private final List<E> items;
         
-        private Items() {
+        private Entries() {
             this.items = Lists.newArrayList();
         }
         
@@ -499,14 +501,14 @@ public abstract class DynamicItemListWidget<E extends DynamicItemListWidget.Item
         @Override
         public E set(int int_1, E itemListWidget$Item_1) {
             E itemListWidget$Item_2 = (E) this.items.set(int_1, itemListWidget$Item_1);
-            itemListWidget$Item_1.parent = DynamicItemListWidget.this;
+            itemListWidget$Item_1.parent = DynamicEntryListWidget.this;
             return itemListWidget$Item_2;
         }
         
         @Override
         public void add(int int_1, E itemListWidget$Item_1) {
             this.items.add(int_1, itemListWidget$Item_1);
-            itemListWidget$Item_1.parent = DynamicItemListWidget.this;
+            itemListWidget$Item_1.parent = DynamicEntryListWidget.this;
         }
         
         @Override
