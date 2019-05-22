@@ -52,11 +52,11 @@ public class FloatListEntry extends TextFieldListEntry<Float> {
         try {
             double i = Float.valueOf(textFieldWidget.getText());
             if (i < minimum || i > maximum)
-                widget.method_1868(16733525);
+                widget.setEditableColor(16733525);
             else
-                widget.method_1868(14737632);
+                widget.setEditableColor(14737632);
         } catch (NumberFormatException ex) {
-            widget.method_1868(16733525);
+            widget.setEditableColor(16733525);
         }
     }
     

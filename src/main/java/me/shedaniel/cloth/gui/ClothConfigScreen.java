@@ -14,8 +14,9 @@ import me.shedaniel.clothconfig.gui.QueuedTooltip;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.Screen;
-import net.minecraft.client.gui.menu.YesNoScreen;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.ConfirmScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -23,15 +24,16 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.StringTextComponent;
-import net.minecraft.text.TranslatableTextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
+import net.minecraft.util.Tickable;
 import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -76,7 +78,7 @@ public abstract class ClothConfigScreen extends Screen {
     }
     
     public ClothConfigScreen(Screen parent, String title, Map<String, List<Pair<String, Object>>> o, boolean confirmSave, boolean displayErrors, boolean smoothScrollingList, Identifier defaultBackgroundLocation, Map<String, Identifier> categoryBackgroundLocation) {
-        super(new StringTextComponent(""));
+        super(new TextComponent(""));
         this.parent = parent;
         this.title = title;
         this.tabbedEntries = Maps.newLinkedHashMap();
@@ -118,6 +120,14 @@ public abstract class ClothConfigScreen extends Screen {
         this.tabButtons = Lists.newArrayList();
         this.displayErrors = displayErrors;
         this.categoryBackgroundLocation = categoryBackgroundLocation;
+    }
+    
+    @Override
+    public void tick() {
+        super.tick();
+        for(Element child : children())
+            if (child instanceof Tickable)
+                ((Tickable) child).tick();
     }
     
     public Identifier getBackgroundLocation() {
@@ -166,7 +176,7 @@ public abstract class ClothConfigScreen extends Screen {
             Lists.newArrayList(tabbedEntries.values()).get(selectedTabIndex).forEach(entry -> listWidget.children().add(entry));
         addButton(buttonQuit = new ButtonWidget(width / 2 - 154, height - 26, 150, 20, edited ? I18n.translate("text.cloth-config.cancel_discard") : I18n.translate("gui.cancel"), widget -> {
             if (confirmSave && edited)
-                minecraft.openScreen(new YesNoScreen(new QuitSaveConsumer(), new TranslatableTextComponent("text.cloth-config.quit_config"), new TranslatableTextComponent("text.cloth-config.quit_config_sure"), I18n.translate("text.cloth-config.quit_discard"), I18n.translate("gui.cancel")));
+                minecraft.openScreen(new ConfirmScreen(new QuitSaveConsumer(), new TranslatableComponent("text.cloth-config.quit_config"), new TranslatableComponent("text.cloth-config.quit_config_sure"), I18n.translate("text.cloth-config.quit_discard"), I18n.translate("gui.cancel")));
             else
                 minecraft.openScreen(parent);
         }));
@@ -397,7 +407,7 @@ public abstract class ClothConfigScreen extends Screen {
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
             if (confirmSave && edited)
-                minecraft.openScreen(new YesNoScreen(new QuitSaveConsumer(), new TranslatableTextComponent("text.cloth-config.quit_config"), new TranslatableTextComponent("text.cloth-config.quit_config_sure"), I18n.translate("text.cloth-config.quit_discard"), I18n.translate("gui.cancel")));
+                minecraft.openScreen(new ConfirmScreen(new QuitSaveConsumer(), new TranslatableComponent("text.cloth-config.quit_config"), new TranslatableComponent("text.cloth-config.quit_config_sure"), I18n.translate("text.cloth-config.quit_discard"), I18n.translate("gui.cancel")));
             else
                 minecraft.openScreen(parent);
             return true;
@@ -626,7 +636,7 @@ public abstract class ClothConfigScreen extends Screen {
             
             @Override
             public void setBackgroundTexture(Identifier backgroundTexture) {
-                builder.getCategoryBackgroundMap().put(category,backgroundTexture);
+                builder.getCategoryBackgroundMap().put(category, backgroundTexture);
             }
             
             @Override

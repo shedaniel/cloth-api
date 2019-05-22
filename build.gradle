@@ -27,11 +27,6 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_version}"
     modCompile "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
-
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modCompile "net.fabricmc:fabric:${project.fabric_version}"
-
-    // ModMenu is ded
+    modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modCompile "io.github.prospector.modmenu:ModMenu:${modmenu_version}"
-    compile "org.lwjgl:lwjgl-jemalloc:3.2.1"
 }

@@ -1,7 +1,7 @@
 package me.shedaniel.cloth.api;
 
 import me.shedaniel.cloth.gui.ClothConfigScreen;
-import net.minecraft.client.gui.Screen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 

@@ -1,13 +1,29 @@
 package me.shedaniel.clothconfig.gui;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public abstract class DynamicSmoothScrollingEntryListWidget<E extends DynamicEntryListWidget.Entry<E>> extends DynamicEntryListWidget<E> {
+    
+    private static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor();
+    
+    static {
+        EXECUTOR_SERVICE.scheduleWithFixedDelay(() -> {
+            if (MinecraftClient.getInstance() != null && MinecraftClient.getInstance().currentScreen != null)
+                for(Element child : MinecraftClient.getInstance().currentScreen.children())
+                    if (child instanceof DynamicSmoothScrollingEntryListWidget)
+                        ((DynamicSmoothScrollingEntryListWidget) child).updateScrolling();
+        }, 0, 1000 / 60, TimeUnit.MILLISECONDS);
+    }
     
     protected double scrollVelocity;
     protected boolean smoothScrolling = true;
@@ -38,6 +54,31 @@ public abstract class DynamicSmoothScrollingEntryListWidget<E extends DynamicEnt
             this.scroll = double_1;
         else
             this.scroll = MathHelper.clamp(double_1, 0.0D, (double) this.getMaxScroll());
+    }
+    
+    public void updateScrolling() {
+        if (smoothScrolling) {
+            double change = scrollVelocity * 0.2d;
+            if (scrollVelocity != 0) {
+                scroll += change;
+                scrollVelocity -= scrollVelocity * (scroll >= 0 && scroll <= getMaxScroll() ? 0.2d : .27d);
+                if (Math.abs(scrollVelocity) < .1)
+                    scrollVelocity = 0d;
+            }
+            if (scroll < 0d && scrollVelocity == 0d) {
+                scroll = Math.min(scroll + (0 - scroll) * 0.2d, 0);
+                if (scroll > -0.1d && scroll < 0d)
+                    scroll = 0d;
+            } else if (scroll > getMaxScroll() && scrollVelocity == 0d) {
+                scroll = Math.max(scroll - (scroll - getMaxScroll()) * 0.2d, getMaxScroll());
+                if (scroll > getMaxScroll() && scroll < getMaxScroll() + 0.1d)
+                    scroll = getMaxScroll();
+            }
+        } else {
+            scroll += scrollVelocity;
+            scrollVelocity = 0d;
+            capYPosition(scroll);
+        }
     }
     
     @Override
@@ -122,33 +163,6 @@ public abstract class DynamicSmoothScrollingEntryListWidget<E extends DynamicEnt
             buffer.vertex(scrollbarPositionMinX, minY, 0.0D).texture(0.0D, 0.0D).color(192, 192, 192, 255).next();
             tessellator.draw();
         }
-    }
-    
-    @Override
-    public void render(int mouseX, int mouseY, float delta) {
-        if (smoothScrolling) {
-            double change = scrollVelocity * 0.2d;
-            if (scrollVelocity != 0) {
-                scroll += change;
-                scrollVelocity -= scrollVelocity * (scroll >= 0 && scroll <= getMaxScroll() ? 0.2d : .27d);
-                if (Math.abs(scrollVelocity) < .1)
-                    scrollVelocity = 0d;
-            }
-            if (scroll < 0d && scrollVelocity == 0d) {
-                scroll = Math.min(scroll + (0 - scroll) * 0.2d, 0);
-                if (scroll > -0.1d && scroll < 0d)
-                    scroll = 0d;
-            } else if (scroll > getMaxScroll() && scrollVelocity == 0d) {
-                scroll = Math.max(scroll - (scroll - getMaxScroll()) * 0.2d, getMaxScroll());
-                if (scroll > getMaxScroll() && scroll < getMaxScroll() + 0.1d)
-                    scroll = getMaxScroll();
-            }
-        } else {
-            scroll += scrollVelocity;
-            scrollVelocity = 0d;
-            capYPosition(scroll);
-        }
-        super.render(mouseX, mouseY, delta);
     }
     
 }
