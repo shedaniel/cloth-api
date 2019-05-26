@@ -6,6 +6,7 @@
   "text.cloth-config.quit_discard": "Quit & Discard Changes",
   "text.cloth-config.config": "Config",
   "text.cloth-config.multi_error": "Multiple Issues!",
+  "text.cloth-config.not_editable": "Not Editable!",
   "text.cloth-config.error.not_valid_number_int": "Not a valid number! (Integer)",
   "text.cloth-config.error.not_valid_number_long": "Not a valid number! (Long)",
   "text.cloth-config.error.not_valid_number_float": "Not a valid number! (Float)",

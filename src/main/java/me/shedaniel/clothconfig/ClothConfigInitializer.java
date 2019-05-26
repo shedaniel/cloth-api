@@ -51,7 +51,9 @@ public class ClothConfigInitializer implements ClientModInitializer {
     }
     
     private static enum DemoEnum {
-        CONSTANT_1("Constant 1"), CONSTANT_2("Constant 2"), CONSTANT_3("Constant 3");
+        CONSTANT_1("Constant 1"),
+        CONSTANT_2("Constant 2"),
+        CONSTANT_3("Constant 3");
         
         private final String key;
         

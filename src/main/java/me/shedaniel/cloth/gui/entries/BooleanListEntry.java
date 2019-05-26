@@ -65,8 +65,9 @@ public class BooleanListEntry extends TooltipListEntry {
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         super.render(index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
         Window window = MinecraftClient.getInstance().window;
-        this.resetButton.active = getDefaultValue().isPresent() && defaultValue.get().booleanValue() != bool.get();
+        this.resetButton.active = isEditable() && getDefaultValue().isPresent() && defaultValue.get().booleanValue() != bool.get();
         this.resetButton.y = y;
+        this.buttonWidget.active = isEditable();
         this.buttonWidget.y = y;
         this.buttonWidget.setMessage(getYesNoText(bool.get()));
         if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {

@@ -47,6 +47,7 @@ public class LongSliderEntry extends TooltipListEntry {
             sliderWidget.setValue((MathHelper.clamp(this.defaultValue.get(), minimum, maximum) - minimum) / (double) Math.abs(maximum - minimum));
             this.value.set(Math.min(Math.max(this.defaultValue.get(), minimum), maximum));
             sliderWidget.updateMessage();
+            getScreen().setEdited(true);
         });
         this.sliderWidget.setMessage(textGetter.apply(LongSliderEntry.this.value.get()));
         this.widgets = Lists.newArrayList(sliderWidget, resetButton);
@@ -96,8 +97,9 @@ public class LongSliderEntry extends TooltipListEntry {
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         super.render(index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
         Window window = MinecraftClient.getInstance().window;
-        this.resetButton.active = getDefaultValue().isPresent() && defaultValue.get().longValue() != value.get();
+        this.resetButton.active = isEditable() && getDefaultValue().isPresent() && defaultValue.get().longValue() != value.get();
         this.resetButton.y = y;
+        this.sliderWidget.active = isEditable();
         this.sliderWidget.y = y;
         if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {
             MinecraftClient.getInstance().textRenderer.drawWithShadow(I18n.translate(getFieldName()), window.getScaledWidth() - x - MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate(getFieldName())), y + 5, 16777215);
@@ -129,6 +131,20 @@ public class LongSliderEntry extends TooltipListEntry {
         protected void applyValue() {
             LongSliderEntry.this.value.set((long) (minimum + Math.abs(maximum - minimum) * value));
             getScreen().setEdited(true);
+        }
+        
+        @Override
+        public boolean keyPressed(int int_1, int int_2, int int_3) {
+            if (!isEditable())
+                return false;
+            return super.keyPressed(int_1, int_2, int_3);
+        }
+        
+        @Override
+        public boolean mouseDragged(double double_1, double double_2, int int_1, double double_3, double double_4) {
+            if (!isEditable())
+                return false;
+            return super.mouseDragged(double_1, double_2, int_1, double_3, double_4);
         }
         
         public double getValue() {

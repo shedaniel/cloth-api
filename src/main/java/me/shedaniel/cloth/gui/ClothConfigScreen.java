@@ -338,7 +338,7 @@ public abstract class ClothConfigScreen extends Screen {
         buttonLeftTab.render(int_1, int_2, float_1);
         buttonRightTab.render(int_1, int_2, float_1);
         
-        if (displayErrors) {
+        if (displayErrors && isEditable()) {
             List<String> errors = Lists.newArrayList();
             for(List<AbstractListEntry> entries : Lists.newArrayList(tabbedEntries.values()))
                 for(AbstractListEntry entry : entries)
@@ -353,6 +353,11 @@ public abstract class ClothConfigScreen extends Screen {
                 else
                     drawString(minecraft.textRenderer, "§c" + I18n.translate("text.cloth-config.multi_error"), 18, 12, -1);
             }
+        } else if (!isEditable()) {
+            minecraft.getTextureManager().bindTexture(CONFIG_TEX);
+            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            blit(10, 10, 0, 54, 3, 11);
+            drawString(minecraft.textRenderer, "§c" + I18n.translate("text.cloth-config.not_editable"), 18, 12, -1);
         }
         super.render(int_1, int_2, float_1);
         queuedTooltips.forEach(queuedTooltip -> renderTooltip(queuedTooltip.getText(), queuedTooltip.getX(), queuedTooltip.getY()));
@@ -417,12 +422,17 @@ public abstract class ClothConfigScreen extends Screen {
     
     public abstract void onSave(Map<String, List<Pair<String, Object>>> o);
     
+    public boolean isEditable() {
+        return true;
+    }
+    
     public static class Builder implements ConfigScreenBuilder {
         private Screen parentScreen;
         private Map<String, List<Pair<String, Object>>> dataMap;
         private String title;
         private Consumer<ConfigScreenBuilder.SavedConfig> onSave;
         private boolean confirmSave;
+        private boolean editable;
         private boolean displayErrors;
         private boolean smoothScrollingTabs, smoothScrollingList;
         private Identifier backgroundTexture;
@@ -433,6 +443,7 @@ public abstract class ClothConfigScreen extends Screen {
             this.title = I18n.translate(title);
             this.dataMap = Maps.newLinkedHashMap();
             this.onSave = onSave;
+            this.editable = true;
             this.confirmSave = true;
             this.displayErrors = true;
             this.smoothScrollingTabs = true;
@@ -507,6 +518,16 @@ public abstract class ClothConfigScreen extends Screen {
         }
         
         @Override
+        public boolean isEditable() {
+            return editable;
+        }
+        
+        @Override
+        public void setEditable(boolean editable) {
+            this.editable = editable;
+        }
+        
+        @Override
         public void removeCategory(String category) {
             if (!hasCategory(category))
                 throw new IllegalArgumentException("The category doesn't exist!");
@@ -527,6 +548,7 @@ public abstract class ClothConfigScreen extends Screen {
             dataMap.get(category).add(new Pair<>(entry.getFieldName(), entry));
         }
         
+        @SuppressWarnings("deprecation")
         @Override
         public List<Pair<String, Object>> getOptions(String category) {
             if (!hasCategory(category))
@@ -580,6 +602,7 @@ public abstract class ClothConfigScreen extends Screen {
             return displayErrors;
         }
         
+        @SuppressWarnings("deprecation")
         @Override
         public Map<String, Identifier> getCategoryBackgroundMap() {
             return categoryBackgroundMap;
@@ -599,6 +622,11 @@ public abstract class ClothConfigScreen extends Screen {
                     super.init();
                     if (afterInitConsumer != null)
                         afterInitConsumer.accept(this);
+                }
+                
+                @Override
+                public boolean isEditable() {
+                    return Builder.this.isEditable();
                 }
             };
             screen.setSmoothScrollingTabs(isSmoothScrollingTabs());
@@ -629,21 +657,25 @@ public abstract class ClothConfigScreen extends Screen {
                 this.builder = builder;
             }
             
+            @SuppressWarnings("deprecation")
             @Override
             public Identifier getBackgroundTexture() {
                 return builder.getCategoryBackgroundMap().getOrDefault(category, builder.getBackgroundTexture());
             }
             
+            @SuppressWarnings("deprecation")
             @Override
             public void setBackgroundTexture(Identifier backgroundTexture) {
                 builder.getCategoryBackgroundMap().put(category, backgroundTexture);
             }
             
+            @SuppressWarnings("deprecation")
             @Override
             public Identifier getNullableBackgroundTexture() {
                 return builder.getCategoryBackgroundMap().get(category);
             }
             
+            @SuppressWarnings("deprecation")
             @Override
             public List<Pair<String, Object>> getOptions() {
                 return builder.getOptions(category);
@@ -731,6 +763,7 @@ public abstract class ClothConfigScreen extends Screen {
                 return category;
             }
             
+            @SuppressWarnings("deprecation")
             @Override
             public List<Pair<String, Object>> getOptionPairs() {
                 return savedConfig.map.getOrDefault(category, Collections.emptyList());
@@ -772,9 +805,18 @@ public abstract class ClothConfigScreen extends Screen {
     
     public static abstract class ListEntry extends AbstractListEntry {
         private String fieldName;
+        private boolean editable = true;
         
         public ListEntry(String fieldName) {
             this.fieldName = fieldName;
+        }
+        
+        public boolean isEditable() {
+            return getScreen().isEditable() && editable;
+        }
+        
+        public void setEditable(boolean editable) {
+            this.editable = editable;
         }
         
         @Override

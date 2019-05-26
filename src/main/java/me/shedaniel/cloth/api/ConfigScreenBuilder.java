@@ -42,6 +42,10 @@ public interface ConfigScreenBuilder {
     
     CategoryBuilder getCategory(String category);
     
+    boolean isEditable();
+    
+    void setEditable(boolean editable);
+    
     default void addCategories(String... categories) {
         for(String category : categories)
             addCategory(category);
