@@ -5,7 +5,7 @@ repositories {
     maven { url "https://minecraft.curseforge.com/api/maven"}
 }
 dependencies {
-    modCompile "cloth:Cloth:0.1.0.2"
+    modCompile "cloth:ClothEvents:0.3.1.23"
 }
 ```
 ### APIs
