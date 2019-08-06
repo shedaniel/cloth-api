@@ -1,11 +1,11 @@
-# Cloth
+# Cloth [ ![Download](https://api.bintray.com/packages/shedaniel/cloth-events/cloth-events/images/download.svg) ]
 ### Maven
 ```groovy
 repositories {
-    maven { url "https://minecraft.curseforge.com/api/maven"}
+    jcenter()
 }
 dependencies {
-    modCompile "cloth:ClothEvents:0.3.1.23"
+    'me.shedaniel.cloth:cloth-events:ABC_VERSION'
 }
 ```
 ### APIs
