@@ -1,14 +1,16 @@
-import net.fabricmc.loom.task.RemapJar
-
 plugins {
     id 'fabric-loom' version '0.2.1-SNAPSHOT'
-    id "com.github.johnrengelman.shadow" version "4.0.3"
+    id 'maven-publish'
+    id 'maven'
+    id 'signing'
+    id 'com.jfrog.bintray' version '1.8.4'
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-archivesBaseName = "ClothEvents"
+group = "me.shedaniel.cloth"
+archivesBaseName = "cloth-events"
 version = project.mod_version
 
 minecraft {
@@ -21,32 +23,41 @@ processResources {
     inputs.property "version", project.version
 }
 
-configurations {
-    contained {
-        transitive = false
-    }
-}
-
-shadowJar {
-    version = project.mod_version.replaceAll('\\+build.','.')
-    classifier = null
-    configurations = [project.configurations.contained]
-}
-
-task remapShadowJar(type: RemapJar) {
-    jar = shadowJar.archivePath
-}
-tasks.remapShadowJar.dependsOn tasks.shadowJar
-
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_version}"
-    modCompile "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+    modApi "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    modCompile "net.fabricmc:fabric:${project.fabric_version}"
+    modApi "net.fabricmc:fabric:${project.fabric_version}"
 
-    modCompile "io.github.prospector.modmenu:ModMenu:${modmenu_version}"
+    modRuntime "io.github.prospector.modmenu:ModMenu:${modmenu_version}"
+}
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
+    publications = ["MyPublication"]
+    override = true
+    pkg {
+        repo = "cloth-events"
+        name = "cloth-events"
+        userOrg = "shedaniel"
+        licenses = ["Unlicense"]
+        version {
+            name = project.version
+            vcsTag = project.version
+            released = new Date()
+            desc = "Cloth Events API for Minecraft"
+            githubRepo = 'shedaniel/Cloth'
+            websiteUrl = 'https://github.com/shedaniel/Cloth'
+            issueTrackerUrl = 'https://github.com/shedaniel/Cloth/issues'
+            vcsUrl = 'https://github.com/shedaniel/Cloth.git'
+            gpg {
+                sign = true
+            }
+        }
+    }
 }
 
 // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
@@ -55,4 +66,56 @@ dependencies {
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
+}
+
+task javadocs(type: Javadoc) {
+    source = sourceSets.main.allJava
+}
+
+task javadocsJar(type: Jar, dependsOn: javadocs) {
+    classifier = "javadocs"
+    from javadocs.destinationDir
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            artifact(file("${project.buildDir}/libs/${project.archivesBaseName}-${project.version}.jar")) {
+                builtBy remapJar
+            }
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+            artifact javadocsJar
+            groupId 'me.shedaniel.cloth'
+            artifactId 'cloth-events'
+            version = project.version
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Cloth Events API for Minecraft')
+                root.appendNode('name', 'cloth-events')
+                root.appendNode('url', 'https://github.com/shedaniel/Cloth')
+                root.appendNode('packaging', 'jar')
+                def license = root.appendNode('licenses').appendNode('license')
+                license.appendNode('name', 'Unlicense')
+                license.appendNode('url', 'http://unlicense.org')
+                license.appendNode('distribution', 'repo')
+                def developers = root.appendNode('developers')
+                def shedaniel = developers.appendNode('developer')
+                shedaniel.appendNode('id', 'shedaniel')
+                shedaniel.appendNode('name', 'shedaniel')
+                shedaniel.appendNode('email', 'daniel@shedaniel.me')
+                def scm = root.appendNode('scm')
+                scm.appendNode('url', "https://github.com/shedaniel/Cloth")
+                scm.appendNode('connection', "scm:git:git://github.com/shedaniel/Cloth.git")
+                scm.appendNode('developerConnection', "scm:git:ssh://github.com:shedaniel/Cloth.git")
+            }
+        }
+    }
+
+    // select the repositories you want to publish to
+    repositories {
+        // uncomment to publish to the local maven
+        // mavenLocal()
+    }
 }
