@@ -1,4 +1,4 @@
-# Cloth [ ![Download](https://api.bintray.com/packages/shedaniel/cloth-events/cloth-events/images/download.svg) ]
+# Cloth ![Download](https://api.bintray.com/packages/shedaniel/cloth-events/cloth-events/images/download.svg)
 ### Maven
 ```groovy
 repositories {
