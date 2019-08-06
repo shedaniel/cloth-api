@@ -15,17 +15,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GameRenderer.class)
 public abstract class MixinGameRenderer implements AutoCloseable, SynchronousResourceReloadListener {
     
-    @Shadow
-    @Final
-    private MinecraftClient client;
+    @Shadow @Final private MinecraftClient client;
     
-    @Inject(method = "render(FJZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Screen;render(IIF)V", shift = At.Shift.AFTER, ordinal = 0))
+    @Inject(method = "render(FJZ)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(IIF)V",
+                     shift = At.Shift.AFTER, ordinal = 0))
     public void renderScreen(float float_1, long long_1, boolean boolean_1, CallbackInfo ci) {
         ClothClientHooks.SCREEN_LATE_RENDER.invoker().render(client, client.currentScreen, (int) ClientUtils.getInstance().getMouseX(), (int) ClientUtils.getInstance().getMouseY(), client.getLastFrameDuration());
     }
     
-    @Inject(method = "renderCenter", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/debug/DebugRenderer;shouldRender()Z", ordinal = 0))
-    public void renderLightOverlay(float delta, long long_1, CallbackInfo callbackInfo) {
+    @Inject(method = "renderCenter",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/debug/DebugRenderer;shouldRender()Z",
+                     ordinal = 0))
+    public void renderCenter(float delta, long long_1, CallbackInfo callbackInfo) {
         ClothClientHooks.DEBUG_RENDER_PRE.invoker().run();
     }
     

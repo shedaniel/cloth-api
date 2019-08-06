@@ -4,10 +4,10 @@ import me.shedaniel.cloth.hooks.ClothClientHooks;
 import me.shedaniel.cloth.hooks.ScreenHooks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Screen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.TextComponent;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,17 +23,11 @@ import java.util.List;
 @Mixin(Screen.class)
 public abstract class MixinScreen implements ScreenHooks {
     
-    @Shadow
-    @Final
-    protected List<AbstractButtonWidget> buttons;
+    @Shadow @Final protected List<AbstractButtonWidget> buttons;
     
-    @Shadow
-    protected MinecraftClient minecraft;
+    @Shadow protected MinecraftClient minecraft;
     
-    @Shadow
-    @Mutable
-    @Final
-    protected TextComponent title;
+    @Shadow @Mutable @Final protected Text title;
     
     @Shadow
     protected abstract <T extends AbstractButtonWidget> T addButton(T abstractButtonWidget_1);
@@ -99,7 +93,7 @@ public abstract class MixinScreen implements ScreenHooks {
     }
     
     @Override
-    public void cloth_setTitle(TextComponent component) {
+    public void cloth_setTitle(Text component) {
         this.title = component;
     }
     

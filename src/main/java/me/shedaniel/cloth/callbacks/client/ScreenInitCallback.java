@@ -2,7 +2,7 @@ package me.shedaniel.cloth.callbacks.client;
 
 import me.shedaniel.cloth.hooks.ScreenHooks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Screen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ActionResult;
 
 public class ScreenInitCallback {

@@ -11,8 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftClient {
     
-    @Shadow
-    private static MinecraftClient instance;
+    @Shadow private static MinecraftClient instance;
     
     @Inject(method = "handleInputEvents", at = @At("HEAD"))
     private void onHandleInputEvents(CallbackInfo ci) {

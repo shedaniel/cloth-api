@@ -15,12 +15,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinClientPlayNetworkHandler {
     
-    @Shadow
-    private MinecraftClient client;
+    @Shadow private MinecraftClient client;
     
-    @Shadow
-    @Final
-    private RecipeManager recipeManager;
+    @Shadow @Final private RecipeManager recipeManager;
     
     @Inject(method = "onSynchronizeRecipes", at = @At("RETURN"))
     private void onUpdateRecipes(SynchronizeRecipesS2CPacket packet, CallbackInfo ci) {
