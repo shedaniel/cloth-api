@@ -19,6 +19,10 @@ public class MixinMouse {
     
     @Shadow private int activeButton;
     
+    @Shadow private double x;
+    
+    @Shadow private double y;
+    
     @Inject(method = "onMouseScroll",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseScrolled(DDD)Z",
                      ordinal = 0), cancellable = true)
@@ -51,6 +55,21 @@ public class MixinMouse {
         double x = ClientUtils.getInstance().getMouseX(), y = ClientUtils.getInstance().getMouseY();
         if (!info.isCancelled()) {
             ActionResult result = ClothClientHooks.SCREEN_MOUSE_RELEASED.invoker().mouseReleased(client, client.currentScreen, x, y, activeButton);
+            if (result != ActionResult.PASS)
+                info.cancel();
+        }
+    }
+    
+    @Inject(method = "onCursorPos", at = @At(value = "INVOKE",
+                                             target = "Lnet/minecraft/client/gui/screen/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
+                                             ordinal = 1), cancellable = true)
+    public void onMouseDragged(long long_1, double double_1, double double_2, CallbackInfo info) {
+        double double_3 = double_1 * (double) this.client.window.getScaledWidth() / (double) this.client.window.getWidth();
+        double double_4 = double_2 * (double) this.client.window.getScaledHeight() / (double) this.client.window.getHeight();
+        double double_5 = (double_1 - this.x) * (double) this.client.window.getScaledWidth() / (double) this.client.window.getWidth();
+        double double_6 = (double_2 - this.y) * (double) this.client.window.getScaledHeight() / (double) this.client.window.getHeight();
+        if (!info.isCancelled()) {
+            ActionResult result = ClothClientHooks.SCREEN_MOUSE_DRAGGED.invoker().mouseDragged(client, client.currentScreen, double_3, double_4, activeButton, double_5, double_6);
             if (result != ActionResult.PASS)
                 info.cancel();
         }

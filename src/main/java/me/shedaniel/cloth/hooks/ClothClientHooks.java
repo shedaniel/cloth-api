@@ -97,6 +97,16 @@ public class ClothClientHooks {
             return ActionResult.PASS;
         };
     });
+    public static final Event<ScreenMouseDraggedCallback> SCREEN_MOUSE_DRAGGED = EventFactory.createArrayBacked(ScreenMouseDraggedCallback.class, listeners -> {
+        return (client, screen, mouseX1, mouseY1, button, mouseX2, mouseY2) -> {
+            for(ScreenMouseDraggedCallback listener : listeners) {
+                ActionResult result = listener.mouseDragged(client, screen, mouseX1, mouseY1, button, mouseX2, mouseY2);
+                if (result != ActionResult.PASS)
+                    return result;
+            }
+            return ActionResult.PASS;
+        };
+    });
     public static final Event<ScreenKeyTypedCallback> SCREEN_CHAR_TYPED = EventFactory.createArrayBacked(ScreenKeyTypedCallback.class, listeners -> {
         return (client, screen, character, keyCode) -> {
             for(ScreenKeyTypedCallback listener : listeners) {

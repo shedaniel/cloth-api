@@ -25,8 +25,8 @@ public abstract class MixinGameRenderer implements AutoCloseable, SynchronousRes
     }
     
     @Inject(method = "renderCenter",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V",
-                     ordinal = 10))
+            at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;debugRenderer:Lnet/minecraft/client/render/debug/DebugRenderer;",
+                     ordinal = 0))
     public void renderCenter(float delta, long long_1, CallbackInfo callbackInfo) {
         ClothClientHooks.DEBUG_RENDER_PRE.invoker().run();
     }
