@@ -4,6 +4,7 @@ import me.shedaniel.cloth.api.ClientUtils;
 import me.shedaniel.cloth.hooks.ClothClientHooks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
+import net.minecraft.client.util.Window;
 import net.minecraft.util.ActionResult;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -64,10 +65,11 @@ public class MixinMouse {
                                              target = "Lnet/minecraft/client/gui/screen/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
                                              ordinal = 1), cancellable = true)
     public void onMouseDragged(long long_1, double double_1, double double_2, CallbackInfo info) {
-        double double_3 = double_1 * (double) this.client.window.getScaledWidth() / (double) this.client.window.getWidth();
-        double double_4 = double_2 * (double) this.client.window.getScaledHeight() / (double) this.client.window.getHeight();
-        double double_5 = (double_1 - this.x) * (double) this.client.window.getScaledWidth() / (double) this.client.window.getWidth();
-        double double_6 = (double_2 - this.y) * (double) this.client.window.getScaledHeight() / (double) this.client.window.getHeight();
+        Window window = MinecraftClient.getInstance().method_22683();
+        double double_3 = double_1 * (double) window.getScaledWidth() / (double) window.getWidth();
+        double double_4 = double_2 * (double) window.getScaledHeight() / (double) window.getHeight();
+        double double_5 = (double_1 - this.x) * (double) window.getScaledWidth() / (double) window.getWidth();
+        double double_6 = (double_2 - this.y) * (double) window.getScaledHeight() / (double) window.getHeight();
         if (!info.isCancelled()) {
             ActionResult result = ClothClientHooks.SCREEN_MOUSE_DRAGGED.invoker().mouseDragged(client, client.currentScreen, double_3, double_4, activeButton, double_5, double_6);
             if (result != ActionResult.PASS)

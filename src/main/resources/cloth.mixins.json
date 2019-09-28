@@ -9,7 +9,8 @@
     "MixinMinecraftClient",
     "MixinMouse",
     "MixinKeyboard",
-    "MixinGameRenderer"
+    "MixinGameRenderer",
+    "MixinWorldRenderer"
   ],
   "mixins": [],
   "injectors": {
