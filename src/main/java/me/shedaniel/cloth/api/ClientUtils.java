@@ -1,22 +1,14 @@
 package me.shedaniel.cloth.api;
 
+import me.shedaniel.cloth.impl.ClientUtilsImpl;
+
 import java.awt.*;
 
 @Deprecated
 public interface ClientUtils {
     
     static ClientUtils getInstance() {
-        return new ClientUtils() {
-            @Override
-            public double getMouseX() {
-                return getMouseLocation().x + 0d;
-            }
-            
-            @Override
-            public double getMouseY() {
-                return getMouseLocation().y + 0d;
-            }
-        };
+        return ClientUtilsImpl.getInstance();
     }
     
     static Point getMouseLocation() {
