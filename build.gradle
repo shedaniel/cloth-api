@@ -1,16 +1,19 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id 'fabric-loom' version '0.2.2-SNAPSHOT'
     id 'maven-publish'
     id 'maven'
     id 'signing'
     id 'com.jfrog.bintray' version '1.8.4'
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
 sourceCompatibility = targetCompatibility = 1.8
 
 group = "me.shedaniel.cloth"
 archivesBaseName = "cloth-events"
-version = project.mod_version
+version = ((String) project.mod_version).contains("unstable") ? (project.mod_version + "." + buildTime()) : project.mod_version
 
 minecraft {
 }
@@ -20,6 +23,12 @@ processResources {
         expand 'version': project.version
     }
     inputs.property "version", project.version
+}
+
+static def buildTime() {
+    def df = new SimpleDateFormat("yyyyMMddHHmm")
+    df.setTimeZone(TimeZone.getTimeZone("UTC"))
+    return df.format(new Date())
 }
 
 dependencies {
@@ -116,5 +125,37 @@ publishing {
     repositories {
         // uncomment to publish to the local maven
         // mavenLocal()
+    }
+}
+
+curseforge {
+    apiKey = project.hasProperty('apiKey') ? project.property('apiKey') : System.getenv('CF_API_KEY')
+    if (apiKey != null)
+        project {
+            id = '317121'
+            releaseType = 'beta'
+            addGameVersion '1.14'
+            addGameVersion '1.14.1'
+            addGameVersion '1.14.2'
+            addGameVersion '1.14.3'
+            addGameVersion '1.14.4'
+            addGameVersion '1.14-Snapshot'
+            addGameVersion '1.15-Snapshot'
+            addGameVersion 'Java 8'
+            relations {
+                requiredDependency 'fabric-api'
+            }
+            mainArtifact(file("${project.buildDir}/libs/${project.archivesBaseName}-${project.version}.jar")) {
+                displayName = "[Fabric 1.14.x] v$project.version"
+            }
+            addArtifact(file("${project.buildDir}/libs/${project.archivesBaseName}-${project.version}-sources.jar"))
+            afterEvaluate {
+                uploadTask.dependsOn("remapJar")
+                uploadTask.dependsOn("remapSourcesJar")
+            }
+        }
+    options {
+        forgeGradleIntegration = false
+        javaVersionAutoDetect = false
     }
 }
