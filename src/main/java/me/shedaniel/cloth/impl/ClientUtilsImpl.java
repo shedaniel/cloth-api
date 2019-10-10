@@ -19,12 +19,12 @@ public class ClientUtilsImpl implements me.shedaniel.cloth.api.ClientUtils {
     
     @Override
     public double getMouseX() {
-        return this.client.mouse.getX() * (double) this.client.method_22683().getScaledWidth() / (double) this.client.method_22683().getWidth();
+        return this.client.mouse.getX() * (double) this.client.getWindow().getScaledWidth() / (double) this.client.getWindow().getWidth();
     }
     
     @Override
     public double getMouseY() {
-        return this.client.mouse.getY() * (double) this.client.method_22683().getScaledWidth() / (double) this.client.method_22683().getWidth();
+        return this.client.mouse.getY() * (double) this.client.getWindow().getScaledWidth() / (double) this.client.getWindow().getWidth();
     }
     
 }

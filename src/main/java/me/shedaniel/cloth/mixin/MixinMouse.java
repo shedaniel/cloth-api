@@ -65,7 +65,7 @@ public class MixinMouse {
                                              target = "Lnet/minecraft/client/gui/screen/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
                                              ordinal = 1), cancellable = true)
     public void onMouseDragged(long long_1, double double_1, double double_2, CallbackInfo info) {
-        Window window = MinecraftClient.getInstance().method_22683();
+        Window window = MinecraftClient.getInstance().getWindow();
         double double_3 = double_1 * (double) window.getScaledWidth() / (double) window.getWidth();
         double double_4 = double_2 * (double) window.getScaledHeight() / (double) window.getHeight();
         double double_5 = (double_1 - this.x) * (double) window.getScaledWidth() / (double) window.getWidth();
