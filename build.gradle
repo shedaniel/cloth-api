@@ -1,7 +1,7 @@
 import java.text.SimpleDateFormat
 
 plugins {
-    id 'fabric-loom' version '0.2.2-SNAPSHOT'
+    id 'fabric-loom' version '0.2.6-SNAPSHOT'
     id 'maven-publish'
     id 'maven'
     id 'signing'
@@ -72,7 +72,7 @@ bintray {
 // if it is present.
 // If you remove this task, sources will not be generated.
 task sourcesJar(type: Jar, dependsOn: classes) {
-    archiveClassifier = 'sources'
+    archiveClassifier.set("sources")
     from sourceSets.main.allSource
 }
 
@@ -81,7 +81,7 @@ task javadocs(type: Javadoc) {
 }
 
 task javadocsJar(type: Jar, dependsOn: javadocs) {
-    archiveClassifier = "javadocs"
+    archiveClassifier.set("javadocs")
     from javadocs.destinationDir
 }
 

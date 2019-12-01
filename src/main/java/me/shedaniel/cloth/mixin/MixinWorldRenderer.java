@@ -16,8 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinWorldRenderer {
     
     @Inject(method = "render", at = @At(value = "INVOKE",
-                                        target = "Lnet/minecraft/client/render/LayeredVertexConsumerStorage$Drawer;draw()V",
-                                        ordinal = 0, shift = At.Shift.BEFORE))
+                                        target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDD)V",
+                                        ordinal = 0))
     public void renderCenter(MatrixStack matrixStack_1, float float_1, long long_1, boolean boolean_1, Camera camera_1, GameRenderer gameRenderer_1, LightmapTextureManager lightmapTextureManager_1, Matrix4f matrix4f_1, CallbackInfo callbackInfo) {
         ClothClientHooks.DEBUG_RENDER_PRE.invoker().run();
     }
