@@ -127,7 +127,27 @@ public class ClothClientHooks {
             return ActionResult.PASS;
         };
     });
+    public static final Event<ScreenKeyPressedCallback> SCREEN_POST_KEY_PRESSED = EventFactory.createArrayBacked(ScreenKeyPressedCallback.class, listeners -> {
+        return (client, screen, keyCode, scanCode, modifiers) -> {
+            for(ScreenKeyPressedCallback listener : listeners) {
+                ActionResult result = listener.keyPressed(client, screen, keyCode, scanCode, modifiers);
+                if (result != ActionResult.PASS)
+                    return result;
+            }
+            return ActionResult.PASS;
+        };
+    });
     public static final Event<ScreenKeyReleasedCallback> SCREEN_KEY_RELEASED = EventFactory.createArrayBacked(ScreenKeyReleasedCallback.class, listeners -> {
+        return (client, screen, keyCode, scanCode, modifiers) -> {
+            for(ScreenKeyReleasedCallback listener : listeners) {
+                ActionResult result = listener.keyReleased(client, screen, keyCode, scanCode, modifiers);
+                if (result != ActionResult.PASS)
+                    return result;
+            }
+            return ActionResult.PASS;
+        };
+    });
+    public static final Event<ScreenKeyReleasedCallback> SCREEN_POST_KEY_RELEASED = EventFactory.createArrayBacked(ScreenKeyReleasedCallback.class, listeners -> {
         return (client, screen, keyCode, scanCode, modifiers) -> {
             for(ScreenKeyReleasedCallback listener : listeners) {
                 ActionResult result = listener.keyReleased(client, screen, keyCode, scanCode, modifiers);
