@@ -142,7 +142,7 @@ curseforge {
                 requiredDependency 'fabric-api'
             }
             mainArtifact(file("${project.buildDir}/libs/${project.archivesBaseName}-${project.version}.jar")) {
-                displayName = "[Fabric ${project.minecraft_version}] v$project.version"
+                displayName = "[Fabric 1.15.x] v$project.version"
             }
             addArtifact(file("${project.buildDir}/libs/${project.archivesBaseName}-${project.version}-sources.jar"))
             afterEvaluate {
