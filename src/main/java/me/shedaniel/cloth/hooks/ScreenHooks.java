@@ -10,8 +10,6 @@ public interface ScreenHooks {
     
     List<AbstractButtonWidget> cloth_getButtonWidgets();
     
-    List<Element> cloth_getInputListeners();
-    
     List<Element> cloth_getChildren();
     
     AbstractButtonWidget cloth_addButton(AbstractButtonWidget buttonWidget);

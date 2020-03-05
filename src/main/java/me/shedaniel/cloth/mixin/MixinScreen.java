@@ -39,12 +39,7 @@ public abstract class MixinScreen implements ScreenHooks {
     
     @Override
     public List<Element> cloth_getChildren() {
-        return (List) ((Screen) (Object) this).children();
-    }
-    
-    @Override
-    public List<Element> cloth_getInputListeners() {
-        return cloth_getChildren();
+        return (List<Element>) ((Screen) (Object) this).children();
     }
     
     @Override
@@ -68,19 +63,19 @@ public abstract class MixinScreen implements ScreenHooks {
             ClothClientHooks.SCREEN_RENDER_POST.invoker().render(minecraft, (Screen) (Object) this, mouseX, mouseY, delta);
     }
     
-    @Inject(method = "init", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("HEAD"), cancellable = true)
     public void onPreInit(MinecraftClient minecraftClient_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled()) {
-            ActionResult result = ClothClientHooks.SCREEN_INIT_PRE.invoker().init(minecraftClient_1, (Screen) (Object) this, (ScreenHooks) (Screen) (Object) this);
+            ActionResult result = ClothClientHooks.SCREEN_INIT_PRE.invoker().init(minecraftClient_1, (Screen) (Object) this, this);
             if (result != ActionResult.PASS)
                 info.cancel();
         }
     }
     
-    @Inject(method = "init", at = @At("RETURN"), remap = false)
+    @Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("RETURN"), remap = false)
     public void onPostInit(MinecraftClient minecraftClient_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled())
-            ClothClientHooks.SCREEN_INIT_POST.invoker().init(minecraftClient_1, (Screen) (Object) this, (ScreenHooks) (Screen) (Object) this);
+            ClothClientHooks.SCREEN_INIT_POST.invoker().init(minecraftClient_1, (Screen) (Object) this, this);
     }
     
     @Inject(method = "addButton", at = @At("HEAD"), cancellable = true)

@@ -1,7 +1,7 @@
 package me.shedaniel.cloth.callbacks.client;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.packet.SynchronizeRecipesS2CPacket;
+import net.minecraft.network.packet.s2c.play.SynchronizeRecipesS2CPacket;
 import net.minecraft.recipe.RecipeManager;
 
 public interface SyncRecipesCallback {

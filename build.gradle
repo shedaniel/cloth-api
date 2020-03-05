@@ -156,18 +156,18 @@ curseforge {
     if (apiKey != null)
         project {
             id = '317121'
-            releaseType = 'release'
-            addGameVersion '1.15'
-            addGameVersion '1.15.1'
-            addGameVersion '1.15-Snapshot'
+            releaseType = 'beta'
+            addGameVersion '1.16-Snapshot'
             addGameVersion 'Java 8'
             relations {
                 requiredDependency 'fabric-api'
             }
             mainArtifact(file("${project.buildDir}/libs/${project.archivesBaseName}-${project.version}.jar")) {
-                displayName = "[Fabric 1.15.x] v$project.version"
+                displayName = "[Fabric 20w10a] v$project.version"
             }
-            addArtifact(file("${project.buildDir}/libs/${project.archivesBaseName}-${project.version}-sources.jar"))
+            addArtifact(file("${project.buildDir}/libs/${project.archivesBaseName}-${project.version}-sources.jar")) {
+                displayName = "[Fabric 20w10a] v$project.version Sources"
+            }
             afterEvaluate {
                 uploadTask.dependsOn("remapJar")
                 uploadTask.dependsOn("remapSourcesJar")

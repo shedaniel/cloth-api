@@ -4,13 +4,15 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ActionResult;
 
-public interface ScreenRenderCallback {
+public final class ScreenRenderCallback {
     
-    public static interface Pre {
+    private ScreenRenderCallback() {}
+    
+    public interface Pre {
         ActionResult render(MinecraftClient client, Screen screen, int mouseX, int mouseY, float delta);
     }
     
-    public static interface Post {
+    public interface Post {
         void render(MinecraftClient client, Screen screen, int mouseX, int mouseY, float delta);
     }
     

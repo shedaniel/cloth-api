@@ -65,17 +65,16 @@ public class MixinKeyboard {
                                        target = "Lnet/minecraft/client/gui/screen/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
                                        ordinal = 0, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
-    public void onKeyAfter(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info, ParentElement parentElement, boolean bls[]) {
+    public void onKeyAfter(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info, ParentElement parentElement, boolean[] bls) {
         if (!info.isCancelled() && !bls[0]) {
+            ActionResult result;
             if (int_3 != 1 && (int_3 != 2 || !this.repeatEvents)) {
-                ActionResult result = ClothClientHooks.SCREEN_POST_KEY_RELEASED.invoker().keyReleased(client, client.currentScreen, int_1, int_2, int_4);
-                if (result != ActionResult.PASS)
-                    info.cancel();
+                result = ClothClientHooks.SCREEN_POST_KEY_RELEASED.invoker().keyReleased(client, client.currentScreen, int_1, int_2, int_4);
             } else {
-                ActionResult result = ClothClientHooks.SCREEN_POST_KEY_PRESSED.invoker().keyPressed(client, client.currentScreen, int_1, int_2, int_4);
-                if (result != ActionResult.PASS)
-                    info.cancel();
+                result = ClothClientHooks.SCREEN_POST_KEY_PRESSED.invoker().keyPressed(client, client.currentScreen, int_1, int_2, int_4);
             }
+            if (result != ActionResult.PASS)
+                info.cancel();
         }
     }
     

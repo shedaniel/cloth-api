@@ -15,11 +15,6 @@
   "license": "Unlicense",
   "icon": "icon.png",
   "environment": "client",
-  "entrypoints": {
-    "client": [
-      "me.shedaniel.cloth.ClothEventsInitializer"
-    ]
-  },
   "mixins": [
     "cloth.mixins.json"
   ],

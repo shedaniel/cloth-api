@@ -1,9 +1,7 @@
 package me.shedaniel.cloth.mixin;
 
-import me.shedaniel.cloth.api.ClientUtils;
 import me.shedaniel.cloth.hooks.ClothClientHooks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.resource.SynchronousResourceReloadListener;
 import org.spongepowered.asm.mixin.Final;

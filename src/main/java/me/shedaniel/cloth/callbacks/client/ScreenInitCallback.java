@@ -5,13 +5,15 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ActionResult;
 
-public class ScreenInitCallback {
+public final class ScreenInitCallback {
     
-    public static interface Pre {
+    private ScreenInitCallback() {}
+    
+    public interface Pre {
         ActionResult init(MinecraftClient client, Screen screen, ScreenHooks screenHooks);
     }
     
-    public static interface Post {
+    public interface Post {
         void init(MinecraftClient client, Screen screen, ScreenHooks screenHooks);
     }
     
