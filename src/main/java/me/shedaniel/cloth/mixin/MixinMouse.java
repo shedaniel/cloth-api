@@ -58,10 +58,10 @@ public class MixinMouse {
         }
     }
     
-    @Inject(method = "onCursorPos", at = @At(value = "INVOKE",
-                                             target = "Lnet/minecraft/client/gui/screen/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
-                                             ordinal = 1), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void onMouseDragged(long window, double x, double y, CallbackInfo info, Element element, double d, double e, double f, double g) {
+    @SuppressWarnings("UnresolvedMixinReference")
+    @Inject(method = "method_1602", at = @At("HEAD"), cancellable = true)
+    public void onMouseDragged(Element element, double d, double e, double f, double g, CallbackInfo info) {
+        System.out.printf("%f %f %d %f %f%n", d, e, activeButton, f, g);
         if (!info.isCancelled()) {
             ActionResult result = ClothClientHooks.SCREEN_MOUSE_DRAGGED.invoker().mouseDragged(client, (Screen) element, d, e, activeButton, f, g);
             if (result != ActionResult.PASS)

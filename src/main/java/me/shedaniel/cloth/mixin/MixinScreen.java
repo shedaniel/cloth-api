@@ -25,7 +25,7 @@ public abstract class MixinScreen implements ScreenHooks {
     
     @Shadow @Final protected List<AbstractButtonWidget> buttons;
     
-    @Shadow protected MinecraftClient minecraft;
+    @Shadow protected MinecraftClient client;
     
     @Shadow @Mutable @Final protected Text title;
     
@@ -51,7 +51,7 @@ public abstract class MixinScreen implements ScreenHooks {
     @Inject(method = "render(IIF)V", at = @At("HEAD"), cancellable = true)
     public void onPreDraw(int mouseX, int mouseY, float delta, CallbackInfo info) {
         if (!info.isCancelled()) {
-            ActionResult result = ClothClientHooks.SCREEN_RENDER_PRE.invoker().render(minecraft, (Screen) (Object) this, mouseX, mouseY, delta);
+            ActionResult result = ClothClientHooks.SCREEN_RENDER_PRE.invoker().render(client, (Screen) (Object) this, mouseX, mouseY, delta);
             if (result != ActionResult.PASS)
                 info.cancel();
         }
@@ -60,7 +60,7 @@ public abstract class MixinScreen implements ScreenHooks {
     @Inject(method = "render(IIF)V", at = @At("RETURN"), remap = false)
     public void onPostDraw(int mouseX, int mouseY, float delta, CallbackInfo info) {
         if (!info.isCancelled())
-            ClothClientHooks.SCREEN_RENDER_POST.invoker().render(minecraft, (Screen) (Object) this, mouseX, mouseY, delta);
+            ClothClientHooks.SCREEN_RENDER_POST.invoker().render(client, (Screen) (Object) this, mouseX, mouseY, delta);
     }
     
     @Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("HEAD"), cancellable = true)
@@ -81,7 +81,7 @@ public abstract class MixinScreen implements ScreenHooks {
     @Inject(method = "addButton", at = @At("HEAD"), cancellable = true)
     public void onAddButton(AbstractButtonWidget widget, CallbackInfoReturnable<ButtonWidget> info) {
         if (!info.isCancelled()) {
-            ActionResult result = ClothClientHooks.SCREEN_ADD_BUTTON.invoker().addButton(minecraft, (Screen) (Object) this, widget);
+            ActionResult result = ClothClientHooks.SCREEN_ADD_BUTTON.invoker().addButton(client, (Screen) (Object) this, widget);
             if (result != ActionResult.PASS)
                 info.cancel();
         }
