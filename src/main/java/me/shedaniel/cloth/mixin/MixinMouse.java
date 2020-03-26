@@ -61,7 +61,6 @@ public class MixinMouse {
     @SuppressWarnings("UnresolvedMixinReference")
     @Inject(method = "method_1602", at = @At("HEAD"), cancellable = true)
     public void onMouseDragged(Element element, double d, double e, double f, double g, CallbackInfo info) {
-        System.out.printf("%f %f %d %f %f%n", d, e, activeButton, f, g);
         if (!info.isCancelled()) {
             ActionResult result = ClothClientHooks.SCREEN_MOUSE_DRAGGED.invoker().mouseDragged(client, (Screen) element, d, e, activeButton, f, g);
             if (result != ActionResult.PASS)
