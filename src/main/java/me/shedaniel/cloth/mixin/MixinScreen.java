@@ -7,6 +7,7 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import org.spongepowered.asm.mixin.Final;
@@ -48,19 +49,19 @@ public abstract class MixinScreen implements ScreenHooks {
         return buttonWidget;
     }
     
-    @Inject(method = "render(IIF)V", at = @At("HEAD"), cancellable = true)
-    public void onPreDraw(int mouseX, int mouseY, float delta, CallbackInfo info) {
+    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
+    public void onPreDraw(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo info) {
         if (!info.isCancelled()) {
-            ActionResult result = ClothClientHooks.SCREEN_RENDER_PRE.invoker().render(client, (Screen) (Object) this, mouseX, mouseY, delta);
+            ActionResult result = ClothClientHooks.SCREEN_RENDER_PRE.invoker().render(matrices, client, (Screen) (Object) this, mouseX, mouseY, delta);
             if (result != ActionResult.PASS)
                 info.cancel();
         }
     }
     
-    @Inject(method = "render(IIF)V", at = @At("RETURN"), remap = false)
-    public void onPostDraw(int mouseX, int mouseY, float delta, CallbackInfo info) {
+    @Inject(method = "render", at = @At("RETURN"), remap = false)
+    public void onPostDraw(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo info) {
         if (!info.isCancelled())
-            ClothClientHooks.SCREEN_RENDER_POST.invoker().render(client, (Screen) (Object) this, mouseX, mouseY, delta);
+            ClothClientHooks.SCREEN_RENDER_POST.invoker().render(matrices, client, (Screen) (Object) this, mouseX, mouseY, delta);
     }
     
     @Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("HEAD"), cancellable = true)
