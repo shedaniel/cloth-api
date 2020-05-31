@@ -16,7 +16,7 @@
   "icon": "icon.png",
   "environment": "*",
   "mixins": [
-    "cloth-armor-api-v1.mixins.json"
+    "cloth-durability-bar-api-v1.mixins.json"
   ],
   "custom": {
     "modmenu:api": true,

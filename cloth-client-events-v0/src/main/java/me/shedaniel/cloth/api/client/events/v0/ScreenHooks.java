@@ -34,11 +34,11 @@ import net.minecraft.text.Text;
 import java.util.List;
 
 public interface ScreenHooks {
-    List<AbstractButtonWidget> cloth_getButtonWidgets();
+    List<AbstractButtonWidget> cloth$getButtonWidgets();
     
-    List<Element> cloth_getChildren();
+    List<Element> cloth$getChildren();
     
-    AbstractButtonWidget cloth_addButton(AbstractButtonWidget buttonWidget);
+    AbstractButtonWidget cloth$addButtonWidget(AbstractButtonWidget buttonWidget);
     
-    void cloth_setTitle(Text component);
+    void cloth$setTitle(Text component);
 }

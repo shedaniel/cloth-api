@@ -66,17 +66,17 @@ public abstract class MixinScreen implements ScreenHooks {
     protected abstract <T extends AbstractButtonWidget> T addButton(T abstractButtonWidget_1);
     
     @Override
-    public List<AbstractButtonWidget> cloth_getButtonWidgets() {
+    public List<AbstractButtonWidget> cloth$getButtonWidgets() {
         return buttons;
     }
     
     @Override
-    public List<Element> cloth_getChildren() {
+    public List<Element> cloth$getChildren() {
         return (List<Element>) ((Screen) (Object) this).children();
     }
     
     @Override
-    public AbstractButtonWidget cloth_addButton(AbstractButtonWidget buttonWidget) {
+    public AbstractButtonWidget cloth$addButtonWidget(AbstractButtonWidget buttonWidget) {
         addButton(buttonWidget);
         return buttonWidget;
     }
@@ -121,7 +121,7 @@ public abstract class MixinScreen implements ScreenHooks {
     }
     
     @Override
-    public void cloth_setTitle(Text component) {
+    public void cloth$setTitle(Text component) {
         this.title = component;
     }
 }
