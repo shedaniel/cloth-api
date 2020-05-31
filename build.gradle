@@ -148,7 +148,7 @@ subprojects {
         user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
         key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
         publications = ["${archivesBaseName}_mavenJava"]
-        override = true
+        publish = true
         pkg {
             repo = "cloth"
             name = archivesBaseName
@@ -180,7 +180,7 @@ bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
     publications = ["mavenJava"]
-    override = true
+    publish = true
     pkg {
         repo = "cloth"
         name = "cloth-api"
