@@ -108,6 +108,7 @@ allprojects {
 
     task javadocsJar(type: Jar, dependsOn: javadocs) {
         archiveClassifier.set("javadocs")
+        javadocs.failOnError false
         from javadocs.destinationDir
     }
 }
@@ -147,18 +148,16 @@ subprojects {
         user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
         key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
         publications = ["${archivesBaseName}_mavenJava"]
-        publish = true
+        override = true
         pkg {
             repo = "cloth"
             name = archivesBaseName
             userOrg = "shedaniel"
             licenses = ["Unlicense"]
+            websiteUrl = 'https://github.com/shedaniel/cloth-api'
+            issueTrackerUrl = 'https://github.com/shedaniel/cloth-api/issues'
+            vcsUrl = 'https://github.com/shedaniel/cloth-api.git'
             version {
-                released = new Date()
-                githubRepo = 'shedaniel/cloth-api'
-                websiteUrl = 'https://github.com/shedaniel/cloth-api'
-                issueTrackerUrl = 'https://github.com/shedaniel/cloth-api/issues'
-                vcsUrl = 'https://github.com/shedaniel/cloth-api.git'
                 gpg {
                     sign = true
                 }
@@ -181,18 +180,16 @@ bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
     publications = ["mavenJava"]
-    publish = true
+    override = true
     pkg {
         repo = "cloth"
         name = "cloth-api"
         userOrg = "shedaniel"
         licenses = ["Unlicense"]
+        websiteUrl = 'https://github.com/shedaniel/cloth-api'
+        issueTrackerUrl = 'https://github.com/shedaniel/cloth-api/issues'
+        vcsUrl = 'https://github.com/shedaniel/cloth-api.git'
         version {
-            released = new Date()
-            githubRepo = 'shedaniel/cloth-api'
-            websiteUrl = 'https://github.com/shedaniel/cloth-api'
-            issueTrackerUrl = 'https://github.com/shedaniel/cloth-api/issues'
-            vcsUrl = 'https://github.com/shedaniel/cloth-api.git'
             gpg {
                 sign = true
             }
