@@ -27,8 +27,6 @@
 
 package me.shedaniel.cloth.api.client.events.v0;
 
-import me.shedaniel.cloth.api.client.events.v0.*;
-import me.shedaniel.cloth.callbacks.client.*;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.util.ActionResult;
