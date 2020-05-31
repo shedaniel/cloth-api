@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "cloth-api",
-  "name": "Cloth API",
-  "description": "Generalized API for Fabric.",
+  "id": "cloth-utils-v1",
+  "name": "Cloth Utils v1",
+  "description": "Utils classes.",
   "version": "${version}",
   "authors": [
     "shedaniel"
@@ -15,10 +15,8 @@
   "license": "Unlicense",
   "icon": "icon.png",
   "environment": "*",
-  "mixins": [
-    "cloth-client-events-v0.mixins.json"
-  ],
   "custom": {
-    "modmenu:api": true
+    "modmenu:api": true,
+    "modmenu:parent": "cloth-api"
   }
 }

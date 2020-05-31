@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "cloth-api",
-  "name": "Cloth API",
-  "description": "Generalized API for Fabric.",
+  "id": "cloth-client-events-v0",
+  "name": "Cloth Client Events v0",
+  "description": "Hooks for client events.",
   "version": "${version}",
   "authors": [
     "shedaniel"
@@ -14,11 +14,16 @@
   },
   "license": "Unlicense",
   "icon": "icon.png",
-  "environment": "*",
+  "environment": "client",
   "mixins": [
     "cloth-client-events-v0.mixins.json"
   ],
+  "depends": {
+    "fabric-api-base": "*"
+  },
   "custom": {
-    "modmenu:api": true
+    "modmenu:api": true,
+    "modmenu:clientsideOnly": true,
+    "modmenu:parent": "cloth-api"
   }
 }

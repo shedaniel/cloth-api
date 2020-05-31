@@ -1,28 +1,48 @@
-# Cloth ![Download](https://api.bintray.com/packages/shedaniel/cloth-events/cloth-events/images/download.svg)
-### Maven
-```groovy
-repositories {
-    jcenter()
-}
-dependencies {
-    'me.shedaniel.cloth:cloth-events:ABC_VERSION'
-}
-```
-### APIs
-###### Events
-These are all the events in ClothClientHooks:
-- HANDLE_INPUT: Hook into MinecraftClient's handleInputEvents()
-- SYNC_RECIPES: Hook into client receiving the recipes sync packet
-- SCREEN_RENDER_PRE: Hook before Screen's render (does not do anything if screen completely overrides render)
-- SCREEN_RENDER_POST: Hook after Screen's render (does not do anything if screen completely overrides render)
-- SCREEN_LATE_RENDER: Hook after Screen's render (works even if screen completely overrides render)
-- SCREEN_INIT_PRE: Hook before Screen's initScreen
-- SCREEN_INIT_POST: Hook after Screen's initScreen
-- SCREEN_ADD_BUTTON: Hook into Screen's addButton
-- SCREEN_MOUSE_SCROLLED: Hook before Screen's mouseScrolled
-- SCREEN_MOUSE_CLICKED: Hook before Screen's mouseClicked
-- SCREEN_MOUSE_RELEASED: Hook before Screen's mouseReleased
-- SCREEN_CHAR_TYPED: Hook before Screen's charTyped
-- SCREEN_KEY_PRESSED: Hook before Screen's keyPressed
-- SCREEN_KEY_RELEASED: Hook before Screen's keyReleased
-- DEBUG_RENDER_PRE: Hook before GameRenderer's debug renders (like chunk borders)
+# Cloth API
+## Maven
+## APIs
+#### cloth-armor-api-v1
+**To be implemented:**
+- CustomModeledArmor: A custom BipedEntityModel for your armor
+- CustomTexturedArmor: A custom Identifier texture for your armor
+- TickableArmor: Tick when the armor piece is worn
+#### cloth-client-events-v0
+**Events:**
+- ~~ClothClientHooks#HANDLE_INPUT: Called on MinecraftClient#handleInputEvents~~
+- ClothClientHooks#SYNC_RECIPES: Called on ClientPlayNetworkHandler#onSynchronizeRecipes
+- ClothClientHooks#SCREEN_RENDER_PRE: Called before Screen#render
+- ClothClientHooks#SCREEN_RENDER_POST: Called after Screen#render
+- ClothClientHooks#SCREEN_LATE_RENDER: Called after Screen#render after everything
+- ClothClientHooks#SCREEN_INIT_PRE: Called before Screen#init
+- ClothClientHooks#SCREEN_INIT_POST: Called after Screen#init
+- ClothClientHooks#SCREEN_ADD_BUTTON: Called on Screen#addButton
+- ClothClientHooks#SCREEN_MOUSE_SCROLLED: Called on mouseScrolled
+- ClothClientHooks#SCREEN_MOUSE_CLICKED: Called on mouseClicked
+- ClothClientHooks#SCREEN_MOUSE_RELEASED: Called on mouseReleased
+- ClothClientHooks#SCREEN_MOUSE_DRAGGED: Called on mouseDragged
+- ClothClientHooks#SCREEN_CHAR_TYPED: Called on charTyped
+- ClothClientHooks#SCREEN_KEY_PRESSED: Called before keyPressed
+- ClothClientHooks#SCREEN_POST_KEY_PRESSED: Called after keyPressed
+- ClothClientHooks#SCREEN_KEY_RELEASED: Called before keyReleased
+- ClothClientHooks#SCREEN_POST_KEY_PRESSED: Called after keyReleased
+- ClothClientHooks#DEBUG_RENDER_PRE: Called before DebugRenderer#render
+#### cloth-common-events-v1
+**Events:**
+- BlockBreakCallback#EVENT: Called on block break by player
+- BlockPlaceCallback#EVENT: Called on block place by player
+- ItemPickupCallback#EVENT: Called on item pickup by player
+- PlayerChangeWorldCallback#EVENT: Called on player changing worlds
+- PlayerJoinCallback#EVENT: Called on player joining
+- PlayerLeaveCallback#EVENT: Called on player leaving
+- WorldLoadCallback#EVENT: Called on world loading
+- WorldSaveCallback#EVENT: Called on world saving
+#### cloth-durability-bar-api-v1
+**To be implemented:**
+- DurabilityBarItem: Custom durability bar display
+#### cloth-scissors-api-v1
+**Utils:**
+- ScissorsStack: Stacking support for scissors
+#### cloth-utils-v1
+**Utils:**
+- Executor
+- GameInstanceUtils: Method to get the MinecraftServer instance

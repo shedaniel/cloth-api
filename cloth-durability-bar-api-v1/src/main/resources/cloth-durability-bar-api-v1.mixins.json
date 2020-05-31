@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "me.shedaniel.cloth.mixin.durability.bar",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.7.11",
+  "client": ["MixinItemRenderer"],
+  "mixins": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

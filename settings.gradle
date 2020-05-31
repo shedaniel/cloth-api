@@ -9,4 +9,11 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'cloth-events'
+rootProject.name = 'cloth-api'
+
+include 'cloth-armor-api-v1'
+include 'cloth-client-events-v0'
+include 'cloth-common-events-v1'
+include 'cloth-durability-bar-api-v1'
+include 'cloth-scissors-api-v1'
+include 'cloth-utils-v1'
