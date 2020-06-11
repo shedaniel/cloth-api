@@ -33,7 +33,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -64,6 +63,8 @@ public abstract class MixinScreen implements ScreenHooks {
     
     @Shadow
     protected abstract <T extends AbstractButtonWidget> T addButton(T abstractButtonWidget_1);
+    
+    @Shadow public int width;
     
     @Override
     public List<AbstractButtonWidget> cloth$getButtonWidgets() {
@@ -112,11 +113,20 @@ public abstract class MixinScreen implements ScreenHooks {
     }
     
     @Inject(method = "addButton", at = @At("HEAD"), cancellable = true)
-    public void onAddButton(AbstractButtonWidget widget, CallbackInfoReturnable<ButtonWidget> info) {
+    public void onAddButton(AbstractButtonWidget widget, CallbackInfoReturnable<AbstractButtonWidget> info) {
         if (!info.isCancelled()) {
             ActionResult result = ClothClientHooks.SCREEN_ADD_BUTTON.invoker().addButton(client, (Screen) (Object) this, widget);
             if (result != ActionResult.PASS)
-                info.cancel();
+                info.setReturnValue(widget);
+        }
+    }
+    
+    @Inject(method = "addChild", at = @At("HEAD"), cancellable = true)
+    public void addChild(Element widget, CallbackInfoReturnable<Element> info) {
+        if (!info.isCancelled()) {
+            ActionResult result = ClothClientHooks.SCREEN_ADD_CHILD.invoker().addChild(client, (Screen) (Object) this, widget);
+            if (result != ActionResult.PASS)
+                info.setReturnValue(widget);
         }
     }
     

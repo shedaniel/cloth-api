@@ -1,5 +1,9 @@
 # Cloth API
 ## Maven
+```groovy
+modApi "me.shedaniel.cloth.api:cloth-api:${project.cloth_api_version}"
+include "me.shedaniel.cloth.api:cloth-api:${project.cloth_api_version}"
+```
 ## APIs
 #### cloth-armor-api-v1
 **To be implemented:**
@@ -16,6 +20,7 @@
 - ClothClientHooks#SCREEN_INIT_PRE: Called before Screen#init
 - ClothClientHooks#SCREEN_INIT_POST: Called after Screen#init
 - ClothClientHooks#SCREEN_ADD_BUTTON: Called on Screen#addButton
+- ClothClientHooks#SCREEN_ADD_CHILD: Called on Screen#addChild
 - ClothClientHooks#SCREEN_MOUSE_SCROLLED: Called on mouseScrolled
 - ClothClientHooks#SCREEN_MOUSE_CLICKED: Called on mouseClicked
 - ClothClientHooks#SCREEN_MOUSE_RELEASED: Called on mouseReleased

@@ -29,12 +29,12 @@ package me.shedaniel.cloth.mixin.common.events;
 
 import com.mojang.authlib.GameProfile;
 import me.shedaniel.cloth.api.common.events.v1.PlayerChangeWorldCallback;
+import net.minecraft.container.ContainerListener;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -42,13 +42,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class MixinServerPlayerEntity extends PlayerEntity implements ScreenHandlerListener {
+public abstract class MixinServerPlayerEntity extends PlayerEntity implements ContainerListener {
     public MixinServerPlayerEntity(World world, BlockPos blockPos, GameProfile gameProfile) {
         super(world, blockPos, gameProfile);
     }
     
     @Inject(method = "changeDimension", at = @At("HEAD"))
-    private void changeDimension(RegistryKey<World> newWorld, CallbackInfoReturnable<Entity> cir) {
-        PlayerChangeWorldCallback.EVENT.invoker().onChangeWorld((ServerPlayerEntity) (Object) this, this.world.method_27983(), newWorld);
+    private void changeDimension(ServerWorld newWorld, CallbackInfoReturnable<Entity> cir) {
+        PlayerChangeWorldCallback.EVENT.invoker().onChangeWorld((ServerPlayerEntity) (Object) this, this.world.getRegistryKey(), newWorld.getRegistryKey());
     }
 }

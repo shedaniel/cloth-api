@@ -56,7 +56,7 @@ import java.util.Map;
 public abstract class MixinArmorFeatureRenderer extends FeatureRenderer {
     @Shadow
     @Final
-    protected static Map<String, Identifier> ARMOR_TEXTURE_CACHE;
+    private static Map<String, Identifier> ARMOR_TEXTURE_CACHE;
     
     public MixinArmorFeatureRenderer(FeatureRendererContext context) {
         super(context);
@@ -81,10 +81,10 @@ public abstract class MixinArmorFeatureRenderer extends FeatureRenderer {
     }
     
     @Inject(method = "getArmorTexture", at = @At("HEAD"), cancellable = true)
-    private void getArmorTexture(EquipmentSlot slot, ArmorItem armorItem, boolean secondLayer,
-            @Nullable String suffix, CallbackInfoReturnable<Identifier> cir) {
+    private void getArmorTexture(ArmorItem armorItem, boolean secondLayer, @Nullable String suffix, CallbackInfoReturnable<Identifier> cir) {
         if (armorItem instanceof CustomTexturedArmor) {
-            String model = ((CustomTexturedArmor) armorItem).getArmorTexture(slot, armorItem, secondLayer, suffix);
+            @SuppressWarnings("deprecation")
+            String model = ((CustomTexturedArmor) armorItem).getArmorTexture(armorItem.getSlotType(), armorItem, secondLayer, suffix);
             if (model != null) {
                 cir.setReturnValue(ARMOR_TEXTURE_CACHE.computeIfAbsent(model, Identifier::new));
             }

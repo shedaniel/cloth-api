@@ -84,9 +84,19 @@ public class ClothClientHooks {
         };
     });
     public static final Event<ScreenAddButtonCallback> SCREEN_ADD_BUTTON = EventFactory.createArrayBacked(ScreenAddButtonCallback.class, listeners -> {
-        return (client, screen, hooks) -> {
+        return (client, screen, button) -> {
             for (ScreenAddButtonCallback listener : listeners) {
-                ActionResult result = listener.addButton(client, screen, hooks);
+                ActionResult result = listener.addButton(client, screen, button);
+                if (result != ActionResult.PASS)
+                    return result;
+            }
+            return ActionResult.PASS;
+        };
+    });
+    public static final Event<ScreenAddChildCallback> SCREEN_ADD_CHILD = EventFactory.createArrayBacked(ScreenAddChildCallback.class, listeners -> {
+        return (client, screen, element) -> {
+            for (ScreenAddChildCallback listener : listeners) {
+                ActionResult result = listener.addChild(client, screen, element);
                 if (result != ActionResult.PASS)
                     return result;
             }

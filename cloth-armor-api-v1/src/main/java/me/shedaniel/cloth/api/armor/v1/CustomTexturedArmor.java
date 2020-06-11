@@ -36,8 +36,15 @@ import javax.annotation.Nullable;
 
 public interface CustomTexturedArmor {
     @Environment(EnvType.CLIENT)
+    @Deprecated
     @Nullable
     default String getArmorTexture(EquipmentSlot slot, ArmorItem armorItem, boolean secondLayer, @Nullable String suffix) {
+        return this.getArmorTexture(armorItem, secondLayer, suffix);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @Nullable
+    default String getArmorTexture(ArmorItem armorItem, boolean secondLayer, @Nullable String suffix) {
         return null;
     }
 }

@@ -46,7 +46,7 @@ public class MixinServerPlayerInteractionManager {
     @Shadow public ServerPlayerEntity player;
     
     @Inject(method = "tryBreakBlock", at = @At(value = "INVOKE",
-                                               target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"))
+                                               target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"))
     private void onBreak(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir) {
         BlockState blockState = this.world.getBlockState(blockPos);
         BlockBreakCallback.EVENT.invoker().onBroken(this.world, blockPos, blockState, this.player);

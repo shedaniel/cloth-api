@@ -25,21 +25,16 @@
  * For more information, please refer to <http://unlicense.org>
  */
 
-package me.shedaniel.cloth.api.common.events.v1;
+package me.shedaniel.cloth.api.client.events.v0;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.ActionResult;
 
-public interface BlockBreakCallback {
-    Event<BlockBreakCallback> EVENT = EventFactory.createArrayBacked(BlockBreakCallback.class, callbacks -> (world, pos, state, player) -> {
-        for (BlockBreakCallback callback : callbacks) {
-            callback.onBroken(world, pos, state, player);
-        }
-    });
-    
-    void onBroken(IWorld world, BlockPos pos, BlockState state, PlayerEntity player);
+/**
+ * Called on {@link Screen#addChild(Element)}
+ */
+public interface ScreenAddChildCallback {
+    ActionResult addChild(MinecraftClient client, Screen screen, Element element);
 }
