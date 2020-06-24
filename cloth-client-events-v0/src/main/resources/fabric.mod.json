@@ -14,7 +14,7 @@
   },
   "license": "Unlicense",
   "icon": "icon.png",
-  "environment": "client",
+  "environment": "*",
   "mixins": [
     "cloth-client-events-v0.mixins.json"
   ],
