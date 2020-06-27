@@ -15,9 +15,6 @@
   "license": "Unlicense",
   "icon": "icon.png",
   "environment": "*",
-  "mixins": [
-    "cloth-client-events-v0.mixins.json"
-  ],
   "custom": {
     "modmenu:api": true
   }
