@@ -27,19 +27,24 @@
 
 package me.shedaniel.cloth.api.utils.v1;
 
-import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.fabric.api.event.server.ServerStartCallback;
+import net.fabricmc.fabric.api.event.server.ServerStopCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.function.Supplier;
 
 public final class GameInstanceUtils {
+    private static MinecraftServer server = null;
     private static final Supplier<MinecraftServer> SERVER_SUPPLIER = () -> Executor.callForEnv(
             () -> () -> MinecraftClient.getInstance().getServer(),
-            () -> () -> (MinecraftServer) FabricLoader.getInstance().getGameInstance()
+            () -> () -> server
     );
     
-    private GameInstanceUtils() {}
+    private GameInstanceUtils() {
+        ServerStartCallback.EVENT.register(server -> GameInstanceUtils.server = server);
+        ServerStopCallback.EVENT.register(server -> GameInstanceUtils.server = null);
+    }
     
     public static MinecraftServer getServer() {
         return SERVER_SUPPLIER.get();
