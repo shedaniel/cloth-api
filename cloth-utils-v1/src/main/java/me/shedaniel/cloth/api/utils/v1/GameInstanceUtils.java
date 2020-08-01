@@ -27,8 +27,7 @@
 
 package me.shedaniel.cloth.api.utils.v1;
 
-import net.fabricmc.fabric.api.event.server.ServerStartCallback;
-import net.fabricmc.fabric.api.event.server.ServerStopCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 
@@ -42,8 +41,8 @@ public final class GameInstanceUtils {
     );
     
     private GameInstanceUtils() {
-        ServerStartCallback.EVENT.register(server -> GameInstanceUtils.server = server);
-        ServerStopCallback.EVENT.register(server -> GameInstanceUtils.server = null);
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> GameInstanceUtils.server = server);
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> GameInstanceUtils.server = null);
     }
     
     public static MinecraftServer getServer() {

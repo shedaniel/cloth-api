@@ -60,7 +60,7 @@ public final class Executor {
     }
     
     public static <T> T callForEnv(Supplier<Callable<T>> client, Supplier<Callable<T>> common) {
-        return callIfEnv(EnvType.CLIENT, client).orElse(call(common));
+        return call(FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? client : common);
     }
     
     public static <T> Optional<T> callIf(Supplier<Boolean> predicate, Supplier<Callable<T>> runnableSupplier) {
