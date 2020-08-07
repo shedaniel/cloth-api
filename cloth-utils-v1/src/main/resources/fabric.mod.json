@@ -12,6 +12,11 @@
     "sources": "https://github.com/shedaniel/cloth-api",
     "issues": "https://github.com/shedaniel/cloth-api/issues"
   },
+  "entrypoints": {
+    "main": [
+      "me.shedaniel.cloth.api.utils.v1.GameInstanceUtils::init"
+    ]
+  },
   "license": "Unlicense",
   "icon": "icon.png",
   "environment": "*",

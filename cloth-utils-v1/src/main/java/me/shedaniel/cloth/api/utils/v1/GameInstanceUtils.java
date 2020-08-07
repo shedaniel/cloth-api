@@ -27,25 +27,32 @@
 
 package me.shedaniel.cloth.api.utils.v1;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.function.Supplier;
-
 public final class GameInstanceUtils {
     private static MinecraftServer server = null;
-    private static final Supplier<MinecraftServer> SERVER_SUPPLIER = () -> Executor.callForEnv(
-            () -> () -> MinecraftClient.getInstance().getServer(),
-            () -> () -> server
-    );
     
-    private GameInstanceUtils() {
+    public static void init() {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> GameInstanceUtils.server = server);
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> GameInstanceUtils.server = null);
     }
     
     public static MinecraftServer getServer() {
-        return SERVER_SUPPLIER.get();
+        MinecraftServer server = null;
+        if (GameInstanceUtils.server != null) server = GameInstanceUtils.server;
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            server = getServerFromClient();
+        }
+        return server;
+    }
+    
+    @Environment(EnvType.CLIENT)
+    private static MinecraftServer getServerFromClient() {
+        return MinecraftClient.getInstance().getServer();
     }
 }
