@@ -250,8 +250,7 @@ curseforge {
             changelog = 'A changelog can be found at https://github.com/shedaniel/cloth-api/commits'
             releaseType = 'release'
             addGameVersion '1.16-Snapshot'
-            addGameVersion '1.16'
-            addGameVersion '1.16.1'
+            addGameVersion '1.16.2'
             addGameVersion 'Java 8'
             addGameVersion 'Fabric'
             mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {

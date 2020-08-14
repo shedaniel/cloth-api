@@ -51,7 +51,7 @@ import java.util.concurrent.Executor;
 @Mixin(ServerWorld.class)
 public class MixinServerWorld {
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void init(MinecraftServer minecraftServer, Executor executor, LevelStorage.Session session, ServerWorldProperties serverWorldProperties, RegistryKey<World> registryKey, RegistryKey<DimensionType> registryKey2, DimensionType dimensionType, WorldGenerationProgressListener worldGenerationProgressListener, ChunkGenerator chunkGenerator, boolean bl, long l, List<Spawner> list, boolean bl2, CallbackInfo ci) {
+    private void init(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> registryKey, DimensionType dimensionType, WorldGenerationProgressListener worldGenerationProgressListener, ChunkGenerator chunkGenerator, boolean bl, long l, List<Spawner> list, boolean bl2, CallbackInfo ci) {
         WorldLoadCallback.EVENT.invoker().onLoad(registryKey, (ServerWorld) (Object) this);
     }
     
