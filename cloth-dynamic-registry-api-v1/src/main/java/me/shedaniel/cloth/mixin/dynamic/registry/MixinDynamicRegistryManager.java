@@ -120,6 +120,6 @@ public abstract class MixinDynamicRegistryManager {
     @Unique
     private static <E> void afterLoad(RegistryKey<Registry<E>> registryKey, DynamicRegistryManager manager, Map<Identifier, Set<Identifier>> map) {
         Set<Identifier> identifiers = map.getOrDefault(registryKey.getValue(), Collections.emptySet());
-        acceptEvents(registryKey, manager, valueKey -> identifiers.contains(valueKey.getValue()));
+        acceptEvents(registryKey, manager, valueKey -> !identifiers.contains(valueKey.getValue()));
     }
 }
