@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "cloth-dynamic-registry-api-v1",
+  "name": "Cloth Dynamic Registry API v1",
+  "description": "Hooks for dynamic registries.",
+  "version": "${version}",
+  "authors": [
+    "shedaniel"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/cloth-api",
+    "sources": "https://github.com/shedaniel/cloth-api",
+    "issues": "https://github.com/shedaniel/cloth-api/issues"
+  },
+  "license": "Unlicense",
+  "icon": "icon.png",
+  "environment": "*",
+  "mixins": [
+    "cloth-dynamic-registry-api-v1.mixins.json"
+  ],
+  "entrypoints": {
+    "client": [
+      "me.shedaniel.cloth.impl.dynamic.registry.EarlyInitializerClientInvoker"
+    ]
+  },
+  "accessWidener": "cloth-dynamic-registry-api-v1.accessWidener",
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:parent": "cloth-api"
+  }
+}
