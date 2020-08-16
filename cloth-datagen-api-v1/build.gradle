@@ -1,0 +1,6 @@
+archivesBaseName = "cloth-datagen-api-v1"
+shouldGenerateData = false
+
+minecraft {
+    accessWidener(file("src/main/resources/cloth-datagen-api-v1.accessWidener"))
+}

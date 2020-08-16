@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "cloth-datagen-api-v1-datagen",
+  "name": "Cloth Datagen v1: Datagen",
+  "description": "API for easier datagens",
+  "version": "${version}",
+  "authors": [
+    "shedaniel"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/cloth-api",
+    "sources": "https://github.com/shedaniel/cloth-api",
+    "issues": "https://github.com/shedaniel/cloth-api/issues"
+  },
+  "entrypoints": {
+    "preLaunch": ["me.shedaniel.cloth.test.datagen.TestDatagen"]
+  },
+  "license": "Unlicense",
+  "environment": "*",
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:parent": "cloth-api"
+  }
+}

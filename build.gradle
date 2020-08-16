@@ -12,6 +12,8 @@ plugins {
     id 'com.jfrog.bintray' version '1.8.4'
 }
 
+import net.fabricmc.loom.task.RunClientTask
+
 version = project.mod_version
 logger.lifecycle("Building cloth-api: " + version)
 archivesBaseName = "cloth-api"
@@ -39,9 +41,22 @@ allprojects {
     sourceCompatibility = targetCompatibility = 1.8
 
     group = "me.shedaniel.cloth.api"
+    
+    ext {
+        shouldGenerateData = false
+    }
 
     sourceSets {
         testmod {
+            compileClasspath += main.compileClasspath
+            runtimeClasspath += main.runtimeClasspath
+        }
+        main {
+            resources {
+                srcDir 'src/generated/resources'
+            }
+        }
+        datagen {
             compileClasspath += main.compileClasspath
             runtimeClasspath += main.runtimeClasspath
         }
@@ -96,6 +111,16 @@ allprojects {
             header rootProject.file('HEADER')
             include '**/*.java'
         }
+
+        if (shouldGenerateData) {
+            task generateData(type: RunClientTask, dependsOn: downloadAssets) {
+                classpath = configurations.runtimeClasspath
+                classpath sourceSets.main.output
+                classpath sourceSets.datagen.output
+            }
+
+            build.dependsOn generateData
+        }
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
@@ -119,6 +144,7 @@ subprojects {
     
     dependencies {
         testmodCompile sourceSets.main.output
+        datagenCompile sourceSets.main.output
     }
 
     task remapMavenJar(type: Copy, dependsOn: remapJar) {
@@ -228,6 +254,7 @@ subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }
 
 sourceSets {
     testmod
+    datagen
 }
 
 dependencies {

@@ -44,6 +44,9 @@ include "me.shedaniel.cloth.api:cloth-api:${project.cloth_api_version}"
 #### cloth-durability-bar-api-v1
 **To be implemented:**
 - DurabilityBarItem: Custom durability bar display
+#### cloth-dynamic-registry-api-v1
+Events for listening to dynamic registries and api to add features and structures to biomes.
+https://gist.github.com/shedaniel/1f819e811cefa59e414ef9f6c6d121db
 #### cloth-scissors-api-v1
 **Utils:**
 - ScissorsStack: Stacking support for scissors
