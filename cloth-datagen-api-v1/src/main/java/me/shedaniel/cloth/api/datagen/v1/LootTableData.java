@@ -29,13 +29,19 @@ package me.shedaniel.cloth.api.datagen.v1;
 
 import net.minecraft.block.Block;
 import net.minecraft.data.server.BlockLootTableGenerator;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.loot.LootTable;
+import net.minecraft.loot.LootTableRange;
 import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.condition.LootConditionConsumingBuilder;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LootPoolEntry;
+import net.minecraft.loot.function.ApplyBonusLootFunction;
+import net.minecraft.loot.function.LootFunctionConsumingBuilder;
 import net.minecraft.util.Identifier;
 
 public interface LootTableData {
@@ -83,5 +89,25 @@ public interface LootTableData {
     
     static LootTable.Builder dropsSlabs(Block drop) {
         return BlockLootTableGenerator.createForSlabs(drop);
+    }
+    
+    static LootTable.Builder dropsSilkBlockAndNormalItem(Block block, ItemConvertible drop, LootTableRange count) {
+        return BlockLootTableGenerator.createForBlockWithItemDrops(block, drop, count);
+    }
+    
+    static LootTable.Builder dropsBlockWithSilkTouch(Block block, LootPoolEntry.Builder<?> child) {
+        return BlockLootTableGenerator.createForNeedingSilkTouch(block, child);
+    }
+    
+    static LootTable.Builder dropsSingleOreGem(Block block, ItemConvertible gem) {
+        return dropsBlockWithSilkTouch(block, addExplosionDecayLootFunction(block, ItemEntry.builder(gem).withFunction(ApplyBonusLootFunction.oreDrops(Enchantments.FORTUNE))));
+    }
+    
+    static <T> T addExplosionDecayLootFunction(ItemConvertible drop, LootFunctionConsumingBuilder<T> builder) {
+        return BlockLootTableGenerator.addExplosionDecayLootFunction(drop, builder);
+    }
+    
+    static <T> T addSurvivesExplosionLootCondition(ItemConvertible drop, LootConditionConsumingBuilder<T> builder) {
+        return BlockLootTableGenerator.addSurvivesExplosionLootCondition(drop, builder);
     }
 }
