@@ -27,42 +27,15 @@
 
 package me.shedaniel.cloth.api.datagen.v1;
 
-import me.shedaniel.cloth.impl.datagen.DataGeneratorHandlerImpl;
-import net.minecraft.Bootstrap;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataProvider;
+import com.google.gson.JsonElement;
+import net.minecraft.util.Identifier;
 
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.function.Supplier;
 
-public interface DataGeneratorHandler extends Runnable {
-    static DataGeneratorHandler create(Path output) {
-        Bootstrap.initialize();
-        DataGenerator generator = new DataGenerator(output.toAbsolutePath().normalize(), Collections.emptyList());
-        
-        return new DataGeneratorHandlerImpl(generator);
+public interface ModelData {
+    void addModel(Identifier identifier, Supplier<JsonElement> element);
+    
+    default void addModel(Identifier identifier, JsonElement element) {
+        addModel(identifier, () -> element);
     }
-    
-    default void install(DataProvider dataProvider) {
-        getDataGenerator().install(dataProvider);
-    }
-    
-    default Collection<Path> getInputs() {
-        return getDataGenerator().getInputs();
-    }
-    
-    default Path getOutput() {
-        return getDataGenerator().getOutput();
-    }
-    
-    DataGenerator getDataGenerator();
-    
-    LootTableData getLootTables();
-    
-    TagData getTags();
-    
-    RecipeData getRecipes();
-    
-    ModelStateData getModelStates();
 }

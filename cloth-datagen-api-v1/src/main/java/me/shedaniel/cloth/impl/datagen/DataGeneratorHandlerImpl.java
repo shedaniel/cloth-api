@@ -27,6 +27,7 @@
 
 package me.shedaniel.cloth.impl.datagen;
 
+import me.shedaniel.cloth.api.datagen.v1.ModelStateData;
 import me.shedaniel.cloth.api.datagen.v1.LootTableData;
 import me.shedaniel.cloth.api.datagen.v1.RecipeData;
 import me.shedaniel.cloth.api.datagen.v1.TagData;
@@ -43,6 +44,7 @@ public class DataGeneratorHandlerImpl implements me.shedaniel.cloth.api.datagen.
     private final Lazy<LootTableDataProvider> lootTableGenerator = new Lazy<>(() -> new LootTableDataProvider(this));
     private final Lazy<TagDataProvider> tagDataProvider = new Lazy<>(() -> new TagDataProvider(this));
     private final Lazy<RecipeDataProvider> recipeDataProvider = new Lazy<>(() -> new RecipeDataProvider(this));
+    private final Lazy<ModelStateDataProvider> modelStateDataProvider = new Lazy<>(() -> new ModelStateDataProvider(this));
     
     public DataGeneratorHandlerImpl(DataGenerator dataGenerator) {
         this.dataGenerator = dataGenerator;
@@ -66,6 +68,11 @@ public class DataGeneratorHandlerImpl implements me.shedaniel.cloth.api.datagen.
     @Override
     public RecipeData getRecipes() {
         return recipeDataProvider.get();
+    }
+    
+    @Override
+    public ModelStateData getModelStates() {
+        return modelStateDataProvider.get();
     }
     
     @Override

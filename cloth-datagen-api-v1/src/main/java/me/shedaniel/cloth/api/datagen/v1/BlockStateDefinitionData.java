@@ -27,42 +27,30 @@
 
 package me.shedaniel.cloth.api.datagen.v1;
 
-import me.shedaniel.cloth.impl.datagen.DataGeneratorHandlerImpl;
-import net.minecraft.Bootstrap;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataProvider;
+import com.google.gson.JsonElement;
+import net.minecraft.block.Block;
+import net.minecraft.data.client.model.*;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.function.Supplier;
 
-public interface DataGeneratorHandler extends Runnable {
-    static DataGeneratorHandler create(Path output) {
-        Bootstrap.initialize();
-        DataGenerator generator = new DataGenerator(output.toAbsolutePath().normalize(), Collections.emptyList());
-        
-        return new DataGeneratorHandlerImpl(generator);
+public interface BlockStateDefinitionData {
+    void addState(Identifier identifier, Supplier<JsonElement> element);
+    
+    default void addState(Identifier identifier, JsonElement element) {
+        this.addState(identifier, () -> element);
     }
     
-    default void install(DataProvider dataProvider) {
-        getDataGenerator().install(dataProvider);
+    default void addState(Block block, Supplier<JsonElement> element) {
+        this.addState(Registry.BLOCK.getId(block), element);
     }
     
-    default Collection<Path> getInputs() {
-        return getDataGenerator().getInputs();
+    default void addState(Block block, JsonElement element) {
+        addState(Registry.BLOCK.getId(block), element);
     }
     
-    default Path getOutput() {
-        return getDataGenerator().getOutput();
+    default void addSimpleState(Block block, Identifier parent) {
+        addState(block, new SimpleModelSupplier(parent));
     }
-    
-    DataGenerator getDataGenerator();
-    
-    LootTableData getLootTables();
-    
-    TagData getTags();
-    
-    RecipeData getRecipes();
-    
-    ModelStateData getModelStates();
 }

@@ -27,10 +27,7 @@
 
 package me.shedaniel.cloth.test.datagen;
 
-import me.shedaniel.cloth.api.datagen.v1.DataGeneratorHandler;
-import me.shedaniel.cloth.api.datagen.v1.LootTableData;
-import me.shedaniel.cloth.api.datagen.v1.RecipeData;
-import me.shedaniel.cloth.api.datagen.v1.TagData;
+import me.shedaniel.cloth.api.datagen.v1.*;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 import net.minecraft.advancement.criterion.ImpossibleCriterion;
 import net.minecraft.block.Blocks;
@@ -70,6 +67,13 @@ public class TestDatagen implements PreLaunchEntrypoint {
                     .input(Items.SPONGE)
                     .input(Items.SPONGE)
                     .offerTo(recipes);
+    
+            ModelStateData modelStates = handler.getModelStates();
+            modelStates.addSingletonCubeAll(Blocks.BONE_BLOCK);
+            modelStates.addSimpleBlockItemModel(Blocks.BONE_BLOCK);
+            
+            modelStates.addHandheldItemModel(Items.DIAMOND_AXE);
+            modelStates.addGeneratedItemModel(Items.LAPIS_LAZULI);
     
             handler.run();
         } catch (Throwable throwable) {
