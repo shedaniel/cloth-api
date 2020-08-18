@@ -47,7 +47,11 @@ import java.util.function.Supplier;
 
 public final class BiomesRegistry {
     public static void registerFeature(DynamicRegistryManager manager, Biome biome, GenerationStep.Feature generationStep, RegistryKey<ConfiguredFeature<?, ?>> configuredFeature) {
-        registerFeature(manager, biome, generationStep, () -> manager.get(Registry.CONFIGURED_FEATURE_WORLDGEN).get(configuredFeature));
+        registerFeature(biome, generationStep, () -> manager.get(Registry.CONFIGURED_FEATURE_WORLDGEN).get(configuredFeature));
+    }
+    
+    public static void registerFeature(Biome biome, GenerationStep.Feature generationStep, Supplier<ConfiguredFeature<?, ?>> configuredFeature) {
+        registerFeature(null, biome, generationStep, configuredFeature);
     }
     
     public static void registerFeature(DynamicRegistryManager manager, Biome biome, GenerationStep.Feature generationStep, Supplier<ConfiguredFeature<?, ?>> configuredFeature) {
@@ -71,7 +75,11 @@ public final class BiomesRegistry {
     }
     
     public static void registerStructure(DynamicRegistryManager manager, Biome biome, RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructure) {
-        registerStructure(manager, biome, () -> manager.get(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN).get(configuredStructure));
+        registerStructure(biome, () -> manager.get(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN).get(configuredStructure));
+    }
+    
+    public static void registerStructure(Biome biome, Supplier<ConfiguredStructureFeature<?, ?>> configuredStructure) {
+        registerStructure(null, biome, configuredStructure);
     }
     
     public static void registerStructure(DynamicRegistryManager manager, Biome biome, Supplier<ConfiguredStructureFeature<?, ?>> configuredStructure) {
@@ -86,7 +94,11 @@ public final class BiomesRegistry {
     }
     
     public static void registerCarver(DynamicRegistryManager manager, Biome biome, GenerationStep.Carver carver, RegistryKey<ConfiguredCarver<?>> configuredCarver) {
-        registerCarver(manager, biome, carver, () -> manager.get(Registry.CONFIGURED_CARVER_WORLDGEN).get(configuredCarver));
+        registerCarver(biome, carver, () -> manager.get(Registry.CONFIGURED_CARVER_WORLDGEN).get(configuredCarver));
+    }
+    
+    public static void registerCarver(Biome biome, GenerationStep.Carver carver, Supplier<ConfiguredCarver<?>> configuredCarver) {
+        registerCarver(null, biome, carver, configuredCarver);
     }
     
     public static void registerCarver(DynamicRegistryManager manager, Biome biome, GenerationStep.Carver carver, Supplier<ConfiguredCarver<?>> configuredCarver) {
