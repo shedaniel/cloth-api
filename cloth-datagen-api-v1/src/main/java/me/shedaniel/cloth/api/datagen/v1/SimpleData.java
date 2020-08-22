@@ -27,48 +27,32 @@
 
 package me.shedaniel.cloth.api.datagen.v1;
 
-import me.shedaniel.cloth.impl.datagen.DataGeneratorHandlerImpl;
-import net.minecraft.Bootstrap;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataProvider;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.function.Supplier;
 
-public interface DataGeneratorHandler extends Runnable {
-    static DataGeneratorHandler create(Path output) {
-        Bootstrap.initialize();
-        DataGenerator generator = new DataGenerator(output.toAbsolutePath().normalize(), Collections.emptyList());
-        
-        return new DataGeneratorHandlerImpl(generator);
+public interface SimpleData {
+    Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
+    
+    void add(String filePath, Supplier<String> content);
+    
+    default void add(String filePath, String content) {
+        add(filePath, () -> content);
     }
     
-    default void install(DataProvider dataProvider) {
-        getDataGenerator().install(dataProvider);
+    default void addJson(String filePath, Supplier<JsonElement> content) {
+        add(filePath, () -> GSON.toJson(content.get()));
     }
     
-    default Collection<Path> getInputs() {
-        return getDataGenerator().getInputs();
+    default void addJson(String filePath, JsonElement content) {
+        addJson(filePath, () -> content);
     }
     
-    default Path getOutput() {
-        return getDataGenerator().getOutput();
-    }
-    
-    DataGenerator getDataGenerator();
-    
-    LootTableData getLootTables();
-    
-    TagData getTags();
-    
-    RecipeData getRecipes();
-    
-    ModelStateData getModelStates();
-    
-    WorldGenData getWorldGen();
-    
-    default SimpleData getSimple() {
-        return getWorldGen();
+    default <A> void addCodec(String filePath, Codec<A> codec, A object) {
+        addJson(filePath, () -> codec.encodeStart(JsonOps.INSTANCE, object).result().get());
     }
 }

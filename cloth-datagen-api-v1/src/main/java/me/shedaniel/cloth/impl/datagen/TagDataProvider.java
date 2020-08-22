@@ -104,6 +104,7 @@ public class TagDataProvider implements DataProvider, TagData {
         return fluid(tag);
     }
     
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public void run(DataCache cache) throws IOException {
         Map<Identifier, LootTable> map = Maps.newHashMap();
@@ -117,27 +118,8 @@ public class TagDataProvider implements DataProvider, TagData {
                 String string2 = SHA1.hashUnencodedChars(string).toString();
                 if (!Objects.equals(cache.getOldSha1(path), string2) || !Files.exists(path)) {
                     Files.createDirectories(path.getParent());
-                    BufferedWriter bufferedWriter = Files.newBufferedWriter(path);
-                    Throwable var12 = null;
-                    
-                    try {
+                    try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path)) {
                         bufferedWriter.write(string);
-                    } catch (Throwable var22) {
-                        var12 = var22;
-                        throw var22;
-                    } finally {
-                        if (bufferedWriter != null) {
-                            if (var12 != null) {
-                                try {
-                                    bufferedWriter.close();
-                                } catch (Throwable var21) {
-                                    var12.addSuppressed(var21);
-                                }
-                            } else {
-                                bufferedWriter.close();
-                            }
-                        }
-                        
                     }
                 }
                 

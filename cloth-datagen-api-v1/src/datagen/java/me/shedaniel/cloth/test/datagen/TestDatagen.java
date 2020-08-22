@@ -36,6 +36,8 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 import java.nio.file.Paths;
 
@@ -56,7 +58,7 @@ public class TestDatagen implements PreLaunchEntrypoint {
             tag.block(new Identifier("thing")).append(Blocks.ACACIA_FENCE);
             TagData.TagBuilder<ItemConvertible> thing = tag.item(new Identifier("thing")).append(Blocks.ACACIA_FENCE);
             tag.item(new Identifier("awesome")).append(Blocks.BIRCH_SAPLING, Items.IRON_AXE).appendTag(ItemTags.ANVIL).appendTag(thing);
-    
+            
             RecipeData recipes = handler.getRecipes();
             ShapelessRecipeJsonFactory.create(Items.STONE)
                     .criterion("impossible", new ImpossibleCriterion.Conditions())
@@ -67,14 +69,21 @@ public class TestDatagen implements PreLaunchEntrypoint {
                     .input(Items.SPONGE)
                     .input(Items.SPONGE)
                     .offerTo(recipes);
-    
+            
             ModelStateData modelStates = handler.getModelStates();
             modelStates.addSingletonCubeAll(Blocks.BONE_BLOCK);
             modelStates.addSimpleBlockItemModel(Blocks.BONE_BLOCK);
             
             modelStates.addHandheldItemModel(Items.DIAMOND_AXE);
             modelStates.addGeneratedItemModel(Items.LAPIS_LAZULI);
-    
+            
+            WorldGenData worldGen = handler.getWorldGen();
+            worldGen.addFeature(new Identifier("sponge_ores"),
+                    Feature.ORE.configure(new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, Blocks.SPONGE.getDefaultState(), 17))
+                            .method_30377(128)
+                            .spreadHorizontally()
+                            .repeat(20));
+            
             handler.run();
         } catch (Throwable throwable) {
             throwable.printStackTrace();
