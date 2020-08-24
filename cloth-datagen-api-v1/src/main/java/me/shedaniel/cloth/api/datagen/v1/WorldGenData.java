@@ -39,26 +39,26 @@ import net.minecraft.world.gen.surfacebuilder.SurfaceConfig;
 
 public interface WorldGenData extends SimpleData {
     default <FC extends FeatureConfig, F extends Feature<FC>> void addFeature(Identifier key, ConfiguredFeature<FC, F> feature) {
-        addCodec("data/" + Registry.CONFIGURED_FEATURE_WORLDGEN.getValue().toString().replace(':', '/') + "/" + key.toString().replace(':', '/') + ".json", ConfiguredFeature.field_25833, feature);
+        addCodec("data/" + key.getNamespace() + "/" + Registry.CONFIGURED_FEATURE_WORLDGEN.getValue().getNamespace() + "/" + key.getPath() + ".json", ConfiguredFeature.field_25833, feature);
     }
     
     default <FC extends FeatureConfig, F extends StructureFeature<FC>> void addStructureFeature(Identifier key, ConfiguredStructureFeature<FC, F> feature) {
-        addCodec("data/" + Registry.CONFIGURED_FEATURE_WORLDGEN.getValue().toString().replace(':', '/') + "/" + key.toString().replace(':', '/') + ".json", ConfiguredStructureFeature.CODEC, feature);
+        addCodec("data/" + key.getNamespace() + "/" + Registry.CONFIGURED_FEATURE_WORLDGEN.getValue().getNamespace() + "/" + key.getPath() + ".json", ConfiguredStructureFeature.CODEC, feature);
     }
     
     default <WC extends CarverConfig> void addCarver(Identifier key, ConfiguredCarver<WC> carver) {
-        addCodec("data/" + Registry.CONFIGURED_CARVER_WORLDGEN.getValue().toString().replace(':', '/') + "/" + key.toString().replace(':', '/') + ".json", ConfiguredCarver.field_25832, carver);
+        addCodec("data/" + key.getNamespace() + "/" + Registry.CONFIGURED_CARVER_WORLDGEN.getValue().getNamespace() + "/" + key.getPath() + ".json", ConfiguredCarver.field_25832, carver);
     }
     
     default <WC extends SurfaceConfig> void addSurfaceBuilder(Identifier key, ConfiguredSurfaceBuilder<WC> surfaceBuilder) {
-        addCodec("data/" + Registry.CONFIGURED_SURFACE_BUILDER_WORLDGEN.getValue().toString().replace(':', '/') + "/" + key.toString().replace(':', '/') + ".json", ConfiguredSurfaceBuilder.field_25878, surfaceBuilder);
+        addCodec("data/" + key.getNamespace() + "/" + Registry.CONFIGURED_SURFACE_BUILDER_WORLDGEN.getValue().getNamespace() + "/" + key.getPath() + ".json", ConfiguredSurfaceBuilder.field_25878, surfaceBuilder);
     }
     
     default void addBiome(Identifier key, Biome biome) {
-        addCodec("data/" + Registry.BIOME_KEY.getValue().toString().replace(':', '/') + "/" + key.toString().replace(':', '/') + ".json", Biome.CODEC, biome);
+        addCodec("data/" + key.getNamespace() + "/" + Registry.BIOME_KEY.getValue().getNamespace() + "/" + key.getPath() + ".json", Biome.CODEC, biome);
     }
     
     default void addDimension(Identifier key, DimensionType dimensionType) {
-        addCodec("data/" + Registry.DIMENSION_TYPE_KEY.getValue().toString().replace(':', '/') + "/" + key.toString().replace(':', '/') + ".json", DimensionType.CODEC, dimensionType);
+        addCodec("data/" + key.getNamespace() + "/" + Registry.DIMENSION_TYPE_KEY.getValue().getNamespace() + "/" + key.getPath() + ".json", DimensionType.CODEC, dimensionType);
     }
 }

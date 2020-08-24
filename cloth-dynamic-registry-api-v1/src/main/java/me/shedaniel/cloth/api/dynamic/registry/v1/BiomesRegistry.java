@@ -50,6 +50,7 @@ public final class BiomesRegistry {
         registerFeature(biome, generationStep, () -> {
             ConfiguredFeature<?, ?> feature = manager.get(Registry.CONFIGURED_FEATURE_WORLDGEN).get(key);
             if (feature == null) {
+                System.err.println("Configured Feature doesn't exist at " + key.getValue());
                 throw new NullPointerException("Configured Feature doesn't exist at " + key.getValue());
             }
             return feature;
@@ -84,6 +85,7 @@ public final class BiomesRegistry {
         registerStructure(biome, () -> {
             ConfiguredStructureFeature<?, ?> feature = manager.get(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN).get(key);
             if (feature == null) {
+                System.err.println("Configured Structure Feature doesn't exist at " + key.getValue());
                 throw new NullPointerException("Configured Structure Feature doesn't exist at " + key.getValue());
             }
             return feature;
@@ -109,6 +111,7 @@ public final class BiomesRegistry {
         registerCarver(biome, carver, () -> {
             ConfiguredCarver<?> configuredCarver = manager.get(Registry.CONFIGURED_CARVER_WORLDGEN).get(key);
             if (configuredCarver == null) {
+                System.err.println("Configured Carver doesn't exist at " + key.getValue());
                 throw new NullPointerException("Configured Carver doesn't exist at " + key.getValue());
             }
             return configuredCarver;
