@@ -46,8 +46,14 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public final class BiomesRegistry {
-    public static void registerFeature(DynamicRegistryManager manager, Biome biome, GenerationStep.Feature generationStep, RegistryKey<ConfiguredFeature<?, ?>> configuredFeature) {
-        registerFeature(biome, generationStep, () -> manager.get(Registry.CONFIGURED_FEATURE_WORLDGEN).get(configuredFeature));
+    public static void registerFeature(DynamicRegistryManager manager, Biome biome, GenerationStep.Feature generationStep, RegistryKey<ConfiguredFeature<?, ?>> key) {
+        registerFeature(biome, generationStep, () -> {
+            ConfiguredFeature<?, ?> feature = manager.get(Registry.CONFIGURED_FEATURE_WORLDGEN).get(key);
+            if (feature == null) {
+                throw new NullPointerException("Configured Feature doesn't exist at " + key.getValue());
+            }
+            return feature;
+        });
     }
     
     public static void registerFeature(Biome biome, GenerationStep.Feature generationStep, Supplier<ConfiguredFeature<?, ?>> configuredFeature) {
@@ -74,8 +80,14 @@ public final class BiomesRegistry {
         suppliers.add(configuredFeature);
     }
     
-    public static void registerStructure(DynamicRegistryManager manager, Biome biome, RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructure) {
-        registerStructure(biome, () -> manager.get(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN).get(configuredStructure));
+    public static void registerStructure(DynamicRegistryManager manager, Biome biome, RegistryKey<ConfiguredStructureFeature<?, ?>> key) {
+        registerStructure(biome, () -> {
+            ConfiguredStructureFeature<?, ?> feature = manager.get(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN).get(key);
+            if (feature == null) {
+                throw new NullPointerException("Configured Structure Feature doesn't exist at " + key.getValue());
+            }
+            return feature;
+        });
     }
     
     public static void registerStructure(Biome biome, Supplier<ConfiguredStructureFeature<?, ?>> configuredStructure) {
@@ -93,8 +105,14 @@ public final class BiomesRegistry {
         structures.add(configuredStructure);
     }
     
-    public static void registerCarver(DynamicRegistryManager manager, Biome biome, GenerationStep.Carver carver, RegistryKey<ConfiguredCarver<?>> configuredCarver) {
-        registerCarver(biome, carver, () -> manager.get(Registry.CONFIGURED_CARVER_WORLDGEN).get(configuredCarver));
+    public static void registerCarver(DynamicRegistryManager manager, Biome biome, GenerationStep.Carver carver, RegistryKey<ConfiguredCarver<?>> key) {
+        registerCarver(biome, carver, () -> {
+            ConfiguredCarver<?> configuredCarver = manager.get(Registry.CONFIGURED_CARVER_WORLDGEN).get(key);
+            if (configuredCarver == null) {
+                throw new NullPointerException("Configured Carver doesn't exist at " + key.getValue());
+            }
+            return configuredCarver;
+        });
     }
     
     public static void registerCarver(Biome biome, GenerationStep.Carver carver, Supplier<ConfiguredCarver<?>> configuredCarver) {
