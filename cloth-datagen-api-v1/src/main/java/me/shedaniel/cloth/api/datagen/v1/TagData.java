@@ -63,13 +63,43 @@ public interface TagData {
     interface TagBuilder<T> {
         Identifier getId();
         
-        TagBuilder<T> append(Identifier value);
+        TagBuilder<T> append(boolean optional, Identifier value);
         
-        TagBuilder<T> append(T value);
+        TagBuilder<T> append(boolean optional, T value);
         
-        TagBuilder<T> append(T... values);
+        TagBuilder<T> appendTag(boolean optional, Identifier tag);
         
-        TagBuilder<T> appendTag(Identifier tag);
+        default TagBuilder<T> append(boolean optional, T... values) {
+            for (T value : values) {
+                append(optional, value);
+            }
+            
+            return this;
+        }
+        
+        default TagBuilder<T> appendTag(boolean optional, Tag.Identified tag) {
+            return appendTag(optional, tag.getId());
+        }
+        
+        default TagBuilder<T> appendTag(boolean optional, TagBuilder<T> tag) {
+            return appendTag(optional, tag.getId());
+        }
+        
+        default TagBuilder<T> append(Identifier value) {
+            return append(false, value);
+        }
+        
+        default TagBuilder<T> append(T value) {
+            return append(false, value);
+        }
+        
+        default TagBuilder<T> append(T... values) {
+            return append(false, values);
+        }
+        
+        default TagBuilder<T> appendTag(Identifier tag) {
+            return appendTag(false, tag);
+        }
         
         default TagBuilder<T> appendTag(Tag.Identified tag) {
             return appendTag(tag.getId());
@@ -77,6 +107,30 @@ public interface TagData {
         
         default TagBuilder<T> appendTag(TagBuilder<T> tag) {
             return appendTag(tag.getId());
+        }
+        
+        default TagBuilder<T> appendOptional(Identifier value) {
+            return append(true, value);
+        }
+        
+        default TagBuilder<T> appendOptional(T value) {
+            return append(true, value);
+        }
+        
+        default TagBuilder<T> appendOptional(T... values) {
+            return append(true, values);
+        }
+        
+        default TagBuilder<T> appendOptionalTag(Identifier tag) {
+            return appendTag(true, tag);
+        }
+        
+        default TagBuilder<T> appendOptionalTag(Tag.Identified tag) {
+            return appendOptionalTag(tag.getId());
+        }
+        
+        default TagBuilder<T> appendOptionalTag(TagBuilder<T> tag) {
+            return appendOptionalTag(tag.getId());
         }
     }
 }

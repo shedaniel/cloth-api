@@ -167,31 +167,22 @@ public class TagDataProvider implements DataProvider, TagData {
         }
         
         @Override
-        public TagBuilder<T> append(Identifier value) {
-            add(value, "Datagen");
+        public TagBuilder<T> append(boolean optional, Identifier value) {
+            add(optional ? new Tag.OptionalObjectEntry(value) : new Tag.ObjectEntry(value), "Datagen");
             return this;
         }
         
         @Override
-        public TagBuilder<T> append(T value) {
+        public TagBuilder<T> append(boolean optional, T value) {
             Object object = value;
             if (value instanceof ItemConvertible && tagType == TagType.ITEMS)
                 object = ((ItemConvertible) value).asItem();
-            return append(((RegistryKey) tagType.registry.getKey(object).get()).getValue());
-        }
-        
-        @SafeVarargs
-        @Override
-        public final TagBuilder<T> append(T... values) {
-            for (T value : values) {
-                append(value);
-            }
-            return this;
+            return append(optional, ((RegistryKey) tagType.registry.getKey(object).get()).getValue());
         }
         
         @Override
-        public TagBuilder<T> appendTag(Identifier tag) {
-            addTag(tag, "Datagen");
+        public TagBuilder<T> appendTag(boolean optional, Identifier tag) {
+            add(optional ? new Tag.OptionalTagEntry(tag) : new Tag.TagEntry(tag), "Datagen");
             return this;
         }
     }
