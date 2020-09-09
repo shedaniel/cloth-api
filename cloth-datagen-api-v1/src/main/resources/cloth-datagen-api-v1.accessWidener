@@ -15,3 +15,4 @@ accessible method net/minecraft/data/server/BlockLootTableGenerator createForBlo
 accessible method net/minecraft/data/server/BlockLootTableGenerator createForNeedingSilkTouch (Lnet/minecraft/block/Block;Lnet/minecraft/loot/entry/LootPoolEntry$Builder;)Lnet/minecraft/loot/LootTable$Builder;
 accessible method net/minecraft/data/server/RecipesProvider saveRecipe (Lnet/minecraft/data/DataCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
 accessible method net/minecraft/data/server/RecipesProvider saveRecipeAdvancement (Lnet/minecraft/data/DataCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V
+accessible field net/minecraft/tag/Tag$Builder entries Ljava/util/List;

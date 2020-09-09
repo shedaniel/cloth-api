@@ -27,6 +27,10 @@
 
 package me.shedaniel.cloth.api.dynamic.registry.v1;
 
+/**
+ * @deprecated Fabric Loader merged the PR that fixed the server entrypoint, you cn safely use {@link net.fabricmc.api.ModInitializer} now
+ */
+@Deprecated
 public interface EarlyInitializer {
     void onEarlyInitialization();
 }

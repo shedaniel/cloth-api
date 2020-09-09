@@ -53,6 +53,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -110,6 +111,7 @@ public class TagDataProvider implements DataProvider, TagData {
         Map<Identifier, LootTable> map = Maps.newHashMap();
         
         tagBuilders.rowMap().forEach((tagType, tagMap) -> tagMap.forEach((identifier, builder) -> {
+            builder.sort();
             JsonObject jsonObject = builder.toJson();
             Path path = this.getOutput(tagType, identifier);
             
@@ -146,6 +148,24 @@ public class TagDataProvider implements DataProvider, TagData {
         FLUIDS(Registry.FLUID);
         
         Registry registry;
+        Comparator<Integer> objectComparator = Comparator.nullsLast(Integer::compare);
+        Comparator<Tag.TrackedEntry> comparator = (o1, o2) -> {
+            Tag.Entry entry1 = o1.getEntry();
+            Tag.Entry entry2 = o2.getEntry();
+            boolean isTag1 = entry1 instanceof Tag.TagEntry || entry1 instanceof Tag.OptionalTagEntry;
+            boolean isTag2 = entry2 instanceof Tag.TagEntry || entry2 instanceof Tag.OptionalTagEntry;
+            if (isTag1 && isTag2) {
+                return entry1.toString().compareTo(entry2.toString());
+            } else if (isTag1) {
+                return 1;
+            } else if (isTag2) {
+                return -1;
+            } else {
+                Integer first = (Integer) registry.getOrEmpty(new Identifier(entry1.toString())).map(registry::getRawId).orElse(null);
+                Integer second = (Integer) registry.getOrEmpty(new Identifier(entry2.toString())).map(registry::getRawId).orElse(null);
+                return objectComparator.compare(first, second);
+            }
+        };
         
         TagType(Registry<?> registry) {
             this.registry = registry;
@@ -184,6 +204,10 @@ public class TagDataProvider implements DataProvider, TagData {
         public TagBuilder<T> appendTag(boolean optional, Identifier tag) {
             add(optional ? new Tag.OptionalTagEntry(tag) : new Tag.TagEntry(tag), "Datagen");
             return this;
+        }
+        
+        private void sort() {
+            this.entries.sort(tagType.comparator);
         }
     }
 }

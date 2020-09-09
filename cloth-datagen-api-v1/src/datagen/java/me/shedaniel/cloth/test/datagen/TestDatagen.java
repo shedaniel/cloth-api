@@ -56,7 +56,7 @@ public class TestDatagen implements PreLaunchEntrypoint {
             
             TagData tag = handler.getTags();
             tag.block(new Identifier("thing")).append(Blocks.ACACIA_FENCE);
-            TagData.TagBuilder<ItemConvertible> thing = tag.item(new Identifier("thing")).append(Blocks.ACACIA_FENCE);
+            TagData.TagBuilder<ItemConvertible> thing = tag.item(new Identifier("thing")).append(Blocks.ACACIA_FENCE, Blocks.STONE).appendTag(ItemTags.SAPLINGS).appendTag(ItemTags.BANNERS).appendOptionalTag(ItemTags.BUTTONS);
             tag.item(new Identifier("awesome")).append(Blocks.BIRCH_SAPLING, Items.IRON_AXE).appendTag(ItemTags.ANVIL).appendTag(thing);
             
             RecipeData recipes = handler.getRecipes();
