@@ -161,14 +161,19 @@ public class TagDataProvider implements DataProvider, TagData {
             } else if (isTag2) {
                 return -1;
             } else {
-                Integer first = (Integer) registry.getOrEmpty(new Identifier(entry1.toString())).map(registry::getRawId).orElse(null);
-                Integer second = (Integer) registry.getOrEmpty(new Identifier(entry2.toString())).map(registry::getRawId).orElse(null);
+                Integer first = (Integer) registry.getOrEmpty(new Identifier(stripOptional(entry1.toString()))).map(registry::getRawId).orElse(null);
+                Integer second = (Integer) registry.getOrEmpty(new Identifier(stripOptional(entry2.toString()))).map(registry::getRawId).orElse(null);
                 return objectComparator.compare(first, second);
             }
         };
         
         TagType(Registry<?> registry) {
             this.registry = registry;
+        }
+        
+        private String stripOptional(String s) {
+            if (s.endsWith("?")) return s.substring(0, s.length() - 1);
+            return s;
         }
     }
     
