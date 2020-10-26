@@ -27,7 +27,7 @@
 
 package me.shedaniel.cloth.api.dynamic.registry.v1;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -65,7 +65,7 @@ public final class BiomesRegistry {
         GenerationSettings generationSettings = biome.getGenerationSettings();
         
         List<List<Supplier<ConfiguredFeature<?, ?>>>> features = generationSettings.features;
-        if (features instanceof ImmutableList) {
+        if (features instanceof ImmutableCollection) {
             features = generationSettings.features = Lists.newArrayList(features);
         }
         
@@ -74,7 +74,7 @@ public final class BiomesRegistry {
         }
         
         List<Supplier<ConfiguredFeature<?, ?>>> suppliers = features.get(generationStep.ordinal());
-        if (suppliers instanceof ImmutableList) {
+        if (suppliers instanceof ImmutableCollection) {
             features.set(generationStep.ordinal(), suppliers = Lists.newArrayList(suppliers));
         }
         
@@ -100,7 +100,7 @@ public final class BiomesRegistry {
         GenerationSettings generationSettings = biome.getGenerationSettings();
         
         List<Supplier<ConfiguredStructureFeature<?, ?>>> structures = generationSettings.structureFeatures;
-        if (structures instanceof ImmutableList) {
+        if (structures instanceof ImmutableCollection) {
             structures = generationSettings.structureFeatures = Lists.newArrayList(structures);
         }
         
@@ -131,7 +131,7 @@ public final class BiomesRegistry {
         }
         
         List<Supplier<ConfiguredCarver<?>>> suppliers = carvers.get(carver);
-        if (suppliers instanceof ImmutableList) {
+        if (suppliers instanceof ImmutableCollection) {
             carvers.put(carver, suppliers = Lists.newArrayList(suppliers));
         }
         
