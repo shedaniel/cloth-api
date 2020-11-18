@@ -68,7 +68,7 @@ public class LootTableDataProvider implements DataProvider, LootTableData {
         Path path = this.handler.getOutput();
         Map<Identifier, LootTable> map = Maps.newHashMap();
         lootTables.rowMap().forEach((type, tableMap) -> tableMap.forEach((identifier, builder) -> {
-            if (map.put(identifier, builder.withType(type).create()) != null) {
+            if (map.put(identifier, builder.type(type).build()) != null) {
                 throw new IllegalStateException("Duplicate loot table " + identifier);
             }
         }));

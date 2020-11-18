@@ -80,7 +80,7 @@ public class TestDatagen implements PreLaunchEntrypoint {
             WorldGenData worldGen = handler.getWorldGen();
             worldGen.addFeature(new Identifier("sponge_ores"),
                     Feature.ORE.configure(new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, Blocks.SPONGE.getDefaultState(), 17))
-                            .method_30377(128)
+                            .rangeOf(128)
                             .spreadHorizontally()
                             .repeat(20));
             

@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 
 public interface BlockBreakCallback {
     Event<BlockBreakCallback> EVENT = EventFactory.createArrayBacked(BlockBreakCallback.class, callbacks -> (world, pos, state, player) -> {
@@ -41,5 +41,5 @@ public interface BlockBreakCallback {
         }
     });
     
-    void onBroken(IWorld world, BlockPos pos, BlockState state, PlayerEntity player);
+    void onBroken(WorldAccess world, BlockPos pos, BlockState state, PlayerEntity player);
 }

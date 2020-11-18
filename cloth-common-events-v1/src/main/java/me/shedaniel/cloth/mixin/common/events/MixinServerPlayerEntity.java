@@ -29,9 +29,9 @@ package me.shedaniel.cloth.mixin.common.events;
 
 import com.mojang.authlib.GameProfile;
 import me.shedaniel.cloth.api.common.events.v1.PlayerChangeWorldCallback;
-import net.minecraft.container.ContainerListener;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -42,13 +42,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class MixinServerPlayerEntity extends PlayerEntity implements ContainerListener {
+public abstract class MixinServerPlayerEntity extends PlayerEntity implements ScreenHandlerListener {
     public MixinServerPlayerEntity(World world, BlockPos pos, float yaw, GameProfile profile) {
         super(world, pos, yaw, profile);
     }
     
-    @Inject(method = "changeDimension", at = @At("HEAD"))
-    private void changeDimension(ServerWorld newWorld, CallbackInfoReturnable<Entity> cir) {
+    @Inject(method = "moveToWorld", at = @At("HEAD"))
+    private void moveToWorld(ServerWorld newWorld, CallbackInfoReturnable<Entity> cir) {
         PlayerChangeWorldCallback.EVENT.invoker().onChangeWorld((ServerPlayerEntity) (Object) this, this.world.getRegistryKey(), newWorld.getRegistryKey());
     }
 }
