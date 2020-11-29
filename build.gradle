@@ -41,7 +41,7 @@ allprojects {
     sourceCompatibility = targetCompatibility = 1.8
 
     group = "me.shedaniel.cloth.api"
-    
+
     ext {
         shouldGenerateData = false
     }
@@ -141,7 +141,7 @@ allprojects {
 
 subprojects {
     version = rootProject.version
-    
+
     dependencies {
         testmodCompile sourceSets.main.output
         datagenCompile sourceSets.main.output
