@@ -35,11 +35,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldAccess;
 
 public interface BlockBreakCallback {
-    Event<BlockBreakCallback> EVENT = EventFactory.createArrayBacked(BlockBreakCallback.class, callbacks -> (world, pos, state, player) -> {
+  Event<BlockBreakCallback> EVENT = EventFactory.createArrayBacked(
+      BlockBreakCallback.class, callbacks -> (world, pos, state, player) -> {
         for (BlockBreakCallback callback : callbacks) {
-            callback.onBroken(world, pos, state, player);
+          callback.onBroken(world, pos, state, player);
         }
-    });
-    
-    void onBroken(WorldAccess world, BlockPos pos, BlockState state, PlayerEntity player);
+      });
+
+  void onBroken(WorldAccess world, BlockPos pos, BlockState state,
+                PlayerEntity player);
 }

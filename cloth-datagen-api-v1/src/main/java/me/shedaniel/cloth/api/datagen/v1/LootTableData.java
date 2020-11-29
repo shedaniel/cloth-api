@@ -45,69 +45,83 @@ import net.minecraft.loot.provider.number.LootNumberProvider;
 import net.minecraft.util.Identifier;
 
 public interface LootTableData {
-    void register(LootContextType type, Identifier identifier, LootTable.Builder lootTable);
-    
-    default void register(Block block, LootTable.Builder lootTable) {
-        register(LootContextTypes.BLOCK, block.getLootTableId(), lootTable);
-    }
-    
-    default void register(EntityType<?> entityType, LootTable.Builder lootTable) {
-        register(LootContextTypes.ENTITY, entityType.getLootTableId(), lootTable);
-    }
-    
-    default void registerBlockDropSelf(Block block) {
-        this.registerBlockDrop(block, block);
-    }
-    
-    default void registerBlockDropSelfRequiresSilkTouch(Block block) {
-        this.registerBlockDropRequiresSilkTouch(block, block);
-    }
-    
-    default void registerBlockDrop(Block block, ItemConvertible drop) {
-        this.register(block, dropsBlock(drop));
-    }
-    
-    default void registerBlockDropRequiresSilkTouch(Block block, ItemConvertible drop) {
-        this.register(block, dropsBlockWithSilkTouch(drop));
-    }
-    
-    static LootTable.Builder dropsBlock(ItemConvertible drop) {
-        return BlockLootTableGenerator.drops(drop);
-    }
-    
-    static LootTable.Builder dropsBlock(Block drop, LootCondition.Builder conditionBuilder, LootPoolEntry.Builder<?> child) {
-        return BlockLootTableGenerator.drops(drop, conditionBuilder, child);
-    }
-    
-    static LootTable.Builder dropsBlockWithSilkTouch(ItemConvertible drop) {
-        return BlockLootTableGenerator.dropsWithSilkTouch(drop);
-    }
-    
-    static LootTable.Builder dropsBlockWithShears(ItemConvertible drop) {
-        return BlockLootTableGenerator.dropsWithShears(drop);
-    }
-    
-    static LootTable.Builder dropsSlabs(Block drop) {
-        return BlockLootTableGenerator.slabDrops(drop);
-    }
-    
-    static LootTable.Builder dropsSilkBlockAndNormalItem(Block block, ItemConvertible drop, LootNumberProvider count) {
-        return BlockLootTableGenerator.drops(block, drop, count);
-    }
-    
-    static LootTable.Builder dropsBlockWithSilkTouch(Block block, LootPoolEntry.Builder<?> child) {
-        return BlockLootTableGenerator.dropsWithSilkTouch(block, child);
-    }
-    
-    static LootTable.Builder dropsSingleOreGem(Block block, ItemConvertible gem) {
-        return dropsBlockWithSilkTouch(block, addExplosionDecayLootFunction(block, ItemEntry.builder(gem).apply(ApplyBonusLootFunction.oreDrops(Enchantments.FORTUNE))));
-    }
-    
-    static <T> T addExplosionDecayLootFunction(ItemConvertible drop, LootFunctionConsumingBuilder<T> builder) {
-        return BlockLootTableGenerator.applyExplosionDecay(drop, builder);
-    }
-    
-    static <T> T addSurvivesExplosionLootCondition(ItemConvertible drop, LootConditionConsumingBuilder<T> builder) {
-        return BlockLootTableGenerator.addSurvivesExplosionCondition(drop, builder);
-    }
+  void register(LootContextType type, Identifier identifier,
+                LootTable.Builder lootTable);
+
+  default void register(Block block, LootTable.Builder lootTable) {
+    register(LootContextTypes.BLOCK, block.getLootTableId(), lootTable);
+  }
+
+  default void register(EntityType<?> entityType, LootTable.Builder lootTable) {
+    register(LootContextTypes.ENTITY, entityType.getLootTableId(), lootTable);
+  }
+
+  default void registerBlockDropSelf(Block block) {
+    this.registerBlockDrop(block, block);
+  }
+
+  default void registerBlockDropSelfRequiresSilkTouch(Block block) {
+    this.registerBlockDropRequiresSilkTouch(block, block);
+  }
+
+  default void registerBlockDrop(Block block, ItemConvertible drop) {
+    this.register(block, dropsBlock(drop));
+  }
+
+  default void registerBlockDropRequiresSilkTouch(Block block,
+                                                  ItemConvertible drop) {
+    this.register(block, dropsBlockWithSilkTouch(drop));
+  }
+
+  static LootTable.Builder dropsBlock(ItemConvertible drop) {
+    return BlockLootTableGenerator.drops(drop);
+  }
+
+  static LootTable.Builder dropsBlock(Block drop,
+                                      LootCondition.Builder conditionBuilder,
+                                      LootPoolEntry.Builder<?> child) {
+    return BlockLootTableGenerator.drops(drop, conditionBuilder, child);
+  }
+
+  static LootTable.Builder dropsBlockWithSilkTouch(ItemConvertible drop) {
+    return BlockLootTableGenerator.dropsWithSilkTouch(drop);
+  }
+
+  static LootTable.Builder dropsBlockWithShears(ItemConvertible drop) {
+    return BlockLootTableGenerator.dropsWithShears(drop);
+  }
+
+  static LootTable.Builder dropsSlabs(Block drop) {
+    return BlockLootTableGenerator.slabDrops(drop);
+  }
+
+  static LootTable.Builder
+  dropsSilkBlockAndNormalItem(Block block, ItemConvertible drop,
+                              LootNumberProvider count) {
+    return BlockLootTableGenerator.drops(block, drop, count);
+  }
+
+  static LootTable.Builder
+  dropsBlockWithSilkTouch(Block block, LootPoolEntry.Builder<?> child) {
+    return BlockLootTableGenerator.dropsWithSilkTouch(block, child);
+  }
+
+  static LootTable.Builder dropsSingleOreGem(Block block, ItemConvertible gem) {
+    return dropsBlockWithSilkTouch(
+        block,
+        addExplosionDecayLootFunction(
+            block, ItemEntry.builder(gem).apply(
+                       ApplyBonusLootFunction.oreDrops(Enchantments.FORTUNE))));
+  }
+
+  static <T>
+      T addExplosionDecayLootFunction(ItemConvertible drop,
+                                      LootFunctionConsumingBuilder<T> builder) {
+    return BlockLootTableGenerator.applyExplosionDecay(drop, builder);
+  }
+
+  static <T> T addSurvivesExplosionLootCondition(
+      ItemConvertible drop, LootConditionConsumingBuilder<T> builder) {
+    return BlockLootTableGenerator.addSurvivesExplosionCondition(drop, builder);
+  }
 }

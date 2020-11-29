@@ -27,6 +27,7 @@
 
 package me.shedaniel.cloth.test.datagen;
 
+import java.nio.file.Paths;
 import me.shedaniel.cloth.api.datagen.v1.*;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 import net.minecraft.advancement.criterion.ImpossibleCriterion;
@@ -39,56 +40,69 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 
-import java.nio.file.Paths;
-
 public class TestDatagen implements PreLaunchEntrypoint {
-    @Override
-    public void onPreLaunch() {
-        try {
-            DataGeneratorHandler handler = DataGeneratorHandler.create(Paths.get("../cloth-datagen-api-v1/src/generated/resource"));
-            
-            LootTableData table = handler.getLootTables();
-            table.registerBlockDropSelf(Blocks.DIAMOND_BLOCK);
-            table.registerBlockDrop(Blocks.IRON_BLOCK, Items.ACACIA_FENCE);
-            table.register(Blocks.COAL_BLOCK, LootTableData.dropsBlockWithShears(Items.ACACIA_DOOR));
-            table.register(Blocks.BONE_BLOCK, LootTableData.dropsBlockWithSilkTouch(Items.DIAMOND));
-            table.register(Blocks.ACACIA_SLAB, LootTableData.dropsSlabs(Blocks.ACACIA_SLAB));
-            
-            TagData tag = handler.getTags();
-            tag.block(new Identifier("thing")).append(Blocks.ACACIA_FENCE);
-            TagData.TagBuilder<ItemConvertible> thing = tag.item(new Identifier("thing")).append(Blocks.ACACIA_FENCE, Blocks.STONE).appendTag(ItemTags.SAPLINGS).appendTag(ItemTags.BANNERS).appendOptionalTag(ItemTags.BUTTONS);
-            tag.item(new Identifier("awesome")).append(Blocks.BIRCH_SAPLING, Items.IRON_AXE).appendTag(ItemTags.ANVIL).appendTag(thing);
-            
-            RecipeData recipes = handler.getRecipes();
-            ShapelessRecipeJsonFactory.create(Items.STONE)
-                    .criterion("impossible", new ImpossibleCriterion.Conditions())
-                    .input(Items.SPONGE)
-                    .input(Items.SPONGE)
-                    .input(Items.SPONGE)
-                    .input(Items.SPONGE)
-                    .input(Items.SPONGE)
-                    .input(Items.SPONGE)
-                    .offerTo(recipes);
-            
-            ModelStateData modelStates = handler.getModelStates();
-            modelStates.addSingletonCubeAll(Blocks.BONE_BLOCK);
-            modelStates.addSimpleBlockItemModel(Blocks.BONE_BLOCK);
-            
-            modelStates.addHandheldItemModel(Items.DIAMOND_AXE);
-            modelStates.addGeneratedItemModel(Items.LAPIS_LAZULI);
-            
-            WorldGenData worldGen = handler.getWorldGen();
-            worldGen.addFeature(new Identifier("sponge_ores"),
-                    Feature.ORE.configure(new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, Blocks.SPONGE.getDefaultState(), 17))
-                            .rangeOf(128)
-                            .spreadHorizontally()
-                            .repeat(20));
-            
-            handler.run();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-            System.exit(1);
-        }
-        System.exit(0);
+  @Override
+  public void onPreLaunch() {
+    try {
+      DataGeneratorHandler handler = DataGeneratorHandler.create(
+          Paths.get("../cloth-datagen-api-v1/src/generated/resource"));
+
+      LootTableData table = handler.getLootTables();
+      table.registerBlockDropSelf(Blocks.DIAMOND_BLOCK);
+      table.registerBlockDrop(Blocks.IRON_BLOCK, Items.ACACIA_FENCE);
+      table.register(Blocks.COAL_BLOCK,
+                     LootTableData.dropsBlockWithShears(Items.ACACIA_DOOR));
+      table.register(Blocks.BONE_BLOCK,
+                     LootTableData.dropsBlockWithSilkTouch(Items.DIAMOND));
+      table.register(Blocks.ACACIA_SLAB,
+                     LootTableData.dropsSlabs(Blocks.ACACIA_SLAB));
+
+      TagData tag = handler.getTags();
+      tag.block(new Identifier("thing")).append(Blocks.ACACIA_FENCE);
+      TagData.TagBuilder<ItemConvertible> thing =
+          tag.item(new Identifier("thing"))
+              .append(Blocks.ACACIA_FENCE, Blocks.STONE)
+              .appendTag(ItemTags.SAPLINGS)
+              .appendTag(ItemTags.BANNERS)
+              .appendOptionalTag(ItemTags.BUTTONS);
+      tag.item(new Identifier("awesome"))
+          .append(Blocks.BIRCH_SAPLING, Items.IRON_AXE)
+          .appendTag(ItemTags.ANVIL)
+          .appendTag(thing);
+
+      RecipeData recipes = handler.getRecipes();
+      ShapelessRecipeJsonFactory.create(Items.STONE)
+          .criterion("impossible", new ImpossibleCriterion.Conditions())
+          .input(Items.SPONGE)
+          .input(Items.SPONGE)
+          .input(Items.SPONGE)
+          .input(Items.SPONGE)
+          .input(Items.SPONGE)
+          .input(Items.SPONGE)
+          .offerTo(recipes);
+
+      ModelStateData modelStates = handler.getModelStates();
+      modelStates.addSingletonCubeAll(Blocks.BONE_BLOCK);
+      modelStates.addSimpleBlockItemModel(Blocks.BONE_BLOCK);
+
+      modelStates.addHandheldItemModel(Items.DIAMOND_AXE);
+      modelStates.addGeneratedItemModel(Items.LAPIS_LAZULI);
+
+      WorldGenData worldGen = handler.getWorldGen();
+      worldGen.addFeature(new Identifier("sponge_ores"),
+                          Feature.ORE
+                              .configure(new OreFeatureConfig(
+                                  OreFeatureConfig.Rules.BASE_STONE_OVERWORLD,
+                                  Blocks.SPONGE.getDefaultState(), 17))
+                              .rangeOf(128)
+                              .spreadHorizontally()
+                              .repeat(20));
+
+      handler.run();
+    } catch (Throwable throwable) {
+      throwable.printStackTrace();
+      System.exit(1);
     }
+    System.exit(0);
+  }
 }

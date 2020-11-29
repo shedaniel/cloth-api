@@ -32,6 +32,9 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Map;
 import me.shedaniel.cloth.api.datagen.v1.DataGeneratorHandler;
 import me.shedaniel.cloth.api.datagen.v1.LootTableData;
 import net.minecraft.data.DataCache;
@@ -43,53 +46,57 @@ import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Map;
-
 public class LootTableDataProvider implements DataProvider, LootTableData {
-    private static final Logger LOGGER = LogManager.getLogger();
-    private final DataGeneratorHandler handler;
-    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
-    public final Table<LootContextType, Identifier, LootTable.Builder> lootTables = HashBasedTable.create();
-    
-    public LootTableDataProvider(DataGeneratorHandler handler) {
-        this.handler = handler;
-        this.handler.install(this);
-    }
-    
-    @Override
-    public void register(LootContextType type, Identifier identifier, LootTable.Builder lootTable) {
-        this.lootTables.put(type, identifier, lootTable);
-    }
-    
-    @Override
-    public void run(DataCache cache) throws IOException {
-        Path path = this.handler.getOutput();
-        Map<Identifier, LootTable> map = Maps.newHashMap();
-        lootTables.rowMap().forEach((type, tableMap) -> tableMap.forEach((identifier, builder) -> {
-            if (map.put(identifier, builder.type(type).build()) != null) {
-                throw new IllegalStateException("Duplicate loot table " + identifier);
-            }
+  private static final Logger LOGGER = LogManager.getLogger();
+  private final DataGeneratorHandler handler;
+  private static final Gson GSON =
+      (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
+  public final Table<LootContextType, Identifier, LootTable.Builder>
+      lootTables = HashBasedTable.create();
+
+  public LootTableDataProvider(DataGeneratorHandler handler) {
+    this.handler = handler;
+    this.handler.install(this);
+  }
+
+  @Override
+  public void register(LootContextType type, Identifier identifier,
+                       LootTable.Builder lootTable) {
+    this.lootTables.put(type, identifier, lootTable);
+  }
+
+  @Override
+  public void run(DataCache cache) throws IOException {
+    Path path = this.handler.getOutput();
+    Map<Identifier, LootTable> map = Maps.newHashMap();
+    lootTables.rowMap().forEach(
+        (type, tableMap) -> tableMap.forEach((identifier, builder) -> {
+          if (map.put(identifier, builder.type(type).build()) != null) {
+            throw new IllegalStateException("Duplicate loot table " +
+                                            identifier);
+          }
         }));
-        
-        map.forEach((identifier, lootTable) -> {
-            Path outputPath = getOutput(path, identifier);
-            
-            try {
-                DataProvider.writeToPath(GSON, cache, LootManager.toJson(lootTable), outputPath);
-            } catch (IOException var6) {
-                LOGGER.error("Couldn't save loot table {}", outputPath, var6);
-            }
-        });
-    }
-    
-    private static Path getOutput(Path rootOutput, Identifier lootTableId) {
-        return rootOutput.resolve("data/" + lootTableId.getNamespace() + "/loot_tables/" + lootTableId.getPath() + ".json");
-    }
-    
-    @Override
-    public String getName() {
-        return getClass().getSimpleName();
-    }
+
+    map.forEach((identifier, lootTable) -> {
+      Path outputPath = getOutput(path, identifier);
+
+      try {
+        DataProvider.writeToPath(GSON, cache, LootManager.toJson(lootTable),
+                                 outputPath);
+      } catch (IOException var6) {
+        LOGGER.error("Couldn't save loot table {}", outputPath, var6);
+      }
+    });
+  }
+
+  private static Path getOutput(Path rootOutput, Identifier lootTableId) {
+    return rootOutput.resolve("data/" + lootTableId.getNamespace() +
+                              "/loot_tables/" + lootTableId.getPath() +
+                              ".json");
+  }
+
+  @Override
+  public String getName() {
+    return getClass().getSimpleName();
+  }
 }
