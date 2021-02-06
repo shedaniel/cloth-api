@@ -258,7 +258,7 @@ curseforge {
             addGameVersion 'Java 8'
             addGameVersion 'Fabric'
             mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-                displayName = "[Fabric $project.minecraft_version] v$project.mod_version"
+                displayName = "[Fabric $project.minecraft_version] v$project.version"
             }
             afterEvaluate {
                 uploadTask.dependsOn("remapJar")
