@@ -20,6 +20,7 @@
 .idea
 *.ipr
 *.iws
+.vscode/
 
 # Sekrit files
 private.properties

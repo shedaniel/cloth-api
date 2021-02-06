@@ -1,8 +1,14 @@
 # Cloth API
 ## Maven
 ```groovy
-modApi "me.shedaniel.cloth.api:cloth-api:${project.cloth_api_version}"
-include "me.shedaniel.cloth.api:cloth-api:${project.cloth_api_version}"
+repositories {
+    maven { url "https://maven.shedaniel.me/" }
+}
+
+dependencies {
+    modApi "me.shedaniel.cloth.api:cloth-api:${project.cloth_api_version}"
+    include "me.shedaniel.cloth.api:cloth-api:${project.cloth_api_version}"
+}
 ```
 ## APIs
 #### cloth-armor-api-v1
