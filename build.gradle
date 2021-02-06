@@ -3,13 +3,11 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'fabric-loom' version '0.4-SNAPSHOT' apply false
+    id 'forgified-fabric-loom' version '0.6.64' apply false
     id 'net.minecrell.licenser' version '0.4.1'
     id "org.ajoberstar.grgit" version "3.1.1"
     id 'com.matthewprenger.cursegradle' version "1.4.0"
     id 'maven'
-    id 'signing'
-    id 'com.jfrog.bintray' version '1.8.4'
 }
 
 import net.fabricmc.loom.task.RunClientTask
@@ -34,14 +32,13 @@ allprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'maven'
     apply plugin: 'signing'
-    apply plugin: 'com.jfrog.bintray'
-    apply plugin: 'fabric-loom'
+    apply plugin: 'forgified-fabric-loom'
     apply plugin: 'net.minecrell.licenser'
 
     sourceCompatibility = targetCompatibility = 1.8
 
     group = "me.shedaniel.cloth.api"
-    
+
     ext {
         shouldGenerateData = false
     }
@@ -63,8 +60,7 @@ allprojects {
     }
 
     repositories {
-        maven { url "https://dl.bintray.com/shedaniel/legacy-yarn-updated" }
-        mavenLocal()
+        maven { url "https://maven.shedaniel.me/" }
     }
 
     dependencies {
@@ -141,7 +137,7 @@ allprojects {
 
 subprojects {
     version = rootProject.version
-    
+
     dependencies {
         testmodCompile sourceSets.main.output
         datagenCompile sourceSets.main.output
@@ -170,57 +166,13 @@ subprojects {
             }
         }
     }
-
-    bintray {
-        user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-        key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
-        publications = ["${archivesBaseName}_mavenJava"]
-        publish = true
-        pkg {
-            repo = "cloth"
-            name = archivesBaseName
-            userOrg = "shedaniel"
-            licenses = ["Unlicense"]
-            websiteUrl = 'https://github.com/shedaniel/cloth-api'
-            issueTrackerUrl = 'https://github.com/shedaniel/cloth-api/issues'
-            vcsUrl = 'https://github.com/shedaniel/cloth-api.git'
-            version {
-                gpg {
-                    sign = true
-                }
-            }
-        }
-    }
 }
-
-subprojects.each { bintrayUpload.dependsOn("${it.path}:bintrayUpload") }
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
     afterEvaluate {
         input = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
         archiveName = "${archivesBaseName}-${version}-maven.jar"
         addNestedDependencies = false
-    }
-}
-
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
-    publications = ["mavenJava"]
-    publish = true
-    pkg {
-        repo = "cloth"
-        name = "cloth-api"
-        userOrg = "shedaniel"
-        licenses = ["Unlicense"]
-        websiteUrl = 'https://github.com/shedaniel/cloth-api'
-        issueTrackerUrl = 'https://github.com/shedaniel/cloth-api/issues'
-        vcsUrl = 'https://github.com/shedaniel/cloth-api.git'
-        version {
-            gpg {
-                sign = true
-            }
-        }
     }
 }
 
@@ -258,14 +210,13 @@ sourceSets {
 }
 
 dependencies {
-    afterEvaluate {
-        subprojects.each {
-            compile project(path: ":${it.name}", configuration: "dev")
-            include project("${it.name}:")
+    subprojects.each {
+        compile project(path: ":${it.name}", configuration: "dev")
+        include project("${it.name}:")
 
-            testmodCompile project("${it.name}:").sourceSets.testmod.output
-        }
+        testmodCompile project("${it.name}:").sourceSets.testmod.output
     }
+    
     include "me.shedaniel.cloth:basic-math:${project.cloth_basic_math}"
 }
 
