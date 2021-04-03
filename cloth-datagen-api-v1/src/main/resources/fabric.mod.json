@@ -18,7 +18,8 @@
   "accessWidener": "cloth-datagen-api-v1.accessWidener",
   "custom": {
     "modmenu": {
-      "parent": "cloth-api"
+      "parent": "cloth-api",
+      "badges": [ "library" ]
     }
   }
 }

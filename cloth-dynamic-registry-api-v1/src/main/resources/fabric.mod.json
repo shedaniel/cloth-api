@@ -26,7 +26,8 @@
   "accessWidener": "cloth-dynamic-registry-api-v1.accessWidener",
   "custom": {
     "modmenu": {
-      "parent": "cloth-api"
+      "parent": "cloth-api",
+      "badges": [ "library" ]
     }
   }
 }

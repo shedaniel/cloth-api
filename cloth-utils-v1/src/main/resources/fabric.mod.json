@@ -22,7 +22,8 @@
   "environment": "*",
   "custom": {
     "modmenu": {
-      "parent": "cloth-api"
+      "parent": "cloth-api",
+      "badges": [ "library" ]
     }
   }
 }

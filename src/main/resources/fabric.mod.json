@@ -14,5 +14,11 @@
   },
   "license": "Unlicense",
   "icon": "icon.png",
-  "environment": "*"
+  "environment": "*",
+  
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ]
+    }
+  }
 }
