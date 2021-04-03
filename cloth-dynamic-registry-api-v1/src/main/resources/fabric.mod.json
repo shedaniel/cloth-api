@@ -25,7 +25,8 @@
   },
   "accessWidener": "cloth-dynamic-registry-api-v1.accessWidener",
   "custom": {
-    "modmenu:api": true,
-    "modmenu:parent": "cloth-api"
+    "modmenu": {
+      "parent": "cloth-api"
+    }
   }
 }
