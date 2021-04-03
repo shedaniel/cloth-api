@@ -16,8 +16,8 @@
   "icon": "icon.png",
   "environment": "client",
   "custom": {
-    "modmenu:api": true,
-    "modmenu:clientsideOnly": true,
-    "modmenu:parent": "cloth-api"
+    "modmenu": {
+      "parent": "cloth-api"
+    }
   }
 }
