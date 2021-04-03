@@ -15,7 +15,10 @@
   "license": "Unlicense",
   "icon": "icon.png",
   "environment": "*",
+  
   "custom": {
-    "modmenu:api": true
+    "modmenu": {
+      "badges": [ "library" ]
+    }
   }
 }
