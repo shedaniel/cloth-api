@@ -19,7 +19,8 @@
     "cloth-armor-api-v1.mixins.json"
   ],
   "custom": {
-    "modmenu:api": true,
-    "modmenu:parent": "cloth-api"
+    "modmenu": {
+      "parent": "cloth-api"
+    }
   }
 }
