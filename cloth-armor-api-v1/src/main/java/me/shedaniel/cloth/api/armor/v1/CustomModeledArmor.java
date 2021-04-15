@@ -34,6 +34,10 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
+/**
+ * @deprecated {@link net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderingRegistry}
+ */
+@Deprecated
 public interface CustomModeledArmor {
     @Environment(EnvType.CLIENT)
     BipedEntityModel<LivingEntity> getArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, BipedEntityModel<LivingEntity> defaultModel);
