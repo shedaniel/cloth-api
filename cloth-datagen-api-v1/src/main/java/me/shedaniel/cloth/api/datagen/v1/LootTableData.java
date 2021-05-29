@@ -38,7 +38,7 @@ import net.minecraft.loot.condition.LootConditionConsumingBuilder;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.loot.entry.LootPoolEntry;
+import net.minecraft.loot.entry.LootEntry;
 import net.minecraft.loot.function.ApplyBonusLootFunction;
 import net.minecraft.loot.function.LootFunctionConsumingBuilder;
 import net.minecraft.loot.provider.number.LootNumberProvider;
@@ -75,8 +75,8 @@ public interface LootTableData {
         return BlockLootTableGenerator.drops(drop);
     }
     
-    static LootTable.Builder dropsBlock(Block drop, LootCondition.Builder conditionBuilder, LootPoolEntry.Builder<?> child) {
-        return BlockLootTableGenerator.drops(drop, conditionBuilder, child);
+    static LootTable.Builder dropsBlock(Block drop, LootCondition.Builder conditionBuilder, LootEntry.Builder<?> child) {
+        return BlockLootTableGenerator.create(drop, conditionBuilder, child);
     }
     
     static LootTable.Builder dropsBlockWithSilkTouch(ItemConvertible drop) {
@@ -95,7 +95,7 @@ public interface LootTableData {
         return BlockLootTableGenerator.drops(block, drop, count);
     }
     
-    static LootTable.Builder dropsBlockWithSilkTouch(Block block, LootPoolEntry.Builder<?> child) {
+    static LootTable.Builder dropsBlockWithSilkTouch(Block block, LootEntry.Builder<?> child) {
         return BlockLootTableGenerator.dropsWithSilkTouch(block, child);
     }
     

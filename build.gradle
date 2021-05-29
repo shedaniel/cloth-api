@@ -12,7 +12,9 @@ plugins {
 
 import net.fabricmc.loom.task.RunClientTask
 
-version = project.mod_version
+def runNumber = (System.getenv("GITHUB_RUN_NUMBER") == null ? "9999" : System.getenv("GITHUB_RUN_NUMBER"))
+version = rootProject.base_version + "." + runNumber
+
 logger.lifecycle("Building cloth-api: " + version)
 archivesBaseName = "cloth-api"
 
@@ -165,6 +167,18 @@ subprojects {
                 }
             }
         }
+
+        repositories {
+            if (System.getenv("MAVEN_PASS") != null) {
+                maven {
+                    url = "https://deploy.shedaniel.me/"
+                    credentials {
+                        username = "shedaniel"
+                        password = System.getenv("MAVEN_PASS")
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -194,6 +208,18 @@ publishing {
                     depNode.appendNode("artifactId", it.name)
                     depNode.appendNode("version", it.version)
                     depNode.appendNode("scope", "compile")
+                }
+            }
+        }
+    }
+
+    repositories {
+        if (System.getenv("MAVEN_PASS") != null) {
+            maven {
+                url = "https://deploy.shedaniel.me/"
+                credentials {
+                    username = "shedaniel"
+                    password = System.getenv("MAVEN_PASS")
                 }
             }
         }
@@ -232,7 +258,7 @@ curseforge {
             addGameVersion 'Java 8'
             addGameVersion 'Fabric'
             mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-                displayName = "[Fabric $project.minecraft_version] v$project.mod_version"
+                displayName = "[Fabric $project.minecraft_version] v$project.version"
             }
             afterEvaluate {
                 uploadTask.dependsOn("remapJar")

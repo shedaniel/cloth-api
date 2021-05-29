@@ -34,6 +34,10 @@ import net.minecraft.item.ArmorItem;
 
 import javax.annotation.Nullable;
 
+/**
+ * @deprecated {@link net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderingRegistry}
+ */
+@Deprecated
 public interface CustomTexturedArmor {
     @Environment(EnvType.CLIENT)
     @Deprecated
