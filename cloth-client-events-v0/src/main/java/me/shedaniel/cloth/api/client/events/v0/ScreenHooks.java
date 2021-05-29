@@ -27,18 +27,25 @@
 
 package me.shedaniel.cloth.api.client.events.v0;
 
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.text.Text;
 
 import java.util.List;
 
 public interface ScreenHooks {
-    List<AbstractButtonWidget> cloth$getButtonWidgets();
+    List<Selectable> cloth$getSelectables();
+    
+    List<Drawable> cloth$getDrawables();
     
     List<Element> cloth$getChildren();
     
-    AbstractButtonWidget cloth$addButtonWidget(AbstractButtonWidget buttonWidget);
+    <T extends Element & Drawable & Selectable> T cloth$addDrawableChild(T drawableElement);
+    
+    <T extends Drawable> T cloth$addDrawable(T drawable);
+    
+    <T extends Element & Selectable> T cloth$addSelectableChild(T child);
     
     void cloth$setTitle(Text component);
 }

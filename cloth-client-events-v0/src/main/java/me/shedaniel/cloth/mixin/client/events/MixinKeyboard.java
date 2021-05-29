@@ -31,6 +31,7 @@ import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ParentElement;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ActionResult;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -94,13 +95,13 @@ public class MixinKeyboard {
                                        target = "Lnet/minecraft/client/gui/screen/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
                                        ordinal = 0, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
-    public void onKeyAfter(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info, ParentElement parentElement, boolean[] bls) {
+    public void onKeyAfter(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info, Screen screen, boolean[] bls) {
         if (!info.isCancelled() && !bls[0]) {
             ActionResult result;
             if (int_3 != 1 && (int_3 != 2 || !this.repeatEvents)) {
-                result = ClothClientHooks.SCREEN_POST_KEY_RELEASED.invoker().keyReleased(client, client.currentScreen, int_1, int_2, int_4);
+                result = ClothClientHooks.SCREEN_POST_KEY_RELEASED.invoker().keyReleased(client, screen, int_1, int_2, int_4);
             } else {
-                result = ClothClientHooks.SCREEN_POST_KEY_PRESSED.invoker().keyPressed(client, client.currentScreen, int_1, int_2, int_4);
+                result = ClothClientHooks.SCREEN_POST_KEY_PRESSED.invoker().keyPressed(client, screen, int_1, int_2, int_4);
             }
             if (result != ActionResult.PASS)
                 info.cancel();

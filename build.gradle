@@ -7,7 +7,6 @@ plugins {
     id 'net.minecrell.licenser' version '0.4.1'
     id "org.ajoberstar.grgit" version "3.1.1"
     id 'com.matthewprenger.cursegradle' version "1.4.0"
-    id 'maven'
 }
 
 import net.fabricmc.loom.task.RunClientTask
@@ -32,12 +31,8 @@ def getBranch() {
 
 allprojects {
     apply plugin: 'maven-publish'
-    apply plugin: 'maven'
-    apply plugin: 'signing'
     apply plugin: 'forgified-fabric-loom'
     apply plugin: 'net.minecrell.licenser'
-
-    sourceCompatibility = targetCompatibility = 1.8
 
     group = "me.shedaniel.cloth.api"
 
@@ -68,10 +63,10 @@ allprojects {
     dependencies {
         minecraft "com.mojang:minecraft:$project.minecraft_version"
         mappings "net.fabricmc:yarn:${project.yarn_version}:v2"
-        modCompile "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-        modCompile "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_version}"
+        modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+        modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_version}"
         compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-        modCompile "me.shedaniel.cloth:basic-math:${project.cloth_basic_math}"
+        modApi "me.shedaniel.cloth:basic-math:${project.cloth_basic_math}"
     }
 
     configurations {
@@ -80,6 +75,11 @@ allprojects {
 
     jar {
         classifier = "dev"
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        it.options.encoding = "UTF-8"
+        it.options.release.set 16
     }
 
     afterEvaluate {
@@ -95,13 +95,8 @@ allprojects {
         processResources {
             inputs.property "version", project.version
 
-            from(sourceSets.main.resources.srcDirs) {
-                include "fabric.mod.json"
+            filesMatching("fabric.mod.json") {
                 expand "version": project.version
-            }
-
-            from(sourceSets.main.resources.srcDirs) {
-                exclude "fabric.mod.json"
             }
         }
 
@@ -125,24 +120,14 @@ allprojects {
         classifier = 'sources'
         from sourceSets.main.allSource
     }
-
-    task javadocs(type: Javadoc) {
-        source = sourceSets.main.allJava
-    }
-
-    task javadocsJar(type: Jar, dependsOn: javadocs) {
-        archiveClassifier.set("javadocs")
-        javadocs.failOnError false
-        from javadocs.destinationDir
-    }
 }
 
 subprojects {
     version = rootProject.version
 
     dependencies {
-        testmodCompile sourceSets.main.output
-        datagenCompile sourceSets.main.output
+        testmodImplementation sourceSets.main.output
+        datagenImplementation sourceSets.main.output
     }
 
     task remapMavenJar(type: Copy, dependsOn: remapJar) {
@@ -163,7 +148,6 @@ subprojects {
                     artifact(sourcesJar) {
                         builtBy remapSourcesJar
                     }
-                    artifact javadocsJar
                 }
             }
         }
@@ -199,7 +183,6 @@ publishing {
             artifact(sourcesJar) {
                 builtBy remapSourcesJar
             }
-            artifact javadocsJar
             pom.withXml {
                 def depsNode = asNode().appendNode("dependencies")
                 subprojects.each {
@@ -237,12 +220,12 @@ sourceSets {
 
 dependencies {
     subprojects.each {
-        compile project(path: ":${it.name}", configuration: "dev")
+        implementation project(path: ":${it.name}", configuration: "dev")
         include project("${it.name}:")
 
-        testmodCompile project("${it.name}:").sourceSets.testmod.output
+        testmodImplementation project("${it.name}:").sourceSets.testmod.output
     }
-    
+
     include "me.shedaniel.cloth:basic-math:${project.cloth_basic_math}"
 }
 
@@ -252,10 +235,8 @@ curseforge {
         project {
             id = '317121'
             changelog = 'A changelog can be found at https://github.com/shedaniel/cloth-api/commits'
-            releaseType = 'release'
-            addGameVersion '1.16-Snapshot'
-            addGameVersion '1.16.2'
-            addGameVersion 'Java 8'
+            releaseType = 'beta'
+            addGameVersion '1.17'
             addGameVersion 'Fabric'
             mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
                 displayName = "[Fabric $project.minecraft_version] v$project.version"

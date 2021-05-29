@@ -31,7 +31,7 @@ import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.resource.SynchronousResourceReloadListener;
+import net.minecraft.resource.SynchronousResourceReloader;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -41,7 +41,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(GameRenderer.class)
-public abstract class MixinGameRenderer implements AutoCloseable, SynchronousResourceReloadListener {
+public abstract class MixinGameRenderer implements AutoCloseable, SynchronousResourceReloader {
     @Shadow
     @Final
     private MinecraftClient client;

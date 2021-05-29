@@ -30,9 +30,10 @@ package me.shedaniel.cloth.mixin.client.events;
 import me.shedaniel.cloth.api.client.events.v0.ClothClientHooks;
 import me.shedaniel.cloth.api.client.events.v0.ScreenHooks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -43,16 +44,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
 @Mixin(Screen.class)
 public abstract class MixinScreen implements ScreenHooks {
-    @Shadow
-    @Final
-    protected List<AbstractButtonWidget> buttons;
-    
     @Shadow
     protected MinecraftClient client;
     
@@ -61,14 +57,29 @@ public abstract class MixinScreen implements ScreenHooks {
     @Final
     protected Text title;
     
-    @Shadow
-    protected abstract <T extends AbstractButtonWidget> T addButton(T abstractButtonWidget_1);
-    
     @Shadow public int width;
     
+    @Shadow @Final private List<Selectable> selectables;
+    
+    @Shadow @Final private List<Drawable> drawables;
+    
+    @Shadow
+    protected abstract <T extends Element & Drawable & Selectable> T addDrawableChild(T drawableElement);
+    
+    @Shadow
+    protected abstract <T extends Drawable> T addDrawable(T drawable);
+    
+    @Shadow
+    protected abstract <T extends Element & Selectable> T addSelectableChild(T child);
+    
     @Override
-    public List<AbstractButtonWidget> cloth$getButtonWidgets() {
-        return buttons;
+    public List<Selectable> cloth$getSelectables() {
+        return selectables;
+    }
+    
+    @Override
+    public List<Drawable> cloth$getDrawables() {
+        return drawables;
     }
     
     @Override
@@ -77,9 +88,18 @@ public abstract class MixinScreen implements ScreenHooks {
     }
     
     @Override
-    public AbstractButtonWidget cloth$addButtonWidget(AbstractButtonWidget buttonWidget) {
-        addButton(buttonWidget);
-        return buttonWidget;
+    public <T extends Element & Drawable & Selectable> T cloth$addDrawableChild(T drawableElement) {
+        return addDrawableChild(drawableElement);
+    }
+    
+    @Override
+    public <T extends Drawable> T cloth$addDrawable(T drawable) {
+        return addDrawable(drawable);
+    }
+    
+    @Override
+    public <T extends Element & Selectable> T cloth$addSelectableChild(T child) {
+        return addSelectableChild(child);
     }
     
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
@@ -110,24 +130,6 @@ public abstract class MixinScreen implements ScreenHooks {
     public void onPostInit(MinecraftClient minecraftClient_1, int int_1, int int_2, CallbackInfo info) {
         if (!info.isCancelled())
             ClothClientHooks.SCREEN_INIT_POST.invoker().init(minecraftClient_1, (Screen) (Object) this, this);
-    }
-    
-    @Inject(method = "addButton", at = @At("HEAD"), cancellable = true)
-    public void onAddButton(AbstractButtonWidget widget, CallbackInfoReturnable<AbstractButtonWidget> info) {
-        if (!info.isCancelled()) {
-            ActionResult result = ClothClientHooks.SCREEN_ADD_BUTTON.invoker().addButton(client, (Screen) (Object) this, widget);
-            if (result != ActionResult.PASS)
-                info.setReturnValue(widget);
-        }
-    }
-    
-    @Inject(method = "addChild", at = @At("HEAD"), cancellable = true)
-    public void addChild(Element widget, CallbackInfoReturnable<Element> info) {
-        if (!info.isCancelled()) {
-            ActionResult result = ClothClientHooks.SCREEN_ADD_CHILD.invoker().addChild(client, (Screen) (Object) this, widget);
-            if (result != ActionResult.PASS)
-                info.setReturnValue(widget);
-        }
     }
     
     @Override

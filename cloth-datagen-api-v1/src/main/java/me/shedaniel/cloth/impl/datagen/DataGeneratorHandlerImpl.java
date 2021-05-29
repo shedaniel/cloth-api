@@ -27,22 +27,23 @@
 
 package me.shedaniel.cloth.impl.datagen;
 
+import com.google.common.base.Suppliers;
 import me.shedaniel.cloth.api.datagen.v1.*;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.util.Lazy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 
 public class DataGeneratorHandlerImpl implements me.shedaniel.cloth.api.datagen.v1.DataGeneratorHandler {
     private static final Logger LOGGER = LogManager.getLogger();
     private final DataGenerator dataGenerator;
-    private final Lazy<LootTableDataProvider> lootTableGenerator = new Lazy<>(() -> new LootTableDataProvider(this));
-    private final Lazy<TagDataProvider> tagDataProvider = new Lazy<>(() -> new TagDataProvider(this));
-    private final Lazy<RecipeDataProvider> recipeDataProvider = new Lazy<>(() -> new RecipeDataProvider(this));
-    private final Lazy<ModelStateDataProvider> modelStateDataProvider = new Lazy<>(() -> new ModelStateDataProvider(this));
-    private final Lazy<SimpleDataProvider> simpleDataProvider = new Lazy<>(() -> new SimpleDataProvider(this));
+    private final Supplier<LootTableDataProvider> lootTableGenerator = Suppliers.memoize(() -> new LootTableDataProvider(this));
+    private final Supplier<TagDataProvider> tagDataProvider = Suppliers.memoize(() -> new TagDataProvider(this));
+    private final Supplier<RecipeDataProvider> recipeDataProvider = Suppliers.memoize(() -> new RecipeDataProvider(this));
+    private final Supplier<ModelStateDataProvider> modelStateDataProvider = Suppliers.memoize(() -> new ModelStateDataProvider(this));
+    private final Supplier<SimpleDataProvider> simpleDataProvider = Suppliers.memoize(() -> new SimpleDataProvider(this));
     
     public DataGeneratorHandlerImpl(DataGenerator dataGenerator) {
         this.dataGenerator = dataGenerator;
