@@ -63,15 +63,6 @@ public abstract class MixinScreen implements ScreenHooks {
     
     @Shadow @Final private List<Drawable> drawables;
     
-    @Shadow
-    protected abstract <T extends Element & Drawable & Selectable> T addDrawableChild(T drawableElement);
-    
-    @Shadow
-    protected abstract <T extends Drawable> T addDrawable(T drawable);
-    
-    @Shadow
-    protected abstract <T extends Element & Selectable> T addSelectableChild(T child);
-    
     @Override
     public List<Selectable> cloth$getSelectables() {
         return selectables;
@@ -89,17 +80,17 @@ public abstract class MixinScreen implements ScreenHooks {
     
     @Override
     public <T extends Element & Drawable & Selectable> T cloth$addDrawableChild(T drawableElement) {
-        return addDrawableChild(drawableElement);
+        return ((Screen) (Object) this).addDrawableChild(drawableElement);
     }
     
     @Override
     public <T extends Drawable> T cloth$addDrawable(T drawable) {
-        return addDrawable(drawable);
+        return ((Screen) (Object) this).addDrawable(drawable);
     }
     
     @Override
     public <T extends Element & Selectable> T cloth$addSelectableChild(T child) {
-        return addSelectableChild(child);
+        return ((Screen) (Object) this).addSelectableChild(child);
     }
     
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)

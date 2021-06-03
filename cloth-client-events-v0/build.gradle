@@ -1,1 +1,5 @@
 archivesBaseName = "cloth-client-events-v0"
+
+loom {
+    accessWidener = file("src/main/resources/cloth-client-events-v0.accesswidener")
+}

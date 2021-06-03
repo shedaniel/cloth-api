@@ -28,12 +28,10 @@
 package me.shedaniel.cloth.impl.utils;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.cloth.api.utils.v1.Executor;
 import me.shedaniel.cloth.api.utils.v1.ScissorsStack;
 import me.shedaniel.math.Rectangle;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
 import org.apache.logging.log4j.LogManager;
@@ -48,22 +46,6 @@ public final class ScissorsStackImpl implements ScissorsStack {
     private final List<Rectangle> scissorsAreas = Lists.newArrayList();
     private final Rectangle empty = new Rectangle();
     private static final Logger LOGGER = LogManager.getFormatterLogger("cloth-scissors-api-v1");
-    
-    static {
-        Executor.runIf(() -> FabricLoader.getInstance().isModLoaded("notenoughcrashes"), () -> () -> {
-            try {
-                Class.forName("fudge.notenoughcrashes.api.NotEnoughCrashesApi").getDeclaredMethod("onEveryCrash", Runnable.class).invoke(null, (Runnable) () -> {
-                    try {
-                        ScissorsStack.INSTANCE.popAll().applyStack();
-                    } catch (Throwable t) {
-                        LOGGER.error("[ClothConfig] Failed to clear scissors on game crash!", t);
-                    }
-                });
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        });
-    }
     
     @Override
     public ScissorsStack applyScissors(Rectangle rectangle) {

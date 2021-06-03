@@ -21,6 +21,7 @@
   "depends": {
     "fabric-api-base": "*"
   },
+  "accessWidener": "cloth-client-events-v0.accesswidener",
   "custom": {
     "modmenu": {
       "parent": "cloth-api",

@@ -4,7 +4,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'dev.architectury.loom' version '0.8.0-SNAPSHOT' apply false
-    id 'net.minecrell.licenser' version '0.4.1'
+    id 'org.cadixdev.licenser' version '0.6.0'
     id "org.ajoberstar.grgit" version "3.1.1"
     id 'com.matthewprenger.cursegradle' version "1.4.0"
 }
@@ -32,7 +32,7 @@ def getBranch() {
 allprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'dev.architectury.loom'
-    apply plugin: 'net.minecrell.licenser'
+    apply plugin: 'org.cadixdev.licenser'
 
     group = "me.shedaniel.cloth.api"
 
@@ -73,38 +73,29 @@ allprojects {
         dev
     }
 
-    jar {
-        classifier = "dev"
-    }
-
     tasks.withType(JavaCompile).configureEach {
         it.options.encoding = "UTF-8"
         it.options.release.set 16
     }
 
+    artifacts {
+        dev file: jar.archiveFile.get().asFile, type: "jar", builtBy: jar
+    }
+
+    processResources {
+        inputs.property "version", project.version
+
+        filesMatching("fabric.mod.json") {
+            expand "version": project.version
+        }
+    }
+
+    license {
+        header rootProject.file('HEADER')
+        include '**/*.java'
+    }
+
     afterEvaluate {
-        remapJar {
-            input = file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar")
-            archiveName = "${archivesBaseName}-${version}.jar"
-        }
-
-        artifacts {
-            dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: jar
-        }
-
-        processResources {
-            inputs.property "version", project.version
-
-            filesMatching("fabric.mod.json") {
-                expand "version": project.version
-            }
-        }
-
-        license {
-            header rootProject.file('HEADER')
-            include '**/*.java'
-        }
-
         if (shouldGenerateData) {
             task generateData(type: RunClientTask, dependsOn: downloadAssets) {
                 classpath = configurations.runtimeClasspath
@@ -130,21 +121,11 @@ subprojects {
         datagenImplementation sourceSets.main.output
     }
 
-    task remapMavenJar(type: Copy, dependsOn: remapJar) {
-        afterEvaluate {
-            from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
-            into("${project.buildDir}/libs/")
-            rename { String fn -> "$archivesBaseName-${version}-maven.jar" }
-        }
-    }
-
     publishing {
         publications {
             create("${archivesBaseName}_mavenJava", MavenPublication) {
                 afterEvaluate {
-                    artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
-                        builtBy remapMavenJar
-                    }
+                    artifact(remapJar)
                     artifact(sourcesJar) {
                         builtBy remapSourcesJar
                     }
@@ -166,20 +147,10 @@ subprojects {
     }
 }
 
-task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
-    afterEvaluate {
-        input = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
-        archiveName = "${archivesBaseName}-${version}-maven.jar"
-        addNestedDependencies = false
-    }
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
-                builtBy remapMavenJar
-            }
+            artifact(remapJar)
             artifact(sourcesJar) {
                 builtBy remapSourcesJar
             }
