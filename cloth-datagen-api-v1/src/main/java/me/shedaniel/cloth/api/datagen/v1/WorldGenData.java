@@ -34,8 +34,6 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.carver.CarverConfig;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.*;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
-import net.minecraft.world.gen.surfacebuilder.SurfaceConfig;
 
 public interface WorldGenData extends SimpleData {
     default <FC extends FeatureConfig, F extends Feature<FC>> void addFeature(Identifier key, ConfiguredFeature<FC, F> feature) {
@@ -48,10 +46,6 @@ public interface WorldGenData extends SimpleData {
     
     default <WC extends CarverConfig> void addCarver(Identifier key, ConfiguredCarver<WC> carver) {
         addCodec("data/" + key.getNamespace() + "/" + Registry.CONFIGURED_CARVER_KEY.getValue().getPath() + "/" + key.getPath() + ".json", ConfiguredCarver.CODEC, carver);
-    }
-    
-    default <WC extends SurfaceConfig> void addSurfaceBuilder(Identifier key, ConfiguredSurfaceBuilder<WC> surfaceBuilder) {
-        addCodec("data/" + key.getNamespace() + "/" + Registry.CONFIGURED_SURFACE_BUILDER_KEY.getValue().getPath() + "/" + key.getPath() + ".json", ConfiguredSurfaceBuilder.CODEC, surfaceBuilder);
     }
     
     default void addBiome(Identifier key, Biome biome) {

@@ -3,8 +3,8 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'dev.architectury.loom' version '0.8.0-SNAPSHOT' apply false
-    id 'org.cadixdev.licenser' version '0.6.0'
+    id 'dev.architectury.loom' version '0.10.0-SNAPSHOT' apply false
+    id 'org.cadixdev.licenser' version '0.6.1'
     id "org.ajoberstar.grgit" version "3.1.1"
     id 'com.matthewprenger.cursegradle' version "1.4.0"
 }
@@ -33,6 +33,8 @@ allprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'dev.architectury.loom'
     apply plugin: 'org.cadixdev.licenser'
+
+    sourceCompatibility = targetCompatibility = 1.8
 
     group = "me.shedaniel.cloth.api"
 
@@ -206,8 +208,10 @@ curseforge {
         project {
             id = '317121'
             changelog = 'A changelog can be found at https://github.com/shedaniel/cloth-api/commits'
-            releaseType = 'beta'
-            addGameVersion '1.17'
+            releaseType = 'release'
+            addGameVersion '1.18'
+            addGameVersion '1.18.1'
+            addGameVersion '1.18-Snapshot'
             addGameVersion 'Fabric'
             mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
                 displayName = "[Fabric $project.minecraft_version] v$project.version"

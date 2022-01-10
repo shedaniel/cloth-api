@@ -45,7 +45,7 @@ public interface DataGeneratorHandler extends Runnable {
     }
     
     default void install(DataProvider dataProvider) {
-        getDataGenerator().install(dataProvider);
+        getDataGenerator().addProvider(dataProvider);
     }
     
     default Collection<Path> getInputs() {

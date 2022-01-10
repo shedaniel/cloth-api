@@ -36,11 +36,12 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.gen.YOffset;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreConfiguredFeatures;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 import java.nio.file.Paths;
+import java.util.List;
 
 public class TestDatagen implements PreLaunchEntrypoint {
     @Override
@@ -80,10 +81,7 @@ public class TestDatagen implements PreLaunchEntrypoint {
             
             WorldGenData worldGen = handler.getWorldGen();
             worldGen.addFeature(new Identifier("sponge_ores"),
-                    Feature.ORE.configure(new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, Blocks.SPONGE.getDefaultState(), 17))
-                            .uniformRange(YOffset.getBottom(), YOffset.fixed(64))
-                            .spreadHorizontally()
-                            .repeat(20));
+                    Feature.ORE.configure(new OreFeatureConfig(List.of(OreFeatureConfig.createTarget(OreConfiguredFeatures.BASE_STONE_OVERWORLD, Blocks.SPONGE.getDefaultState())), 17)));
             
             handler.run();
         } catch (Throwable throwable) {
