@@ -15,7 +15,9 @@
   "license": "Unlicense",
   "icon": "icon.png",
   "environment": "*",
-  
+  "depends": {
+    "fabricloader": ">=0.12.0"
+  },
   "custom": {
     "modmenu": {
       "badges": [ "library" ]

@@ -15,6 +15,9 @@
   "entrypoints": {
     "preLaunch": ["me.shedaniel.cloth.test.datagen.TestDatagen"]
   },
+  "depends": {
+    "fabricloader": ">=0.12.0"
+  },
   "license": "Unlicense",
   "environment": "*",
   "custom": {

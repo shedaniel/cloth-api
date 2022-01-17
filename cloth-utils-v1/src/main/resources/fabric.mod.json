@@ -17,6 +17,9 @@
       "me.shedaniel.cloth.api.utils.v1.GameInstanceUtils::init"
     ]
   },
+  "depends": {
+    "fabricloader": ">=0.12.0"
+  },
   "license": "Unlicense",
   "icon": "icon.png",
   "environment": "*",
