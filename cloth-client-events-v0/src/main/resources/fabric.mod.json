@@ -19,7 +19,8 @@
     "cloth-client-events-v0.mixins.json"
   ],
   "depends": {
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabricloader": ">=0.12.0"
   },
   "accessWidener": "cloth-client-events-v0.accesswidener",
   "custom": {

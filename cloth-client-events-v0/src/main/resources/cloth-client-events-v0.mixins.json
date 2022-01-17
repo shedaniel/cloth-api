@@ -3,7 +3,7 @@
   "package": "me.shedaniel.cloth.mixin.client.events",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.7.11",
-  "client": ["MixinClientPlayNetworkHandler", "MixinGameRenderer", "MixinKeyboard", "MixinMinecraftClient", "MixinMouse", "MixinScreen", "MixinWorldRenderer"],
+  "client": ["MixinClientPlayNetworkHandler", "MixinKeyboard", "MixinMinecraftClient", "MixinMouse", "MixinScreen", "MixinWorldRenderer"],
   "mixins": [],
   "injectors": {
     "defaultRequire": 1

@@ -27,8 +27,10 @@
 
 package me.shedaniel.cloth.api.client.events.v0;
 
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.ActionResult;
 
 public class ClothClientHooks {
@@ -179,4 +181,12 @@ public class ClothClientHooks {
                 listener.run();
         };
     });
+    
+    static {
+        ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            ScreenEvents.afterRender(screen).register((screen1, matrices, mouseX, mouseY, tickDelta) -> {
+                SCREEN_LATE_RENDER.invoker().render(matrices, MinecraftClient.getInstance(), screen1, mouseX, mouseY, tickDelta);
+            });
+        });
+    }
 }
