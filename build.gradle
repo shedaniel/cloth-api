@@ -3,11 +3,10 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'forgified-fabric-loom' version '0.6.64' apply false
-    id 'net.minecrell.licenser' version '0.4.1'
+    id 'dev.architectury.loom' version '0.10.0-SNAPSHOT' apply false
+    id 'org.cadixdev.licenser' version '0.6.1'
     id "org.ajoberstar.grgit" version "3.1.1"
     id 'com.matthewprenger.cursegradle' version "1.4.0"
-    id 'maven'
 }
 
 import net.fabricmc.loom.task.RunClientTask
@@ -32,10 +31,9 @@ def getBranch() {
 
 allprojects {
     apply plugin: 'maven-publish'
-    apply plugin: 'maven'
     apply plugin: 'signing'
-    apply plugin: 'forgified-fabric-loom'
-    apply plugin: 'net.minecrell.licenser'
+    apply plugin: 'dev.architectury.loom'
+    apply plugin: 'org.cadixdev.licenser'
 
     sourceCompatibility = targetCompatibility = 1.8
 
@@ -68,10 +66,10 @@ allprojects {
     dependencies {
         minecraft "com.mojang:minecraft:$project.minecraft_version"
         mappings "me.shedaniel:legacy-yarn:${project.yarn_version}:v2"
-        modCompile "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-        modCompile "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_version}"
+        modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+        modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_version}"
         compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-        modCompile "me.shedaniel.cloth:basic-math:${project.cloth_basic_math}"
+        modImplementation "me.shedaniel.cloth:basic-math:${project.cloth_basic_math}"
     }
 
     configurations {
@@ -95,13 +93,8 @@ allprojects {
         processResources {
             inputs.property "version", project.version
 
-            from(sourceSets.main.resources.srcDirs) {
-                include "fabric.mod.json"
+            filesMatching("fabric.mod.json") {
                 expand "version": project.version
-            }
-
-            from(sourceSets.main.resources.srcDirs) {
-                exclude "fabric.mod.json"
             }
         }
 
@@ -141,8 +134,8 @@ subprojects {
     version = rootProject.version
 
     dependencies {
-        testmodCompile sourceSets.main.output
-        datagenCompile sourceSets.main.output
+        testmodImplementation sourceSets.main.output
+        datagenImplementation sourceSets.main.output
     }
 
     task remapMavenJar(type: Copy, dependsOn: remapJar) {
@@ -237,10 +230,10 @@ sourceSets {
 
 dependencies {
     subprojects.each {
-        compile project(path: ":${it.name}", configuration: "dev")
+        implementation project(path: ":${it.name}", configuration: "dev")
         include project("${it.name}:")
 
-        testmodCompile project("${it.name}:").sourceSets.testmod.output
+        testmodImplementation project("${it.name}:").sourceSets.testmod.output
     }
     
     include "me.shedaniel.cloth:basic-math:${project.cloth_basic_math}"
