@@ -18,6 +18,9 @@
   "mixins": [
     "cloth-common-events-v1.mixins.json"
   ],
+  "depends": {
+    "fabricloader": ">=0.12.0"
+  },
   "custom": {
     "modmenu": {
       "parent": "cloth-api",
