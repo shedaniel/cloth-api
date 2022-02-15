@@ -191,7 +191,7 @@ sourceSets {
 
 dependencies {
     subprojects.each {
-        implementation project(path: ":${it.name}", configuration: "dev")
+        implementation project(path: ":${it.name}", configuration: "namedElements")
         include project("${it.name}:")
 
         testmodImplementation project("${it.name}:").sourceSets.testmod.output
