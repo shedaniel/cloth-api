@@ -1,5 +1,5 @@
 archivesBaseName = "cloth-scissors-api-v1"
 
 dependencies {
-    implementation project(path: ':cloth-utils-v1', configuration: 'dev')
+    implementation project(path: ':cloth-utils-v1', configuration: 'namedElements')
 }
