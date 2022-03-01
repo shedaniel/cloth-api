@@ -31,33 +31,48 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 
 public interface TagData {
-    TagBuilder<Block> block(Identifier tag);
+    <T> TagBuilder<T> get(RegistryKey<? extends Registry<T>> registryKey, Identifier tag);
     
-    TagBuilder<ItemConvertible> item(Identifier tag);
-    
-    TagBuilder<EntityType<?>> entity(Identifier tag);
-    
-    TagBuilder<Fluid> fluid(Identifier tag);
-    
-    default TagBuilder<Block> block(Tag.Identified<Block> tag) {
-        return block(tag.getId());
+    default <T> TagBuilder<T> get(TagKey<T> tag) {
+        return get(tag.registry(), tag.id());
     }
     
-    default TagBuilder<ItemConvertible> item(Tag.Identified<Item> tag) {
-        return item(tag.getId());
+    default TagBuilder<Block> block(Identifier tag) {
+        return get(Registry.BLOCK_KEY, tag);
     }
     
-    default TagBuilder<EntityType<?>> entity(Tag.Identified<EntityType<?>> tag) {
-        return entity(tag.getId());
+    default TagBuilder<Item> item(Identifier tag) {
+        return get(Registry.ITEM_KEY, tag);
     }
     
-    default TagBuilder<Fluid> fluid(Tag.Identified<Fluid> tag) {
-        return fluid(tag.getId());
+    default TagBuilder<EntityType<?>> entity(Identifier tag) {
+        return get(Registry.ENTITY_TYPE_KEY, tag);
+    }
+    
+    default TagBuilder<Fluid> fluid(Identifier tag) {
+        return get(Registry.FLUID_KEY, tag);
+    }
+    
+    default TagBuilder<Block> block(TagKey<Block> tag) {
+        return get(tag);
+    }
+    
+    default TagBuilder<Item> item(TagKey<Item> tag) {
+        return get(tag);
+    }
+    
+    default TagBuilder<EntityType<?>> entity(TagKey<EntityType<?>> tag) {
+        return get(tag);
+    }
+    
+    default TagBuilder<Fluid> fluid(TagKey<Fluid> tag) {
+        return get(tag);
     }
     
     interface TagBuilder<T> {
@@ -77,8 +92,8 @@ public interface TagData {
             return this;
         }
         
-        default TagBuilder<T> appendTag(boolean optional, Tag.Identified tag) {
-            return appendTag(optional, tag.getId());
+        default TagBuilder<T> appendTag(boolean optional, TagKey<T> tag) {
+            return appendTag(optional, tag.id());
         }
         
         default TagBuilder<T> appendTag(boolean optional, TagBuilder<T> tag) {
@@ -101,8 +116,8 @@ public interface TagData {
             return appendTag(false, tag);
         }
         
-        default TagBuilder<T> appendTag(Tag.Identified tag) {
-            return appendTag(tag.getId());
+        default TagBuilder<T> appendTag(TagKey<T> tag) {
+            return appendTag(tag.id());
         }
         
         default TagBuilder<T> appendTag(TagBuilder<T> tag) {
@@ -125,8 +140,8 @@ public interface TagData {
             return appendTag(true, tag);
         }
         
-        default TagBuilder<T> appendOptionalTag(Tag.Identified tag) {
-            return appendOptionalTag(tag.getId());
+        default TagBuilder<T> appendOptionalTag(TagKey<T> tag) {
+            return appendOptionalTag(tag.id());
         }
         
         default TagBuilder<T> appendOptionalTag(TagBuilder<T> tag) {

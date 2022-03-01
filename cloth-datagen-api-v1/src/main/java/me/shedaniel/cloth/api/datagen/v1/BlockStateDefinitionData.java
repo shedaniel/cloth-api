@@ -29,7 +29,7 @@ package me.shedaniel.cloth.api.datagen.v1;
 
 import com.google.gson.JsonElement;
 import net.minecraft.block.Block;
-import net.minecraft.data.client.model.*;
+import net.minecraft.data.client.SimpleModelSupplier;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 

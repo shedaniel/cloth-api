@@ -35,14 +35,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import me.shedaniel.cloth.api.datagen.v1.DataGeneratorHandler;
 import me.shedaniel.cloth.api.datagen.v1.TagData;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataCache;
 import net.minecraft.data.DataProvider;
-import net.minecraft.entity.EntityType;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemConvertible;
 import net.minecraft.loot.LootTable;
 import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagManagerLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -53,8 +50,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -62,7 +57,7 @@ public class TagDataProvider implements DataProvider, TagData {
     private static final Logger LOGGER = LogManager.getLogger();
     private final DataGeneratorHandler handler;
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
-    private final Table<TagType, Identifier, Builder<?>> tagBuilders = HashBasedTable.create();
+    private final Table<RegistryKey<? extends Registry<?>>, Identifier, Builder<?>> tagBuilders = HashBasedTable.create();
     
     public TagDataProvider(DataGeneratorHandler handler) {
         this.handler = handler;
@@ -70,39 +65,12 @@ public class TagDataProvider implements DataProvider, TagData {
     }
     
     @Override
-    public TagBuilder<Block> block(Identifier tag) {
-        Builder builder = tagBuilders.get(TagType.BLOCKS, tag);
+    public <T> TagBuilder<T> get(RegistryKey<? extends Registry<T>> registryKey, Identifier tag) {
+        Builder<T> builder = (Builder<T>) tagBuilders.get(registryKey, tag);
         if (builder != null)
             return builder;
-        tagBuilders.put(TagType.BLOCKS, tag, new Builder<>(TagType.BLOCKS, tag));
-        return block(tag);
-    }
-    
-    @Override
-    public TagBuilder<ItemConvertible> item(Identifier tag) {
-        Builder builder = tagBuilders.get(TagType.ITEMS, tag);
-        if (builder != null)
-            return builder;
-        tagBuilders.put(TagType.ITEMS, tag, new Builder<>(TagType.ITEMS, tag));
-        return item(tag);
-    }
-    
-    @Override
-    public TagBuilder<EntityType<?>> entity(Identifier tag) {
-        Builder builder = tagBuilders.get(TagType.ENTITY_TYPES, tag);
-        if (builder != null)
-            return builder;
-        tagBuilders.put(TagType.ENTITY_TYPES, tag, new Builder<>(TagType.ENTITY_TYPES, tag));
-        return entity(tag);
-    }
-    
-    @Override
-    public TagBuilder<Fluid> fluid(Identifier tag) {
-        Builder builder = tagBuilders.get(TagType.FLUIDS, tag);
-        if (builder != null)
-            return builder;
-        tagBuilders.put(TagType.FLUIDS, tag, new Builder<>(TagType.FLUIDS, tag));
-        return fluid(tag);
+        tagBuilders.put(registryKey, tag, builder = new Builder<>(registryKey, tag));
+        return builder;
     }
     
     @SuppressWarnings("UnstableApiUsage")
@@ -111,7 +79,6 @@ public class TagDataProvider implements DataProvider, TagData {
         Map<Identifier, LootTable> map = Maps.newHashMap();
         
         tagBuilders.rowMap().forEach((tagType, tagMap) -> tagMap.forEach((identifier, builder) -> {
-            builder.sort();
             JsonObject jsonObject = builder.toJson();
             Path path = this.getOutput(tagType, identifier);
             
@@ -132,8 +99,8 @@ public class TagDataProvider implements DataProvider, TagData {
         }));
     }
     
-    private Path getOutput(TagType tagType, Identifier identifier) {
-        return this.handler.getOutput().resolve("data/" + identifier.getNamespace() + "/tags/" + tagType.name().toLowerCase(Locale.ROOT) + "/" + identifier.getPath() + ".json");
+    private Path getOutput(RegistryKey<? extends Registry<?>> registryKey, Identifier identifier) {
+        return this.handler.getOutput().resolve("data/" + identifier.getNamespace() + "/" + TagManagerLoader.getPath(registryKey) + "/" + identifier.getPath() + ".json");
     }
     
     @Override
@@ -141,48 +108,12 @@ public class TagDataProvider implements DataProvider, TagData {
         return getClass().getSimpleName();
     }
     
-    enum TagType {
-        BLOCKS(Registry.BLOCK),
-        ITEMS(Registry.ITEM),
-        ENTITY_TYPES(Registry.ENTITY_TYPE),
-        FLUIDS(Registry.FLUID);
-        
-        Registry registry;
-        Comparator<Integer> objectComparator = Comparator.nullsLast(Integer::compare);
-        Comparator<Tag.TrackedEntry> comparator = (o1, o2) -> {
-            Tag.Entry entry1 = o1.getEntry();
-            Tag.Entry entry2 = o2.getEntry();
-            boolean isTag1 = entry1 instanceof Tag.TagEntry || entry1 instanceof Tag.OptionalTagEntry;
-            boolean isTag2 = entry2 instanceof Tag.TagEntry || entry2 instanceof Tag.OptionalTagEntry;
-            if (isTag1 && isTag2) {
-                return entry1.toString().compareTo(entry2.toString());
-            } else if (isTag1) {
-                return 1;
-            } else if (isTag2) {
-                return -1;
-            } else {
-                Integer first = (Integer) registry.getOrEmpty(new Identifier(stripOptional(entry1.toString()))).map(registry::getRawId).orElse(null);
-                Integer second = (Integer) registry.getOrEmpty(new Identifier(stripOptional(entry2.toString()))).map(registry::getRawId).orElse(null);
-                return objectComparator.compare(first, second);
-            }
-        };
-        
-        TagType(Registry<?> registry) {
-            this.registry = registry;
-        }
-        
-        private String stripOptional(String s) {
-            if (s.endsWith("?")) return s.substring(0, s.length() - 1);
-            return s;
-        }
-    }
-    
     private static class Builder<T> extends Tag.Builder implements TagBuilder<T> {
-        private final TagType tagType;
+        private final RegistryKey<? extends Registry<T>> registryKey;
         private final Identifier identifier;
         
-        public Builder(TagType tagType, Identifier identifier) {
-            this.tagType = tagType;
+        public Builder(RegistryKey<? extends Registry<T>> registryKey, Identifier identifier) {
+            this.registryKey = registryKey;
             this.identifier = identifier;
         }
         
@@ -193,26 +124,29 @@ public class TagDataProvider implements DataProvider, TagData {
         
         @Override
         public TagBuilder<T> append(boolean optional, Identifier value) {
-            add(optional ? new Tag.OptionalObjectEntry(value) : new Tag.ObjectEntry(value), "Datagen");
+            if (!optional) {
+                add(value, "Datagen");
+            } else {
+                addOptional(value, "Datagen");
+            }
             return this;
         }
         
         @Override
         public TagBuilder<T> append(boolean optional, T value) {
-            Object object = value;
-            if (value instanceof ItemConvertible && tagType == TagType.ITEMS)
-                object = ((ItemConvertible) value).asItem();
-            return append(optional, ((RegistryKey) tagType.registry.getKey(object).get()).getValue());
+            Identifier id = ((Registry<Registry<T>>) Registry.REGISTRIES).get((RegistryKey<Registry<T>>) registryKey).getId(value);
+            Objects.requireNonNull(id, "Couldn't find ID for " + value);
+            return append(optional, id);
         }
         
         @Override
         public TagBuilder<T> appendTag(boolean optional, Identifier tag) {
-            add(optional ? new Tag.OptionalTagEntry(tag) : new Tag.TagEntry(tag), "Datagen");
+            if (!optional) {
+                addTag(tag, "Datagen");
+            } else {
+                addOptionalTag(tag, "Datagen");
+            }
             return this;
-        }
-        
-        private void sort() {
-            this.entries.sort(tagType.comparator);
         }
     }
 }

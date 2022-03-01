@@ -29,7 +29,7 @@ package me.shedaniel.cloth.api.datagen.v1;
 
 import com.google.gson.JsonElement;
 import net.minecraft.block.Block;
-import net.minecraft.data.client.model.*;
+import net.minecraft.data.client.*;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -78,7 +78,7 @@ public interface ModelStateData extends ModelData, BlockStateDefinitionData {
     }
     
     default void addItemModel(Item item, Model model) {
-        model.upload(ModelIds.getItemModelId(item), Texture.layer0(item), this::addModel);
+        model.upload(ModelIds.getItemModelId(item), TextureMap.layer0(item), this::addModel);
     }
     
     default void addGeneratedItemModel(Item item) {
@@ -90,11 +90,11 @@ public interface ModelStateData extends ModelData, BlockStateDefinitionData {
     }
     
     default void addItemModel(Item item, String suffix, Model model) {
-        model.upload(ModelIds.getItemSubModelId(item, suffix), Texture.layer0(item), this::addModel);
+        model.upload(ModelIds.getItemSubModelId(item, suffix), TextureMap.layer0(item), this::addModel);
     }
     
     default void addItemModel(Item item, Item texture, Model model) {
-        model.upload(ModelIds.getItemModelId(item), Texture.layer0(texture), this::addModel);
+        model.upload(ModelIds.getItemModelId(item), TextureMap.layer0(texture), this::addModel);
     }
     
     default void addSingletonCubeAll(Block block) {

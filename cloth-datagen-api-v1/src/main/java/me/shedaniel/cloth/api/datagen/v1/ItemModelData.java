@@ -28,7 +28,7 @@
 package me.shedaniel.cloth.api.datagen.v1;
 
 import com.google.gson.JsonElement;
-import net.minecraft.data.client.model.SimpleModelSupplier;
+import net.minecraft.data.client.SimpleModelSupplier;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;

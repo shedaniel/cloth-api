@@ -34,7 +34,7 @@ import me.shedaniel.cloth.api.datagen.v1.DataGeneratorHandler;
 import me.shedaniel.cloth.api.datagen.v1.RecipeData;
 import net.minecraft.data.DataCache;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.server.RecipesProvider;
+import net.minecraft.data.server.RecipeProvider;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
@@ -68,10 +68,10 @@ public class RecipeDataProvider implements DataProvider, RecipeData {
             if (!set.add(recipeJsonProvider.getRecipeId())) {
                 throw new IllegalStateException("Duplicate recipe " + recipeJsonProvider.getRecipeId());
             } else {
-                RecipesProvider.saveRecipe(cache, recipeJsonProvider.toJson(), path.resolve("data/" + recipeJsonProvider.getRecipeId().getNamespace() + "/recipes/" + recipeJsonProvider.getRecipeId().getPath() + ".json"));
+                RecipeProvider.saveRecipe(cache, recipeJsonProvider.toJson(), path.resolve("data/" + recipeJsonProvider.getRecipeId().getNamespace() + "/recipes/" + recipeJsonProvider.getRecipeId().getPath() + ".json"));
                 JsonObject jsonObject = recipeJsonProvider.toAdvancementJson();
                 if (jsonObject != null) {
-                    RecipesProvider.saveRecipeAdvancement(cache, jsonObject, path.resolve("data/" + recipeJsonProvider.getRecipeId().getNamespace() + "/advancements/" + recipeJsonProvider.getAdvancementId().getPath() + ".json"));
+                    RecipeProvider.saveRecipeAdvancement(cache, jsonObject, path.resolve("data/" + recipeJsonProvider.getRecipeId().getNamespace() + "/advancements/" + recipeJsonProvider.getAdvancementId().getPath() + ".json"));
                 }
             }
         });
