@@ -11,6 +11,5 @@ rootProject.name = 'cloth-api'
 
 include 'cloth-client-events-v0'
 include 'cloth-common-events-v1'
-include 'cloth-datagen-api-v1'
 include 'cloth-scissors-api-v1'
 include 'cloth-utils-v1'

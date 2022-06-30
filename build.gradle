@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'dev.architectury.loom' version '0.11.0-SNAPSHOT' apply false
+    id 'dev.architectury.loom' version '0.12.0-SNAPSHOT' apply false
     id 'org.cadixdev.licenser' version '0.6.1'
     id "org.ajoberstar.grgit" version "3.1.1"
     id 'com.matthewprenger.cursegradle' version "1.4.0"
@@ -50,10 +50,6 @@ allprojects {
                 srcDir 'src/generated/resources'
             }
         }
-        datagen {
-            compileClasspath += main.compileClasspath
-            runtimeClasspath += main.runtimeClasspath
-        }
     }
 
     repositories {
@@ -95,18 +91,6 @@ allprojects {
         include '**/*.java'
     }
 
-    afterEvaluate {
-//        if (shouldGenerateData) {
-//            task generateData(type: RunClientTask, dependsOn: downloadAssets) {
-//                classpath = configurations.runtimeClasspath
-//                classpath sourceSets.main.output
-//                classpath sourceSets.datagen.output
-//            }
-//
-//            build.dependsOn generateData
-//        }
-    }
-
     task sourcesJar(type: Jar, dependsOn: classes) {
         classifier = 'sources'
         from sourceSets.main.allSource
@@ -118,7 +102,6 @@ subprojects {
 
     dependencies {
         testmodImplementation sourceSets.main.output
-        datagenImplementation sourceSets.main.output
     }
 
     publishing {
@@ -186,7 +169,6 @@ subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }
 
 sourceSets {
     testmod
-    datagen
 }
 
 dependencies {
@@ -207,8 +189,8 @@ curseforge {
             id = '317121'
             changelog = 'A changelog can be found at https://github.com/shedaniel/cloth-api/commits'
             releaseType = 'release'
-            addGameVersion '1.18.2'
-            addGameVersion '1.18-Snapshot'
+            addGameVersion '1.19'
+            addGameVersion '1.19-Snapshot'
             addGameVersion 'Fabric'
             mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
                 displayName = "[Fabric $project.minecraft_version] v$project.version"

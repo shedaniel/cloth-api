@@ -1,6 +1,0 @@
-archivesBaseName = "cloth-datagen-api-v1"
-shouldGenerateData = false
-
-loom {
-    accessWidenerPath = file("src/main/resources/cloth-datagen-api-v1.accessWidener")
-}
