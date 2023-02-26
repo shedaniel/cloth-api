@@ -29,8 +29,8 @@ package me.shedaniel.cloth.api.common.events.v1;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
 public interface PlayerChangeWorldCallback {

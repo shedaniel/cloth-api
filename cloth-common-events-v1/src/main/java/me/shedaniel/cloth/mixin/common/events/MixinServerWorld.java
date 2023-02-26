@@ -29,11 +29,11 @@ package me.shedaniel.cloth.mixin.common.events;
 
 import me.shedaniel.cloth.api.common.events.v1.WorldLoadCallback;
 import me.shedaniel.cloth.api.common.events.v1.WorldSaveCallback;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ProgressListener;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.level.ServerWorldProperties;
