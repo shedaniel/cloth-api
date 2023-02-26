@@ -189,8 +189,7 @@ curseforge {
             id = '317121'
             changelog = 'A changelog can be found at https://github.com/shedaniel/cloth-api/commits'
             releaseType = 'release'
-            addGameVersion '1.19'
-            addGameVersion '1.19-Snapshot'
+            addGameVersion '1.19.3'
             addGameVersion 'Fabric'
             mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
                 displayName = "[Fabric $project.minecraft_version] v$project.version"
