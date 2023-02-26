@@ -47,9 +47,6 @@ public class MixinKeyboard {
     @Final
     private MinecraftClient client;
     
-    @Shadow
-    private boolean repeatEvents;
-    
     @Inject(method = "onChar", at = @At(value = "INVOKE",
                                         target = "Lnet/minecraft/client/gui/screen/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
                                         ordinal = 0), cancellable = true)
@@ -77,7 +74,7 @@ public class MixinKeyboard {
                                        ordinal = 0), cancellable = true)
     public void onKey(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info) {
         if (!info.isCancelled()) {
-            if (int_3 != 1 && (int_3 != 2 || !this.repeatEvents)) {
+            if (int_3 != 1 && int_3 != 2) {
                 if (int_3 == 0) {
                     ActionResult result = ClothClientHooks.SCREEN_KEY_RELEASED.invoker().keyReleased(client, client.currentScreen, int_1, int_2, int_4);
                     if (result != ActionResult.PASS)
@@ -98,7 +95,7 @@ public class MixinKeyboard {
     public void onKeyAfter(long long_1, int int_1, int int_2, int int_3, int int_4, CallbackInfo info, Screen screen, boolean[] bls) {
         if (!info.isCancelled() && !bls[0]) {
             ActionResult result;
-            if (int_3 != 1 && (int_3 != 2 || !this.repeatEvents)) {
+            if (int_3 != 1 && int_3 != 2) {
                 result = ClothClientHooks.SCREEN_POST_KEY_RELEASED.invoker().keyReleased(client, screen, int_1, int_2, int_4);
             } else {
                 result = ClothClientHooks.SCREEN_POST_KEY_PRESSED.invoker().keyPressed(client, screen, int_1, int_2, int_4);
